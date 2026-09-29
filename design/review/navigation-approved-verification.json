@@ -1,0 +1,31 @@
+{
+  "date": "2026-09-28",
+  "decision": "User approved dark navigation proposal; applied to product navigation. Popup redesign is a local proposal awaiting approval.",
+  "sourceSha256": {
+    "src/ui/design-tokens.ts": "d685967ed2fe0a8fc0bfad443114a320d2f9939b380c0c7a1a78c57c68271041",
+    "src/ui/navigation-control-style.ts": "5f7465442cb399540688e1937b5efa0894357df89191e7bfa6b1d9e3a26604c2",
+    "src/entrypoints/popup/index.html": "72a59e0a92ee84f0ffb04e9a477a0c61e287f6dd8fad068e26a2f4c8a66e0c3c",
+    "src/entrypoints/popup/main.ts": "b207b66ed290a579b7a8144a0a4bf32da4680067a0bb8e4bdee6365b0b4c90f3",
+    "src/entrypoints/popup/style.css": "05ed3509c698bd37a43b8af056f7345dd0dd20eefae637ca776c9aa7d2bcd709"
+  },
+  "contentSha256": {
+    "chrome-mv3": "19784ab90e0e3068bdabcd260de872aad3d83fc2749effb6703f83194a46d49e",
+    "firefox-mv2": "19784ab90e0e3068bdabcd260de872aad3d83fc2749effb6703f83194a46d49e"
+  },
+  "validation": {
+    "targetedTests": {
+      "files": 2,
+      "passed": 7,
+      "command": "npm test -- test/ui/navigation-controls.test.ts test/application/popup-settings.test.ts --maxWorkers=2 --minWorkers=1"
+    },
+    "builds": "npm run build and npm run build:firefox passed production typecheck and emitted-bundle smoke",
+    "fullSuiteRerunAfterDarkApproval": false,
+    "navigationRender": "Actual NavigationControls source with no palette override. Desktop ON/OFF and 390px frames inspected; no overflow.",
+    "popupRender": "Local HTML proposal only; ON/OFF screenshots inspected; no overflow or invalid images.",
+    "liveSiteValidation": false
+  },
+  "artifacts": [
+    "navigation-applied.png",
+    "popup-proposal-dark.png"
+  ]
+}

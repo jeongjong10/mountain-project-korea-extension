@@ -1,0 +1,382 @@
+const CONTRIBUTION_UI_TEXT: Readonly<Record<string, string>> = {
+  'Add To Page': '페이지에 추가',
+  'Improve This Page': '이 페이지 개선',
+  'Add a Route': '루트 추가',
+  'Add a Sub-Area': '하위 지역 추가',
+  'Add a Photo': '사진 추가',
+  'Add a Video': '동영상 추가',
+  'Add an Approach Trail': '접근로 추가',
+  'Add New Route': '새 루트 추가',
+  'Add New Area': '새 지역 추가',
+  'Add New Photo': '새 사진 추가',
+  'Add New Video': '새 동영상 추가',
+  'Add a Guidebook': '가이드북 추가',
+  'Add Guidebook': '가이드북 추가',
+  'Add New Guidebook': '새 가이드북 추가',
+  'Edit This Page': '이 페이지 편집',
+  'Edit Page': '페이지 편집',
+  'View Page Updates': '페이지 변경 내역 보기',
+  'Page Updates (admin only)': '페이지 변경 내역(관리자 전용)',
+  'FAQ about new areas & routes': '새 지역과 루트 FAQ',
+  Title: '이름',
+  'Alpine Climbing': '알파인 클라이밍',
+  'All climbs are "alpine".': '모든 루트가 알파인 클라이밍에 해당합니다.',
+  'The land of marmots, lichen, and a very short climbing season.': '마멋과 지의류가 있으며 등반 가능 기간이 매우 짧은 환경입니다.',
+  'Access Issues': '접근 문제',
+  'This area has legal access issues.': '이 지역에는 법적인 접근 문제가 있습니다.',
+  'This area has': '이 지역에는',
+  'legal access issues.': '법적인 접근 문제가 있습니다.',
+  'Seasonal raptor closure, private property, etc.': '맹금류 보호를 위한 계절 통제, 사유지 등의 문제입니다.',
+  'Access Notes': '접근 안내',
+  'Access Details': '접근 상세 정보',
+  'Show this in all sub-areas & routes under this area.': '이 지역 아래의 모든 하위 지역과 루트에도 표시합니다.',
+  'Show this in': '다음 범위에 표시:',
+  'all sub-areas &': '모든 하위 지역과',
+  'routes under this area.': '이 지역 아래의 모든 루트',
+  'Only show in this area.': '이 지역에만 표시합니다.',
+  'Only show in': '다음 위치에만 표시:',
+  'this area.': '이 지역',
+  'Not Applicable to sub-areas or routes under this one.': '하위 지역이나 루트에는 적용되지 않습니다.',
+  'Not Applicable': '적용하지 않음',
+  'to sub-areas or routes under this one.': '이 지역 아래의 하위 지역과 루트에는 적용하지 않습니다.',
+  Description: '설명',
+  'Getting There': '가는 방법',
+  Location: '위치',
+  Latitude: '위도',
+  'Latitude:': '위도:',
+  Longitude: '경도',
+  'Longitude:': '경도:',
+  'Reset to Original': '원래 위치로 초기화',
+  'If you know the exact location, enter it below, otherwise, you can either use the map below or OnX Backcountry. Decimal format: e.g.: xx.xxxx, -xxx.xxxx':
+    '정확한 위치를 알고 있다면 아래에 입력하세요. 그렇지 않으면 아래 지도나 onX Backcountry를 사용할 수 있습니다. 십진수 형식 예: xx.xxxx, -xxx.xxxx',
+  'Location unknown. You MUST move the map to the exact location of this area. If you don\'t know it, press "Cancel" below.':
+    '위치가 확인되지 않았습니다. 지도를 이 지역의 정확한 위치로 반드시 이동해야 합니다. 위치를 모르면 아래의 "취소"를 누르세요.',
+  'Improve this map': '지도 정보 개선',
+  'Scroll Zoom': '스크롤 확대/축소',
+  'Map Key': '지도 범례',
+  'Save Area': '지역 저장',
+  'Save Route': '루트 저장',
+  'Save Photo': '사진 저장',
+  'Save Trail': '접근로 저장',
+  'Save Changes': '변경사항 저장',
+  Cancel: '취소',
+  Optional: '선택 사항',
+  Name: '이름',
+  'Route Name': '루트명',
+  Grade: '난이도',
+  Rating: '난이도',
+  Type: '유형',
+  Pitches: '피치 수',
+  Length: '길이',
+  Protection: '보호 장비',
+  'First Ascent': '최초 등반자',
+  'First Ascent Date': '최초 등반일',
+  'Add Area': '지역 추가',
+  'Add Route': '루트 추가',
+  'Add Photo': '사진 추가',
+  'Add Approach Trail': '접근로 추가',
+  'Upload Photo': '사진 업로드',
+  'Upload a Photo': '사진 업로드',
+  'Choose Photo': '사진 선택',
+  'Photo File': '사진 파일',
+  'Photo Caption': '사진 설명',
+  Guidelines: '사진 등록 안내',
+  Copyright: '저작권 확인',
+  'Photo Upload': '사진 업로드',
+  'Avoid duplicating existing photos and too many "butt shots".':
+    '이미 등록된 사진이나 뒤에서 촬영한 비슷한 사진을 지나치게 많이 올리지 마세요.',
+  'Photos should be least 600 x 600 pixels.': '사진은 최소 600 x 600픽셀이어야 합니다.',
+  'Copyright violations of any kind, including photos of guidebooks or taken from the web, will result in your account being disabled permanently. If you have explicit written permission from the owner of a photo you did not take, you can post it if you include "with permission from [source]" in the photo caption.':
+    '가이드북을 촬영하거나 웹에서 가져온 사진을 포함한 모든 저작권 침해 행위는 계정 영구 정지로 이어집니다. 직접 촬영하지 않은 사진이라도 소유자의 명시적인 서면 허가를 받았다면 사진 설명에 "[출처]의 허가를 받아 게시함"이라고 밝혀 게시할 수 있습니다.',
+  'Copyright violations of any kind, including photos of guidebooks or taken from the web, will result in your account being disabled permanently. If you have':
+    '가이드북을 촬영하거나 웹에서 가져온 사진을 포함한 모든 저작권 침해 행위는 계정 영구 정지로 이어집니다. 직접 촬영하지 않은 사진이라도 소유자의',
+  'explicit written permission': '명시적인 서면 허가를',
+  'from the owner of a photo you did not take, you can post it if you include "with permission from [source]" in the photo caption.':
+    '받았다면 사진 설명에 "[출처]의 허가를 받아 게시함"이라고 밝혀 게시할 수 있습니다.',
+  'Choose File': '파일 선택',
+  'No file selected': '선택된 파일 없음',
+  'Source Photo ID': '원본 사진 ID',
+  'Create Photo (Copy)': '사진 복사본 생성',
+  'The Source Photo ID is the number in the url of the photo you\'d like to copy (such as 123456 here):':
+    '원본 사진 ID는 복사하려는 사진 URL에 포함된 숫자입니다(다음 예시에서는 123456):',
+  Photo: '사진',
+  Caption: '설명',
+  Photographer: '촬영자',
+  Date: '날짜',
+  'Approach Trail': '접근로',
+  'Approach Trails': '접근로',
+  'Upload Approach Trail': '접근로 업로드',
+  'Upload an Approach Trail': '접근로 업로드',
+  'Trail File': '접근로 파일',
+  'GPX File': 'GPX 파일',
+  'Trail Name': '접근로 이름',
+  Notes: '메모',
+  Upload: '업로드',
+  'Upload Trail': '접근로 업로드',
+  'Select One of the Following': '다음 방법 중 하나를 선택하세요',
+  'Upload a GPX, KMZ or KML File': 'GPX, KMZ 또는 KML 파일 업로드',
+  'Upload File': '파일 업로드',
+  'Draw an Approach Trail on the Map': '지도에서 접근로 그리기',
+  'Open Map': '지도 열기',
+  'Frequenty Asked Questions': '자주 묻는 질문',
+  'What are Approach and Descent Trails?': '접근로와 하산로란 무엇인가요?',
+  'These mark the way from your car, trailhead, or another trail to the base of the climbing area or route. Descents are from the summit of a climb back to the base, or some other logical endpoint. Descents are most useful for alpine routes.':
+    '주차 위치, 등산로 입구 또는 다른 트레일부터 클라이밍 지역이나 루트 시작점까지 가는 길을 표시합니다. 하산로는 등반 정상에서 시작점이나 그 밖의 적절한 도착점으로 돌아가는 길이며, 특히 알파인 루트에서 유용합니다.',
+  'How do I add one?': '어떻게 추가하나요?',
+  "On any area page, look for the 'Add to Page' link near the top right of the page.":
+    '지역 페이지 오른쪽 상단 부근에서 "페이지에 추가" 링크를 찾으세요.',
+  'Can I add more than one for an area?': '한 지역에 여러 개를 추가할 수 있나요?',
+  'Yes. You might do this if there is more than one popular approach to an area, or if you need to create multiple branches to different parts of an area.':
+    '네. 한 지역에 널리 이용되는 접근로가 여러 개 있거나 지역의 여러 구역으로 갈라지는 길을 표시해야 할 때 여러 개를 추가할 수 있습니다.',
+  'Do I need a GPS to create one?': 'GPS가 있어야 만들 수 있나요?',
+  "No, you can use a phone app, such as Motion GPS or even Google Maps to record a route. If you know it very well, you can also just 'draw' it on a map right on Mountain Project.":
+    '아니요. Motion GPS나 Google Maps 같은 휴대전화 앱으로 경로를 기록할 수 있습니다. 길을 잘 알고 있다면 Mountain Project 지도에 직접 그릴 수도 있습니다.',
+  'Can I use this to document a traverse climb or technical hike?': '트래버스 등반이나 전문적인 하이킹 경로를 기록해도 되나요?',
+  "No. While similar, we don't want to make Approach or Descent trails confusing with technical routes.":
+    '안 됩니다. 비슷해 보일 수 있지만 접근로나 하산로가 전문 등반 루트와 혼동되어서는 안 됩니다.',
+  'What about complicated areas, overlaps, or multiple nearby areas?': '복잡하거나 경로가 겹치고 여러 지역이 가까이 있는 경우에는 어떻게 하나요?',
+  'Use a single trail to get to the general area, then create shorter branches to the neighboring areas.':
+    '공통 구간은 하나의 길로 표시하고, 인접한 각 지역으로 가는 짧은 분기 경로를 추가하세요.',
+  'Do these need to follow established trails?': '기존 등산로를 따라야 하나요?',
+  'While these do NOT need to follow established hiking trails, they should follow the most common, most SUSTAINABLE route to the area. Social trails and wandering climbers cause signficant damage.':
+    '반드시 기존 등산로를 따를 필요는 없지만, 해당 지역으로 가는 가장 일반적이고 지속 가능한 경로를 따라야 합니다. 비공식 샛길과 무분별한 이동은 자연환경에 심각한 피해를 줍니다.',
+  Album: '앨범',
+  'Select an Album': '앨범 선택',
+  'Add Photo to Album': '앨범에 사진 추가',
+  'Add Image to Album': '앨범에 이미지 추가',
+  'Add to Album': '앨범에 추가',
+  'Remove from Album': '앨범에서 제거',
+  Guidebook: '가이드북',
+  'Book Title': '도서명',
+  Author: '저자',
+  Authors: '저자',
+  ISBN: 'ISBN',
+  Publisher: '출판사',
+  Edition: '판',
+  'Publication Date': '출판일',
+  URL: 'URL',
+  Website: '웹사이트',
+  'Cover Image': '표지 이미지',
+  'Edit Guidebook': '가이드북 편집',
+  'Save Guidebook': '가이드북 저장',
+  'New Book': '새 가이드북',
+  'Author / Publisher / Year': '저자 / 출판사 / 출판 연도',
+  'Save Book': '가이드북 저장',
+  'New Route': '새 루트',
+  'Creating a New Route': '새 루트 등록',
+  'Step 1: Route Basics « You are here.': '1단계: 루트 기본 정보 « 현재 단계',
+  'Step 2: Sort Route in Area': '2단계: 지역 내 루트 정렬',
+  'Step 3: Add a photo (optional)': '3단계: 사진 추가(선택 사항)',
+  'Step 4: Manage Pitches (optional)': '4단계: 피치 관리(선택 사항)',
+  'Length in Feet': '길이(피트)',
+  'Approximate is fine.': '대략적인 길이를 입력해도 됩니다.',
+  "As it's most commonly done.": '가장 일반적인 등반 방식의 피치 수를 입력하세요.',
+  GPS: 'GPS 좌표',
+  'Lat and Long': '위도와 경도',
+  'Lat and Long for the start of route. Use decimal degrees. Coordinates can be found on onX Backcountry.':
+    '루트 시작점의 위도와 경도를 십진수로 입력하세요. 좌표는 onX Backcountry에서 확인할 수 있습니다.',
+  'Route Type': '루트 유형',
+  'Sport - most people lead with just quickdraws.': '스포츠 - 대부분 퀵드로우만 사용해 선등합니다.',
+  'Trad - most people use some trad gear. There may also be bolts.':
+    '트래드 - 대부분 트래드 장비를 사용하며 볼트가 함께 있을 수도 있습니다.',
+  'Other - boulder problem, TR (but not trad or sport), snow route, etc.':
+    '기타 - 볼더 문제, 트래드나 스포츠가 아닌 톱로프, 설상 루트 등입니다.',
+  'Toprope - you can set up a TR without leading the route.':
+    '톱로프 - 루트를 선등하지 않고도 톱로프를 설치할 수 있습니다.',
+  'This is a new first ascent!': '새롭게 초등한 루트입니다!',
+  'Only choose ratings that apply to this route.': '이 루트에 해당하는 난이도만 선택하세요.',
+  'International comparison chart': '국제 난이도 비교표',
+  Rock: '암벽',
+  Snow: '설상',
+  Safety: '안전 등급',
+  '- Good protection': '- 보호 장비 양호',
+  'PG13 - Slightly runout': 'PG13 - 보호물이 다소 멂',
+  'R - A fall could be dangerous': 'R - 추락 시 위험할 수 있음',
+  'X - A fall could be your last': 'X - 추락 시 치명적일 수 있음',
+  'Usually for mountaineering or long routes.': '주로 산악 등반이나 긴 루트에 적용합니다.',
+  'Your Star Rating': '내 별점',
+  Bold: '굵게',
+  'Bold (Ctrl+B)': '굵게 (Ctrl+B)',
+  Italic: '기울임꼴',
+  'Italic (Ctrl+I)': '기울임꼴 (Ctrl+I)',
+  Strikethrough: '취소선',
+  'Strikethrough (Ctrl+S)': '취소선 (Ctrl+S)',
+  'Insert Link': '링크 삽입',
+  'Insert Link (Ctrl+K)': '링크 삽입 (Ctrl+K)',
+  'Ordered List': '순서 있는 목록',
+  'Unordered List': '순서 없는 목록',
+  Default: '기본',
+  'Lower Alpha': '영문 소문자',
+  'Lower Greek': '그리스 소문자',
+  'Lower Roman': '로마 숫자 소문자',
+  'Upper Alpha': '영문 대문자',
+  'Upper Roman': '로마 숫자 대문자',
+  Circle: '빈 원',
+  Disc: '채운 원',
+  Square: '사각형',
+  "Where's the crux? What's good / bad? Details, opinions, and deep thoughts.":
+    '크럭스는 어디인가요? 장단점과 세부 정보, 의견을 적어 주세요.',
+  "How do you find the start? Obvious landmarks? AVOID relative directions such as 'Left of (route next to it)'! Optional but can be critical!":
+    '루트 시작점을 어떻게 찾나요? 눈에 띄는 지형지물이 있나요? "옆 루트의 왼쪽" 같은 상대적인 방향 설명은 피하세요. 선택 사항이지만 매우 중요할 수 있습니다.',
+  'Edit Area': '지역 편집',
+  'Edit Route': '루트 편집',
+  'Edit Photo': '사진 편집',
+  'Edit Approach Trail': '접근로 편집',
+  'Page Updates': '페이지 변경 내역',
+  'Propose Changes': '변경 제안',
+  'Suggest Changes': '변경 제안',
+  'Reason for Change': '변경 이유',
+  'What is the issue?': '어떤 문제가 있나요?',
+  'Suggested Change': '제안하는 변경사항',
+  'Current Text': '현재 내용',
+  'Proposed Text': '제안 내용',
+  'Submit Suggestion': '제안 제출',
+  'Submit Changes': '변경사항 제출',
+  Submit: '제출',
+  'For a route that starts above another, put them next to each other.':
+    '다른 루트보다 위에서 시작하는 루트는 서로 나란히 배치하세요.',
+  "In general, follow a guidebook's ordering. Careful with R to L versus L to R in a book!":
+    '일반적으로 가이드북의 순서를 따르세요. 책의 오른쪽에서 왼쪽 순서와 왼쪽에서 오른쪽 순서를 주의해서 확인하세요.',
+  'If routes span multiple formations, start with the left-most and keep going across formations.':
+    '루트가 여러 암벽 지형에 걸쳐 있다면 가장 왼쪽부터 시작해 지형을 따라 차례로 배치하세요.',
+  'Sorted Left to Right': '왼쪽에서 오른쪽으로 정렬됨',
+  '« Left-most': '« 가장 왼쪽',
+  '« Right-most': '« 가장 오른쪽',
+  Unsorted: '미정렬',
+  'It may take a few weeks to see the location updated.':
+    '변경된 위치가 반영되기까지 몇 주가 걸릴 수 있습니다.',
+  "If you aren't sure of the exact location, please cancel.":
+    '정확한 위치가 확실하지 않다면 취소해 주세요.',
+  routes: '루트',
+  'Routes - Experimental!': '루트 - 실험 기능',
+  Map: '지도',
+  'Mapbox logo': 'Mapbox 로고',
+  'Zoom in to see details': '세부 정보를 보려면 확대하세요',
+  'To-Dos': '할 일',
+  'Lat:': '위도:',
+  'Lon:': '경도:',
+  'Enter fullscreen': '전체 화면으로 전환',
+  'Find my location': '내 위치 찾기',
+  'Zoom in': '확대',
+  'Zoom out': '축소',
+  'Reset bearing to north': '북쪽을 위로 초기화',
+  Options: '옵션',
+  'Your suggestions will be shared with Mountain Project Admins & Staff for review.':
+    '제안 내용은 검토를 위해 Mountain Project 관리자와 운영진에게 공유됩니다.',
+  'Mountain Project no longer tolerates names that are discriminatory in nature, including racism, sexism, homophobia, and other forms of bigotry.':
+    'Mountain Project는 인종차별, 성차별, 성소수자 혐오를 비롯한 모든 차별적 명칭을 더 이상 허용하지 않습니다.',
+  'Yes, Flag It for Review': '예, 검토를 요청합니다',
+};
+
+const CONTRIBUTION_OVERLAY_UI_TEXT: Readonly<Record<string, string>> = {
+  'Please Confirm': '확인해 주세요',
+  OK: '확인',
+  'Login or Signup': '로그인 또는 가입',
+  'Reset Password': '비밀번호 재설정',
+  'Login with your': '보유한',
+  FREE: '무료',
+  'account and continue exploring.': '계정으로 로그인하고 계속 둘러보세요.',
+  'Your FREE account works with all Adventure Projects sites':
+    '무료 계정 하나로 모든 Adventure Projects 사이트를 이용할 수 있습니다',
+  OR: '또는',
+  'This site is protected by reCAPTCHA and the Google':
+    '이 사이트는 reCAPTCHA로 보호되며 Google의',
+  and: '및',
+  'apply.': '내용이 적용됩니다.',
+  'Taking other people\'s content (text, photos, etc) without permission is a copyright violation and NOT OKAY!':
+    '다른 사람의 콘텐츠(글, 사진 등)를 허가 없이 사용하는 것은 저작권 침해이며 허용되지 않습니다.',
+  'Make it Better!': '이 페이지를 개선해 주세요',
+  'See the details!': '자세히 보기',
+  'Sign in to see the Satellite Maps': '위성 지도를 보려면 로그인하세요',
+  'Please tell us why:': '신고 이유를 알려주세요:',
+  'Flag It': '신고하기',
+  "An Adventure Projects staff member will review this and take an appropriate action, but we generally don't reply.":
+    'Adventure Projects 담당자가 내용을 검토하고 적절히 조치하지만, 일반적으로 별도의 답변은 드리지 않습니다.',
+};
+
+const CONTRIBUTION_PLACEHOLDERS: Readonly<Record<string, string>> = {
+  Optional: '선택 사항',
+  'Email address': '이메일 주소',
+  'Log in with email': '이메일로 로그인',
+  Password: '비밀번호',
+  'Sign up with email': '이메일로 가입',
+  'Sunny? Access fees? Crowded? Secluded? Rock type/quality?':
+    '햇빛, 접근 비용, 혼잡도, 외진 정도, 암질 등을 입력하세요.',
+  'Be specific and clear. How long is the approach?':
+    '구체적이고 명확하게 입력하세요. 접근 시간은 얼마나 걸리나요?',
+  Latitude: '위도',
+  Longitude: '경도',
+  'Route name': '루트명',
+  'Photo caption': '사진 설명',
+  "What's happening, or what are we looking at — even if it's obvious":
+    '무슨 상황인지, 무엇을 보고 있는지 분명해 보여도 설명해 주세요',
+  'Describe your changes': '변경 내용을 설명하세요',
+  'Your Suggested Text': '제안할 내용을 입력하세요',
+  'Better Description? Information missing? Something outdated or incorrect?':
+    '더 나은 설명이 있나요? 누락되었거나 오래되었거나 잘못된 정보를 알려주세요.',
+  'What type of pro? Bolts or fixed gear? Anchors at top?':
+    '어떤 보호 장비가 필요한가요? 볼트나 고정 장비가 있나요? 정상에 앵커가 있나요?',
+};
+
+const CONTRIBUTION_ROUTE_SORT_FRAGMENTS: Readonly<Record<string, string>> = {
+  '« Drag a route': '« 루트를 끌어',
+  'to this column': '이 열에 놓으면',
+  to: '해당 루트를',
+  sort: '정렬',
+  it: '합니다',
+};
+
+export function translateContributionUiText(value: string): string | undefined {
+  const text = value.replace(/\s+/g, ' ').trim();
+  const exact = CONTRIBUTION_UI_TEXT[text];
+  if (exact) return exact;
+
+  const patterns: Array<[RegExp, (...groups: string[]) => string]> = [
+    [/^New Area in (.+)$/, (area) => `새 지역 추가 · ${area}`],
+    [/^New Route in (.+)$/, (area) => `새 루트 추가 · ${area}`],
+    [/^Add (?:a )?Photo to (.+)$/, (name) => `사진 추가 · ${name}`],
+    [/^Add Photos to (.+)$/, (name) => `사진 추가 · ${name}`],
+    [/^Adding photo to (.+)$/, (name) => `사진 추가 · ${name}`],
+    [/^Add a Photo \(Copy\) to (.+)$/, (name) => `사진 복사본 추가 · ${name}`],
+    [/^Add (?:an )?Approach Trail to (.+)$/, (name) => `접근로 추가 · ${name}`],
+    [/^Upload (?:an )?Approach Trail to (.+)$/, (name) => `접근로 업로드 · ${name}`],
+    [/^Add (?:a )?Guidebook to (.+)$/, (name) => `가이드북 추가 · ${name}`],
+    [/^Edit (.+)$/, (name) => `${name} 편집`],
+    [/^Sort Routes in (.+)$/, (name) => `${name} 루트 정렬`],
+    [/^Change Location of (.+)$/, (name) => `${name} 위치 변경`],
+    [/^(.+): Suggest Changes$/, (name) => `${name}: 변경 제안`],
+    [/^Suggest Changes to (.+)$/, (name) => `${name} 변경 제안`],
+    [/^Report Discriminatory Name: (.+)$/, (name) => `차별적 명칭 신고: ${name}`],
+    [/^Is "(.+)" discriminatory\?$/, (name) => `"${name}"은(는) 차별적인 명칭인가요?`],
+    [/^(.+?), thanks for improving data for all climbers! Please focus on factual changes based on your experience with (.+)\.$/,
+      (user, name) => `${user}님, 모든 등반가를 위한 정보 개선에 참여해 주셔서 감사합니다. ${name}에서 직접 경험한 사실에 근거한 변경에 집중해 주세요.`],
+    [/^Move the crosshair over (.+)\. If it's a large area, mark the middle of it\.$/,
+      (name) => `십자선을 ${name} 위로 옮기세요. 넓은 지역이라면 중앙을 표시하세요.`],
+    [/^([\d,]+) characters$/, (count) => `${count}자 남음`],
+    [/^I, (.+), certify that I took this photo myself\.$/,
+      (identity) => `본인 ${identity}은(는) 이 사진을 직접 촬영했음을 확인합니다.`],
+    [/^Pro tip: "(\[\[\d+\]\], [^"]+)" will auto-link to user with ID (\d+)\.$/,
+      (example, id) => `팁: "${example}" 형식으로 입력하면 ID ${id} 사용자에게 자동으로 연결됩니다.`],
+    [/^Characters\s*:\s*(\d+)\/(\d+)$/,
+      (count, max) => `글자 수: ${count}/${max}`],
+  ];
+  for (const [pattern, format] of patterns) {
+    const match = text.match(pattern);
+    if (match) return format(...match.slice(1));
+  }
+  return undefined;
+}
+
+/** Translates fixed text fragments that only occur in contribution/login overlays. */
+export function translateContributionOverlayUiText(value: string): string | undefined {
+  const text = value.replace(/\s+/g, ' ').trim();
+  return CONTRIBUTION_OVERLAY_UI_TEXT[text];
+}
+
+export function translateContributionPlaceholder(value: string): string | undefined {
+  return CONTRIBUTION_PLACEHOLDERS[value.trim()];
+}
+
+export function translateContributionRouteSortFragment(value: string): string | undefined {
+  return CONTRIBUTION_ROUTE_SORT_FRAGMENTS[value.replace(/\s+/g, ' ').trim()];
+}

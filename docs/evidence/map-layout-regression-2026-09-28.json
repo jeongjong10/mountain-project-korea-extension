@@ -1,0 +1,296 @@
+{
+  "started": "2026-09-28T05:39:05.561Z",
+  "run": "/tmp/mpkr-map-layout-regression-JUOZMr",
+  "sourceBeforeSha256": "7d402ffdc6207fb3a81cc6f4ea5e2a1048a3f605c17bf698dd7108592eb255f5",
+  "sourceAfterSha256": "609f10fe0875d79d2e7a7da630dea51835a9ea7c23953e9c2c064184d2c9c96e",
+  "cases": [
+    {
+      "width": 1440,
+      "mode": "before",
+      "mounted": true,
+      "initial": {
+        "frameHeight": 760,
+        "scrollHeight": 760,
+        "clientHeight": 760,
+        "scrollY": 0,
+        "spacers": [],
+        "logo": {
+          "top": 659,
+          "bottom": 682
+        },
+        "notice": {
+          "top": 560,
+          "bottom": 760,
+          "display": "block",
+          "visibility": "visible"
+        },
+        "logoTopElement": "",
+        "noticeHtml": "<div id=\"access-gate\"><strong>Join the Community! It's FREE</strong><p><a href=\"/auth/login\">Login to close this notice.</a></p></div>",
+        "attributionHtml": "<div id=\"attribution-popup\" class=\"display-none\">Â© Mapbox Â· Â© OpenStreetMap</div>",
+        "attributionDisplay": "none"
+      },
+      "scrolled": {
+        "frameHeight": 760,
+        "scrollHeight": 760,
+        "clientHeight": 760,
+        "scrollY": 0,
+        "spacers": [],
+        "logo": {
+          "top": 659,
+          "bottom": 682
+        },
+        "notice": {
+          "top": 560,
+          "bottom": 760,
+          "display": "block",
+          "visibility": "visible"
+        },
+        "logoTopElement": "",
+        "noticeHtml": "<div id=\"access-gate\"><strong>Join the Community! It's FREE</strong><p><a href=\"/auth/login\">Login to close this notice.</a></p></div>",
+        "attributionHtml": "<div id=\"attribution-popup\" class=\"display-none\">Â© Mapbox Â· Â© OpenStreetMap</div>",
+        "attributionDisplay": "none"
+      },
+      "screenshot": "/tmp/mpkr-map-layout-regression-JUOZMr/before-1440.png",
+      "destroyed": {
+        "spacers": 0,
+        "styles": 0,
+        "noticeHtml": "<div id=\"access-gate\"><strong>Join the Community! It's FREE</strong><p><a href=\"/auth/login\">Login to close this notice.</a></p></div>",
+        "attributionHtml": "<div id=\"attribution-popup\" class=\"display-none\">Â© Mapbox Â· Â© OpenStreetMap</div>"
+      },
+      "pass": true
+    },
+    {
+      "width": 1440,
+      "mode": "after",
+      "mounted": true,
+      "initial": {
+        "frameHeight": 760,
+        "scrollHeight": 904,
+        "clientHeight": 760,
+        "scrollY": 0,
+        "spacers": [
+          "216px"
+        ],
+        "logo": {
+          "top": 659,
+          "bottom": 682
+        },
+        "notice": {
+          "top": 560,
+          "bottom": 760,
+          "display": "block",
+          "visibility": "visible"
+        },
+        "logoTopElement": "",
+        "noticeHtml": "<div id=\"access-gate\"><strong>Join the Community! It's FREE</strong><p><a href=\"/auth/login\">Login to close this notice.</a></p></div>",
+        "attributionHtml": "<div id=\"attribution-popup\" class=\"display-none\">Â© Mapbox Â· Â© OpenStreetMap</div>",
+        "attributionDisplay": "none"
+      },
+      "scrolled": {
+        "frameHeight": 760,
+        "scrollHeight": 904,
+        "clientHeight": 760,
+        "scrollY": 144,
+        "spacers": [
+          "216px"
+        ],
+        "logo": {
+          "top": 515,
+          "bottom": 538
+        },
+        "notice": {
+          "top": 560,
+          "bottom": 760,
+          "display": "block",
+          "visibility": "visible"
+        },
+        "logoTopElement": "mapboxgl-ctrl-logo",
+        "noticeHtml": "<div id=\"access-gate\"><strong>Join the Community! It's FREE</strong><p><a href=\"/auth/login\">Login to close this notice.</a></p></div>",
+        "attributionHtml": "<div id=\"attribution-popup\" class=\"display-none\">Â© Mapbox Â· Â© OpenStreetMap</div>",
+        "attributionDisplay": "none"
+      },
+      "screenshot": "/tmp/mpkr-map-layout-regression-JUOZMr/after-1440.png",
+      "destroyed": {
+        "spacers": 0,
+        "styles": 0,
+        "noticeHtml": "<div id=\"access-gate\"><strong>Join the Community! It's FREE</strong><p><a href=\"/auth/login\">Login to close this notice.</a></p></div>",
+        "attributionHtml": "<div id=\"attribution-popup\" class=\"display-none\">Â© Mapbox Â· Â© OpenStreetMap</div>"
+      },
+      "pass": true
+    },
+    {
+      "width": 390,
+      "mode": "before",
+      "mounted": true,
+      "initial": {
+        "frameHeight": 640,
+        "scrollHeight": 640,
+        "clientHeight": 640,
+        "scrollY": 0,
+        "spacers": [],
+        "logo": {
+          "top": 579,
+          "bottom": 602
+        },
+        "notice": {
+          "top": 440,
+          "bottom": 640,
+          "display": "block",
+          "visibility": "visible"
+        },
+        "logoTopElement": "",
+        "noticeHtml": "<div id=\"access-gate\"><strong>Join the Community! It's FREE</strong><p><a href=\"/auth/login\">Login to close this notice.</a></p></div>",
+        "attributionHtml": "<div id=\"attribution-popup\" class=\"display-none\">Â© Mapbox Â· Â© OpenStreetMap</div>",
+        "attributionDisplay": "none"
+      },
+      "scrolled": {
+        "frameHeight": 640,
+        "scrollHeight": 640,
+        "clientHeight": 640,
+        "scrollY": 0,
+        "spacers": [],
+        "logo": {
+          "top": 579,
+          "bottom": 602
+        },
+        "notice": {
+          "top": 440,
+          "bottom": 640,
+          "display": "block",
+          "visibility": "visible"
+        },
+        "logoTopElement": "",
+        "noticeHtml": "<div id=\"access-gate\"><strong>Join the Community! It's FREE</strong><p><a href=\"/auth/login\">Login to close this notice.</a></p></div>",
+        "attributionHtml": "<div id=\"attribution-popup\" class=\"display-none\">Â© Mapbox Â· Â© OpenStreetMap</div>",
+        "attributionDisplay": "none"
+      },
+      "screenshot": "/tmp/mpkr-map-layout-regression-JUOZMr/before-390.png",
+      "destroyed": {
+        "spacers": 0,
+        "styles": 0,
+        "noticeHtml": "<div id=\"access-gate\"><strong>Join the Community! It's FREE</strong><p><a href=\"/auth/login\">Login to close this notice.</a></p></div>",
+        "attributionHtml": "<div id=\"attribution-popup\" class=\"display-none\">Â© Mapbox Â· Â© OpenStreetMap</div>"
+      },
+      "pass": true
+    },
+    {
+      "width": 390,
+      "mode": "after",
+      "mounted": true,
+      "initial": {
+        "frameHeight": 640,
+        "scrollHeight": 824,
+        "clientHeight": 640,
+        "scrollY": 0,
+        "spacers": [
+          "216px"
+        ],
+        "logo": {
+          "top": 579,
+          "bottom": 602
+        },
+        "notice": {
+          "top": 440,
+          "bottom": 640,
+          "display": "block",
+          "visibility": "visible"
+        },
+        "logoTopElement": "",
+        "noticeHtml": "<div id=\"access-gate\"><strong>Join the Community! It's FREE</strong><p><a href=\"/auth/login\">Login to close this notice.</a></p></div>",
+        "attributionHtml": "<div id=\"attribution-popup\" class=\"display-none\">Â© Mapbox Â· Â© OpenStreetMap</div>",
+        "attributionDisplay": "none"
+      },
+      "scrolled": {
+        "frameHeight": 640,
+        "scrollHeight": 824,
+        "clientHeight": 640,
+        "scrollY": 184,
+        "spacers": [
+          "216px"
+        ],
+        "logo": {
+          "top": 395,
+          "bottom": 418
+        },
+        "notice": {
+          "top": 440,
+          "bottom": 640,
+          "display": "block",
+          "visibility": "visible"
+        },
+        "logoTopElement": "mapboxgl-ctrl-logo",
+        "noticeHtml": "<div id=\"access-gate\"><strong>Join the Community! It's FREE</strong><p><a href=\"/auth/login\">Login to close this notice.</a></p></div>",
+        "attributionHtml": "<div id=\"attribution-popup\" class=\"display-none\">Â© Mapbox Â· Â© OpenStreetMap</div>",
+        "attributionDisplay": "none"
+      },
+      "screenshot": "/tmp/mpkr-map-layout-regression-JUOZMr/after-390.png",
+      "destroyed": {
+        "spacers": 0,
+        "styles": 0,
+        "noticeHtml": "<div id=\"access-gate\"><strong>Join the Community! It's FREE</strong><p><a href=\"/auth/login\">Login to close this notice.</a></p></div>",
+        "attributionHtml": "<div id=\"attribution-popup\" class=\"display-none\">Â© Mapbox Â· Â© OpenStreetMap</div>"
+      },
+      "pass": true
+    }
+  ],
+  "requests": [
+    {
+      "url": "https://www.mountainproject.com/area/106225629/south-korea",
+      "synthetic": true
+    },
+    {
+      "url": "https://www.mountainproject.com/favicon.ico",
+      "synthetic": false
+    },
+    {
+      "url": "https://www.mountainproject.com/map/106225629/south-korea",
+      "synthetic": true
+    },
+    {
+      "url": "https://www.mountainproject.com/area/106225629/south-korea",
+      "synthetic": true
+    },
+    {
+      "url": "https://www.mountainproject.com/favicon.ico",
+      "synthetic": false
+    },
+    {
+      "url": "https://www.mountainproject.com/map/106225629/south-korea",
+      "synthetic": true
+    },
+    {
+      "url": "https://www.mountainproject.com/area/106225629/south-korea",
+      "synthetic": true
+    },
+    {
+      "url": "https://www.mountainproject.com/favicon.ico",
+      "synthetic": false
+    },
+    {
+      "url": "https://www.mountainproject.com/map/106225629/south-korea",
+      "synthetic": true
+    },
+    {
+      "url": "https://www.mountainproject.com/area/106225629/south-korea",
+      "synthetic": true
+    },
+    {
+      "url": "https://www.mountainproject.com/favicon.ico",
+      "synthetic": false
+    },
+    {
+      "url": "https://www.mountainproject.com/map/106225629/south-korea",
+      "synthetic": true
+    }
+  ],
+  "exceptions": [],
+  "browser": {
+    "protocolVersion": "1.3",
+    "product": "Chrome/149.0.7827.55",
+    "revision": "@3188f8a607ae7e067593be8aab7f02d2451fec07",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/149.0.0.0 Safari/537.36",
+    "jsVersion": "14.9.207.21"
+  },
+  "sourceUnchanged": true,
+  "finished": "2026-09-28T05:39:10.944Z"
+}

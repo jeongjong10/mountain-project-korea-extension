@@ -1,0 +1,3861 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>@font-face{font-family:ReviewKorean;src:url('file:///mnt/c/Windows/Fonts/malgun.ttf')}*{box-sizing:border-box}body{margin:0;padding:28px 32px;background:#f7f8f8;color:#202124;font:14px/1.65 ReviewKorean,system-ui}h1{font-size:23px;margin:0 0 10px}.intro,.note{font-size:13px;color:#59635d}.examples{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px}.label{font-size:12px;color:#59635d;margin-bottom:9px}iframe{display:block;width:100%;height:800px;background:white;border:1px solid #c8ceca;border-radius:7px}.note{margin-top:22px}@media(max-width:700px){body{padding:20px}.examples{grid-template-columns:1fr}}</style><h1>지역·루트 페이지 · 실제 소스 적용 확인</h1><p class="intro">제목·본문 간격, 긴 이름의 줄바꿈, 루트 목록의 행 간격을 정리했습니다.<br>접기·펼치기와 원문 전환은 실제 제품 코드를 사용합니다.</p><main class="examples"><section><div class="label">Area · 지역 페이지</div><iframe title="지역 예시" srcdoc="&lt;!doctype html>&lt;html lang=&quot;ko&quot;>&lt;meta charset=&quot;utf-8&quot;>&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;>&lt;base href=&quot;https://www.mountainproject.com/&quot;>&lt;style>@font-face{font-family:ReviewKorean;src:url('file:///mnt/c/Windows/Fonts/malgun.ttf')}*{box-sizing:border-box}body{margin:0;padding:22px;background:white;color:#202124;font:16px/1.5 ReviewKorean,system-ui}h1{font-size:24px;line-height:1.2;margin:8px 0 10px}h2{font-size:16px;margin:24px 0 8px}p{margin:0 0 16px}.crumb,.meta{font-size:12px;color:#59635d}.mt-2{margin-top:32px!important}.mb-1{margin-bottom:16px!important}table{border-collapse:collapse;width:100%}td{font-size:14px;padding:4px}td:last-child{width:1%;text-align:right}.text-truncate{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}a{color:#0060a9;text-decoration:none}.screen-reader-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}.mpkr-translation-actions button{font-family:ReviewKorean,system-ui!important}&lt;/style>&lt;main id=&quot;climb-area-page&quot;>&lt;div class=&quot;crumb&quot;>대한민국 › 서울·경기도&lt;/div>&lt;h1>북한산 · 인수봉&lt;/h1>&lt;p class=&quot;meta&quot;>지역 정보 · 등반 루트&lt;/p>&lt;section>&lt;h2 class=&quot;mt-2&quot;>설명&lt;/h2>&lt;div class=&quot;fr-view&quot;>&lt;p data-original data-translation=&quot;지역 소개와 접근 정보가 긴 한글 문장으로 이어져도 편하게 읽을 수 있도록 줄 간격과 문단 간격을 맞췄습니다.&quot;>Original example paragraph kept in its native position.&lt;/p>&lt;/div>&lt;/section>&lt;h2>클래식 루트&lt;/h2>&lt;table class=&quot;route-table&quot;>&lt;tr class=&quot;screen-reader-only&quot;>&lt;th>루트 이름&lt;/th>&lt;th>난이도&lt;/th>&lt;/tr>&lt;tr class=&quot;route-row&quot;>&lt;td>&lt;a href=&quot;/route/1/example-a&quot;>예시 루트 A&lt;/a>&lt;/td>&lt;td>&lt;span class=&quot;rateYDS&quot;>5.8&lt;/span>&lt;/td>&lt;/tr>&lt;tr class=&quot;route-row&quot;>&lt;td>&lt;a href=&quot;/route/2/example-b&quot;>&lt;span class=&quot;text-truncate&quot;>이름이 긴 예시 루트도 두 줄로 자연스럽게 표시&lt;/span>&lt;/a>&lt;/td>&lt;td>&lt;span class=&quot;rateYDS&quot;>5.10a&lt;/span>&lt;/td>&lt;/tr>&lt;tr class=&quot;route-row&quot;>&lt;td>&lt;a href=&quot;/route/3/example-c&quot;>ExampleWithAnExtremelyLongUnbrokenRouteNameForLayoutReview&lt;/a>&lt;/td>&lt;td>&lt;span class=&quot;rateYDS&quot;>5.11b&lt;/span>&lt;/td>&lt;/tr>&lt;/table>&lt;/main>&lt;script>(() => {
+  // src/sites/mountain-project/contract/selectors/area.ts
+  var AREA_SELECTORS = {
+    pageId: &quot;climb-area-page&quot;,
+    page: &quot;#climb-area-page&quot;,
+    pageTitle: &quot;h1&quot;,
+    semanticLandmarks: [
+      &quot;.left-nav .mp-sidebar&quot;,
+      &quot;#photo-carousel&quot;,
+      &quot;.description-details&quot;,
+      &quot;.fr-view&quot;,
+      &quot;#routeFinderForm&quot;,
+      &quot;table.route-table&quot;
+    ].join(&quot;, &quot;),
+    layoutRowRelative: &quot;.row.pt-main-content&quot;,
+    layoutRow: &quot;#climb-area-page .row.pt-main-content&quot;,
+    sidebarExact: &quot;#climb-area-page .row.pt-main-content > .col-md-3.left-nav&quot;,
+    sidebarFallback: &quot;#climb-area-page .left-nav&quot;,
+    mapLinksExact: &quot;#climb-area-page .row.pt-main-content > .col-md-3.left-nav .mp-sidebar a[href]&quot;,
+    mapLinksFallback: '#climb-area-page .left-nav a[href*=&quot;/map/&quot;]',
+    mainContentExact: &quot;#climb-area-page .row.pt-main-content > .col-md-9.main-content&quot;,
+    mainContentFallback: &quot;#climb-area-page .main-content&quot;,
+    photoCarouselRelative: &quot;#photo-carousel&quot;,
+    photoCarousel: &quot;#climb-area-page #photo-carousel&quot;,
+    photoContainerClasses: [&quot;float-xs-right&quot;, &quot;ml-1&quot;],
+    sectionHeadings: &quot;#climb-area-page h2&quot;,
+    routeTables: &quot;table.route-table&quot;,
+    screenReaderHeader: &quot;tr.screen-reader-only&quot;,
+    routeRowClass: &quot;route-row&quot;,
+    textSectionClass: &quot;text-section&quot;,
+    legacyTextSectionGroup: &quot;.list-group.mt-2&quot;,
+    legacyTextSectionHeading: &quot;.list-group-item-heading&quot;,
+    legacyTextSectionBody: &quot;.list-group-item-text&quot;,
+    legacyTextSectionExpander: &quot;.expander&quot;,
+    responsiveTableClass: &quot;table-responsive&quot;,
+    sidebarRow: &quot;.lef-nav-row&quot;,
+    warmText: &quot;.text-warm&quot;,
+    constrainedNarrativeWrapper: [
+      &quot;.max-height&quot;,
+      &quot;.max-height-xs-600&quot;,
+      &quot;.max-height-md-600&quot;,
+      &quot;.max-height-processed&quot;
+    ].join(&quot;&quot;),
+    constrainedNarrativeClasses: [
+      &quot;max-height&quot;,
+      &quot;max-height-xs-600&quot;,
+      &quot;max-height-md-600&quot;,
+      &quot;max-height-processed&quot;
+    ]
+  };
+  var AREA_PAGE_CONTRACT = {
+    component: &quot;area-page&quot;,
+    key: &quot;page-root&quot;,
+    required: true,
+    candidates: [
+      { key: &quot;area-page-id&quot;, selector: AREA_SELECTORS.page }
+    ]
+  };
+  var AREA_SIDEBAR_CONTRACT = {
+    component: &quot;south-korea-map&quot;,
+    key: &quot;area-sidebar&quot;,
+    required: true,
+    candidates: [
+      { key: &quot;bootstrap-v4&quot;, selector: AREA_SELECTORS.sidebarExact },
+      { key: &quot;semantic-left-nav&quot;, selector: AREA_SELECTORS.sidebarFallback }
+    ]
+  };
+  var AREA_MAIN_CONTENT_CONTRACT = {
+    component: &quot;south-korea-map&quot;,
+    key: &quot;main-content&quot;,
+    required: true,
+    candidates: [
+      { key: &quot;bootstrap-v4&quot;, selector: AREA_SELECTORS.mainContentExact },
+      { key: &quot;semantic-main-content&quot;, selector: AREA_SELECTORS.mainContentFallback }
+    ]
+  };
+  var AREA_MAP_LINK_CONTRACT = {
+    component: &quot;south-korea-map&quot;,
+    key: &quot;map-link&quot;,
+    required: false,
+    candidates: [
+      { key: &quot;bootstrap-v4-preview&quot;, selector: AREA_SELECTORS.mapLinksExact },
+      { key: &quot;semantic-map-link&quot;, selector: AREA_SELECTORS.mapLinksFallback }
+    ]
+  };
+
+  // src/sites/mountain-project/contract/selectors/route.ts
+  var ROUTE_SELECTORS = {
+    pageId: &quot;route-page&quot;,
+    page: &quot;#route-page&quot;,
+    youAndRoute: &quot;#you-and-route&quot;,
+    overviewExact: &quot;.col-lg-7.col-md-6&quot;,
+    rowExact: &quot;.row&quot;,
+    mainContent: &quot;.main-content&quot;,
+    summaryExact: &quot;.small.mb-1&quot;,
+    auxiliaryExact: &quot;.col-lg-5.col-md-6&quot;,
+    onxLandmark: &quot;.onx-explore&quot;,
+    carouselLandmark: &quot;#photo-carousel&quot;,
+    hiddenDesktop: &quot;.hidden-sm-down&quot;,
+    statsLinks: 'a[href*=&quot;/route/stats/&quot;]',
+    sunShade: &quot;#sun-shade&quot;,
+    classicVote: &quot;.is_classic_vote&quot;,
+    classicVoteUserData: [
+      &quot;.is_classic_vote .route-name&quot;,
+      &quot;.is_classic_vote .user-content&quot;,
+      &quot;.is_classic_vote [data-route-name]&quot;,
+      '.is_classic_vote a[href*=&quot;/route/&quot;]',
+      '.is_classic_vote a[href*=&quot;/area/&quot;]',
+      '.is_classic_vote a[href*=&quot;/user/&quot;]'
+    ].join(&quot;, &quot;)
+  };
+  var ROUTE_PAGE_CONTRACT = {
+    component: &quot;route-stats-embed&quot;,
+    key: &quot;route-page&quot;,
+    required: true,
+    candidates: [{ key: &quot;route-page-id&quot;, selector: ROUTE_SELECTORS.page }]
+  };
+  var ROUTE_YOU_AND_ROUTE_CONTRACT = {
+    component: &quot;route-stats-embed&quot;,
+    key: &quot;you-and-route&quot;,
+    required: true,
+    candidates: [{ key: &quot;you-and-route-id&quot;, selector: ROUTE_SELECTORS.youAndRoute }]
+  };
+  var ROUTE_AUXILIARY_CONTRACT = {
+    component: &quot;route-stats-embed&quot;,
+    key: &quot;auxiliary-regions&quot;,
+    required: true,
+    candidates: [
+      { key: &quot;bootstrap-v4-columns&quot;, selector: ROUTE_SELECTORS.auxiliaryExact },
+      { key: &quot;semantic-landmarks&quot;, selector: `${ROUTE_SELECTORS.onxLandmark}, ${ROUTE_SELECTORS.carouselLandmark}` }
+    ]
+  };
+
+  // src/ui/design-tokens.ts
+  var NAV = {
+    surface: &quot;#202124&quot;,
+    surfaceHover: &quot;#2c3036&quot;,
+    border: &quot;#5f6368&quot;,
+    divider: &quot;#5f6368&quot;,
+    text: &quot;#fff&quot;,
+    link: &quot;#91c3e8&quot;,
+    muted: &quot;#b8c6d4&quot;,
+    focus: &quot;#91c3e8&quot;,
+    switchOff: &quot;#5f6368&quot;,
+    switchBorder: &quot;#7a8791&quot;,
+    switchThumb: &quot;#fff&quot;,
+    switchOn: &quot;#5ba2d8&quot;,
+    switchOnThumb: &quot;#fff&quot;,
+    height: &quot;38px&quot;,
+    fontSize: &quot;12px&quot;
+  };
+  var UI = {
+    nav: NAV,
+    color: {
+      text: &quot;#202124&quot;,
+      muted: &quot;#59635d&quot;,
+      link: &quot;#0060a9&quot;,
+      linkHover: &quot;#004b84&quot;,
+      linkActive: &quot;#003e70&quot;,
+      surface: &quot;#fff&quot;,
+      surfaceSubtle: &quot;#f7f8f8&quot;,
+      surfaceHover: &quot;#edf5fa&quot;,
+      border: &quot;#c8ceca&quot;,
+      borderHover: &quot;#9eabb3&quot;,
+      warning: &quot;#6b5b35&quot;,
+      accentSurface: &quot;#e8f0eb&quot;,
+      accentText: &quot;#294c39&quot;,
+      buttonSurface: &quot;#f1f5f9&quot;,
+      buttonHover: &quot;#e4edf5&quot;,
+      buttonActive: &quot;#d8e5f0&quot;,
+      buttonBorder: &quot;#b8c6d4&quot;,
+      buttonBorderHover: &quot;#7f9bb5&quot;,
+      headingHover: &quot;rgba(0, 96, 169, 0.12)&quot;,
+      headingFocus: &quot;rgba(0, 96, 169, 0.14)&quot;
+    },
+    font: {
+      family: 'system-ui, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif',
+      caption: &quot;0.75rem&quot;,
+      small: &quot;0.85rem&quot;,
+      hint: &quot;0.9rem&quot;,
+      body: &quot;1rem&quot;,
+      controlWeight: &quot;600&quot;,
+      bodyLineHeight: &quot;1.65&quot;,
+      uiLineHeight: &quot;1.5&quot;
+    },
+    space: {
+      xs: &quot;0.25rem&quot;,
+      sm: &quot;0.5rem&quot;,
+      md: &quot;0.75rem&quot;,
+      lg: &quot;1rem&quot;,
+      xl: &quot;1.5rem&quot;
+    },
+    radius: {
+      small: &quot;2px&quot;,
+      control: &quot;4px&quot;,
+      nav: &quot;7px&quot;
+    },
+    motion: { fast: &quot;150ms ease&quot; }
+  };
+  var UI_TOKEN_CSS = `:root {${Object.entries(UI).flatMap(
+    ([group, values]) => Object.entries(values).map(
+      ([name, value]) => `--mpkr-${group}-${name.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)}:${value};`
+    )
+  ).join(&quot;&quot;)}}`;
+
+  // src/ui/area-route-page-finish.ts
+  var PAGE = `:is(${AREA_SELECTORS.page}, ${ROUTE_SELECTORS.page})`;
+  var STYLE_TEXT = `
+${PAGE} h1 {
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+${PAGE} .mpkr-info-heading {
+  /* Native mt-2/mb-1 utilities use !important. Keep these overrides scoped. */
+  margin-top: ${UI.space.xl} !important;
+  margin-bottom: ${UI.space.md} !important;
+  padding-bottom: 0.625rem;
+  border-bottom: 1px solid ${UI.color.border};
+  line-height: ${UI.font.uiLineHeight};
+  overflow-wrap: anywhere;
+}
+
+${PAGE} .mpkr-area-section-hint {
+  font-size: ${UI.font.caption};
+}
+
+${PAGE} .mpkr-area-section-heading {
+  padding-right: 8rem;
+}
+
+${PAGE} .mpkr-area-section-body .fr-view {
+  line-height: ${UI.font.bodyLineHeight};
+  overflow-wrap: anywhere;
+}
+
+${PAGE} .mpkr-area-section-body .fr-view p {
+  margin-top: 0;
+  margin-bottom: ${UI.space.md};
+}
+
+${PAGE} .mpkr-area-section-body .mpkr-translation-actions {
+  margin-top: ${UI.space.md};
+  margin-bottom: 0;
+}
+
+${PAGE} tr.mpkr-route-list-row {
+  height: 2.75rem;
+}
+
+${PAGE} tr.mpkr-route-list-row > td {
+  vertical-align: middle;
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+  border-bottom: 1px solid ${UI.color.border};
+}
+
+${PAGE} .mpkr-route-list-primary,
+${PAGE} .mpkr-route-list-primary .text-truncate {
+  overflow-wrap: anywhere;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+${PAGE} .mpkr-route-list-primary-expanded {
+  /* The table row owns the height so short names align with adjacent grades. */
+  min-height: 0;
+}
+
+/* Grade systems keep their native columns and visibility toggles. */
+${PAGE} .mpkr-route-list-row :is(.rateYDS, .rateFrench, .rateBritish) {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 575px) {
+  ${PAGE} .mpkr-area-section-heading {
+    padding-right: 1.6rem;
+  }
+}
+`;
+  var AreaRoutePageFinish = class {
+    style;
+    mount(ownerDocument = document) {
+      if (this.style?.isConnected || !ownerDocument.querySelector(PAGE)) return;
+      this.style = ownerDocument.createElement(&quot;style&quot;);
+      this.style.setAttribute(&quot;data-mpkr-area-route-finish&quot;, &quot;true&quot;);
+      this.style.textContent = STYLE_TEXT;
+      ownerDocument.head.append(this.style);
+    }
+    destroy() {
+      this.style?.remove();
+      this.style = void 0;
+    }
+  };
+
+  // src/sites/mountain-project/contract/text/sections.ts
+  var SECTION_TITLE_TRANSLATIONS = {
+    Description: &quot;\uC124\uBA85&quot;,
+    &quot;\uC124\uBA85&quot;: &quot;\uC124\uBA85&quot;,
+    &quot;Getting There&quot;: &quot;\uAC00\uB294 \uBC29\uBC95&quot;,
+    &quot;\uAC00\uB294 \uBC29\uBC95&quot;: &quot;\uAC00\uB294 \uBC29\uBC95&quot;,
+    Location: &quot;\uC704\uCE58&quot;,
+    &quot;\uC704\uCE58&quot;: &quot;\uC704\uCE58&quot;,
+    Protection: &quot;\uBCF4\uD638 \uC7A5\uBE44&quot;,
+    &quot;\uBCF4\uD638 \uC7A5\uBE44&quot;: &quot;\uBCF4\uD638 \uC7A5\uBE44&quot;,
+    Descent: &quot;\uD558\uAC15&quot;,
+    &quot;\uD558\uAC15&quot;: &quot;\uD558\uAC15&quot;,
+    &quot;Travel Information&quot;: &quot;\uC5EC\uD589 \uC815\uBCF4&quot;,
+    &quot;\uC5EC\uD589 \uC815\uBCF4&quot;: &quot;\uC5EC\uD589 \uC815\uBCF4&quot;,
+    &quot;Helpful Hints&quot;: &quot;\uC720\uC6A9\uD55C \uD301&quot;,
+    &quot;\uC720\uC6A9\uD55C \uD301&quot;: &quot;\uC720\uC6A9\uD55C \uD301&quot;,
+    OVERVIEW: &quot;\uAC1C\uC694&quot;,
+    &quot;\uAC1C\uC694&quot;: &quot;\uAC1C\uC694&quot;,
+    &quot;Official Park Info&quot;: &quot;\uACF5\uC6D0 \uACF5\uC2DD \uC815\uBCF4&quot;,
+    &quot;\uACF5\uC6D0 \uACF5\uC2DD \uC815\uBCF4&quot;: &quot;\uACF5\uC6D0 \uACF5\uC2DD \uC815\uBCF4&quot;,
+    Weather: &quot;\uB0A0\uC528&quot;,
+    &quot;\uB0A0\uC528&quot;: &quot;\uB0A0\uC528&quot;,
+    Access: &quot;\uC811\uADFC \uC815\uBCF4&quot;,
+    &quot;\uC811\uADFC \uC815\uBCF4&quot;: &quot;\uC811\uADFC \uC815\uBCF4&quot;,
+    &quot;The Cliffs&quot;: &quot;\uC554\uBCBD \uAD6C\uC5ED&quot;,
+    &quot;\uC554\uBCBD \uAD6C\uC5ED&quot;: &quot;\uC554\uBCBD \uAD6C\uC5ED&quot;,
+    &quot;Climbing Gear&quot;: &quot;\uB4F1\uBC18 \uC7A5\uBE44&quot;,
+    &quot;\uB4F1\uBC18 \uC7A5\uBE44&quot;: &quot;\uB4F1\uBC18 \uC7A5\uBE44&quot;,
+    &quot;Fixed Anchors in the Gunks&quot;: &quot;The Gunks\uC758 \uACE0\uC815 \uC575\uCEE4&quot;,
+    &quot;The Gunks\uC758 \uACE0\uC815 \uC575\uCEE4&quot;: &quot;The Gunks\uC758 \uACE0\uC815 \uC575\uCEE4&quot;,
+    Guidebooks: &quot;\uAC00\uC774\uB4DC\uBD81&quot;,
+    &quot;\uAC00\uC774\uB4DC\uBD81&quot;: &quot;\uAC00\uC774\uB4DC\uBD81&quot;,
+    &quot;Where to Stay&quot;: &quot;\uC219\uBC15 \uC815\uBCF4&quot;,
+    &quot;\uC219\uBC15 \uC815\uBCF4&quot;: &quot;\uC219\uBC15 \uC815\uBCF4&quot;,
+    &quot;Where to Eat&quot;: &quot;\uC2DD\uC0AC \uC815\uBCF4&quot;,
+    &quot;\uC2DD\uC0AC \uC815\uBCF4&quot;: &quot;\uC2DD\uC0AC \uC815\uBCF4&quot;,
+    &quot;Other Resources&quot;: &quot;\uAE30\uD0C0 \uC790\uB8CC&quot;,
+    &quot;\uAE30\uD0C0 \uC790\uB8CC&quot;: &quot;\uAE30\uD0C0 \uC790\uB8CC&quot;,
+    &quot;Rain and Wet Rock&quot;: &quot;\uBE44\uC640 \uC816\uC740 \uC554\uBCBD&quot;,
+    &quot;\uBE44\uC640 \uC816\uC740 \uC554\uBCBD&quot;: &quot;\uBE44\uC640 \uC816\uC740 \uC554\uBCBD&quot;,
+    &quot;Human Waste&quot;: &quot;\uBC30\uC124\uBB3C \uCC98\uB9AC&quot;,
+    &quot;\uBC30\uC124\uBB3C \uCC98\uB9AC&quot;: &quot;\uBC30\uC124\uBB3C \uCC98\uB9AC&quot;,
+    &quot;The Scenic Loop: Entry Fee, Reservation System, and Late Exit Passes&quot;: &quot;Scenic Loop: \uC785\uC7A5\uB8CC, \uC608\uC57D\uC81C \uBC0F \uB2A6\uC740 \uD1F4\uC7A5 \uD5C8\uAC00&quot;,
+    &quot;Scenic Loop: \uC785\uC7A5\uB8CC, \uC608\uC57D\uC81C \uBC0F \uB2A6\uC740 \uD1F4\uC7A5 \uD5C8\uAC00&quot;: &quot;Scenic Loop: \uC785\uC7A5\uB8CC, \uC608\uC57D\uC81C \uBC0F \uB2A6\uC740 \uD1F4\uC7A5 \uD5C8\uAC00&quot;,
+    &quot;Commercial, Large Groups (>15), and Guest Permit Lottery&quot;: &quot;\uC0C1\uC5C5 \uD65C\uB3D9, \uB300\uADDC\uBAA8 \uB2E8\uCCB4(15\uBA85 \uCD08\uACFC) \uBC0F \uAC8C\uC2A4\uD2B8 \uD5C8\uAC00 \uCD94\uCCA8&quot;,
+    &quot;\uC0C1\uC5C5 \uD65C\uB3D9, \uB300\uADDC\uBAA8 \uB2E8\uCCB4(15\uBA85 \uCD08\uACFC) \uBC0F \uAC8C\uC2A4\uD2B8 \uD5C8\uAC00 \uCD94\uCCA8&quot;: &quot;\uC0C1\uC5C5 \uD65C\uB3D9, \uB300\uADDC\uBAA8 \uB2E8\uCCB4(15\uBA85 \uCD08\uACFC) \uBC0F \uAC8C\uC2A4\uD2B8 \uD5C8\uAC00 \uCD94\uCCA8&quot;,
+    Camping: &quot;\uCEA0\uD551&quot;,
+    &quot;\uCEA0\uD551&quot;: &quot;\uCEA0\uD551&quot;,
+    &quot;Red Rock or Rocks?&quot;: &quot;Red Rock\uC778\uAC00 Red Rocks\uC778\uAC00?&quot;,
+    &quot;Red Rock\uC778\uAC00 Red Rocks\uC778\uAC00?&quot;: &quot;Red Rock\uC778\uAC00 Red Rocks\uC778\uAC00?&quot;
+  };
+
+  // src/sites/mountain-project/contract/selectors/shared.ts
+  var SHARED_SELECTORS = {
+    areaLinks: 'a[href*=&quot;/area/&quot;]',
+    routeLinks: 'a[href*=&quot;/route/&quot;]',
+    explicitBreadcrumb: [
+      &quot;.breadcrumbs&quot;,
+      &quot;.breadcrumb&quot;,
+      '[aria-label=&quot;breadcrumb&quot;]',
+      '[aria-label=&quot;Breadcrumb&quot;]'
+    ].join(&quot;, &quot;),
+    routeGuideLink: 'a[href$=&quot;/route-guide&quot;]',
+    leftNavigation: &quot;.left-nav&quot;,
+    sidebarContent: &quot;.mp-sidebar&quot;,
+    areaPage: &quot;#climb-area-page&quot;,
+    routePage: &quot;#route-page&quot;,
+    mainContentContainer: &quot;.main-content-container&quot;,
+    mainContent: &quot;.main-content&quot;,
+    authoredContent: &quot;.fr-view&quot;,
+    commentBody: &quot;.comment-body&quot;,
+    commentContainer: '.main-comment, [id^=&quot;Comment-&quot;], .comment-item, tr',
+    commentAuthor: [
+      &quot;.comment-author&quot;,
+      &quot;.author&quot;,
+      '[rel=&quot;author&quot;]',
+      '.user a[href*=&quot;/user/&quot;]',
+      'a[href*=&quot;/user/&quot;]'
+    ].join(&quot;, &quot;),
+    descriptionDetailsClass: &quot;.description-details&quot;,
+    descriptionDetails: &quot;table.description-details&quot;,
+    titleWithBorderBottomClass: &quot;title-with-border-bottom&quot;,
+    directUiText: [
+      &quot;.mp-sidebar .small.text-warm&quot;,
+      &quot;.comments .form-char-count&quot;,
+      &quot;.text-section > div&quot;,
+      &quot;#sort-dropdown > strong&quot;,
+      &quot;#sort-dropdown > .current-sort&quot;,
+      &quot;.dropdown-menu.dropdown-menu-right .dropdown-item.comments-sort&quot;
+    ].join(&quot;, &quot;),
+    frameHeader: &quot;#header-container&quot;,
+    framePrintHeader: &quot;#header-container-print&quot;,
+    frameFooter: &quot;#footer-container&quot;,
+    frameAdvertisement: &quot;#div-gpt-ad-1614709329076-0&quot;,
+    frameCookieConsent: &quot;#cookie-consent&quot;,
+    navigationAction: [
+      &quot;a[href]&quot;,
+      &quot;button[data-href]&quot;,
+      &quot;button[data-url]&quot;,
+      &quot;button[onclick]&quot;,
+      &quot;input[data-href]&quot;,
+      &quot;input[data-url]&quot;,
+      &quot;input[onclick]&quot;,
+      '[role=&quot;button&quot;][data-href]',
+      '[role=&quot;button&quot;][data-url]',
+      '[role=&quot;button&quot;][onclick]'
+    ].join(&quot;,&quot;)
+  };
+  var LOCATION_TRAIL_CONTRACT = {
+    component: &quot;location-trail&quot;,
+    key: &quot;breadcrumb&quot;,
+    required: false,
+    candidates: [
+      { key: &quot;explicit&quot;, selector: SHARED_SELECTORS.explicitBreadcrumb },
+      { key: &quot;legacy-route-guide&quot;, selector: SHARED_SELECTORS.routeGuideLink }
+    ]
+  };
+
+  // src/sites/mountain-project/dom/authored-section.ts
+  var HEADING_SELECTOR = &quot;h1, h2, h3&quot;;
+  var NON_TITLE_SELECTOR = [
+    &quot;a&quot;,
+    &quot;button&quot;,
+    &quot;.mpkr-area-section-hint&quot;,
+    &quot;.mpkr-area-section-chevron&quot;
+  ].join(&quot;, &quot;);
+  function normalizedSectionHeading(heading) {
+    return Array.from(heading.childNodes).filter((node) => node.nodeType !== Node.COMMENT_NODE &amp;&amp; (!(node instanceof HTMLElement) || !node.matches(NON_TITLE_SELECTOR))).map((node) => node.textContent ?? &quot;&quot;).join(&quot; &quot;).replace(/\s+/g, &quot; &quot;).trim();
+  }
+  function isAuthoredSectionBoundary(node) {
+    return node instanceof Element &amp;&amp; (node.matches(HEADING_SELECTOR) || node.querySelector(HEADING_SELECTOR) !== null);
+  }
+  function locateAuthoredSection(heading) {
+    const controlledId = heading.getAttribute(&quot;aria-controls&quot;);
+    const controlled = controlledId ? heading.ownerDocument.getElementById(controlledId) : null;
+    const controlledContent = controlled?.matches(SHARED_SELECTORS.authoredContent) ? controlled : controlled?.querySelector(SHARED_SELECTORS.authoredContent);
+    if (controlled &amp;&amp; controlledContent) {
+      return { content: controlledContent, structuralNode: controlled };
+    }
+    let sibling = heading.nextElementSibling;
+    while (sibling) {
+      if (isAuthoredSectionBoundary(sibling)) {
+        return void 0;
+      }
+      if (sibling.matches(SHARED_SELECTORS.authoredContent)) {
+        return {
+          content: sibling,
+          structuralNode: sibling
+        };
+      }
+      const nested = sibling.querySelector(SHARED_SELECTORS.authoredContent);
+      if (nested) {
+        return { content: nested, structuralNode: sibling };
+      }
+      sibling = sibling.nextElementSibling;
+    }
+    return void 0;
+  }
+
+  // src/ui/area-page-section-presentation.ts
+  var STYLE_ATTRIBUTE = &quot;data-mpkr-area-section-presentation&quot;;
+  var LEGACY_STYLE_SELECTOR = &quot;style[data-mpkr-area-priority]&quot;;
+  var STYLE_TEXT2 = `
+${AREA_SELECTORS.page} .mpkr-area-section-heading,
+${ROUTE_SELECTORS.page} .mpkr-area-section-heading {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  padding-right: 10.25rem;
+  text-indent: 0;
+  cursor: pointer;
+  user-select: none;
+  border-radius: ${UI.radius.small} ${UI.radius.small} 0 0;
+  transition: background-color ${UI.motion.fast}, color ${UI.motion.fast};
+}
+
+${AREA_SELECTORS.page} .mpkr-area-section-heading:hover,
+${ROUTE_SELECTORS.page} .mpkr-area-section-heading:hover {
+  background: ${UI.color.headingHover};
+  color: ${UI.color.linkHover};
+}
+
+${AREA_SELECTORS.page} .mpkr-area-section-heading:focus-visible,
+${ROUTE_SELECTORS.page} .mpkr-area-section-heading:focus-visible {
+  outline: 3px solid ${UI.color.link};
+  outline-offset: 2px;
+  background: ${UI.color.headingFocus};
+  color: ${UI.color.linkActive};
+}
+
+${AREA_SELECTORS.page} .mpkr-area-section-hint,
+${ROUTE_SELECTORS.page} .mpkr-area-section-hint {
+  position: absolute;
+  top: 50%;
+  right: 1.45rem;
+  color: ${UI.color.muted};
+  font-size: ${UI.font.hint};
+  font-weight: 400;
+  line-height: 1.2;
+  transform: translateY(-50%);
+  white-space: nowrap;
+}
+
+${AREA_SELECTORS.page} .mpkr-area-section-heading:hover .mpkr-area-section-hint,
+${ROUTE_SELECTORS.page} .mpkr-area-section-heading:hover .mpkr-area-section-hint,
+${AREA_SELECTORS.page} .mpkr-area-section-heading:focus-visible .mpkr-area-section-hint,
+${ROUTE_SELECTORS.page} .mpkr-area-section-heading:focus-visible .mpkr-area-section-hint {
+  color: ${UI.color.linkHover};
+}
+
+${AREA_SELECTORS.page} .mpkr-area-section-chevron,
+${ROUTE_SELECTORS.page} .mpkr-area-section-chevron {
+  position: absolute;
+  top: 50%;
+  right: 0.35rem;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: translateY(-65%) rotate(45deg);
+  transition: transform 160ms ease;
+}
+
+${AREA_SELECTORS.page} .mpkr-area-section-heading[aria-expanded=&quot;true&quot;] .mpkr-area-section-chevron,
+${ROUTE_SELECTORS.page} .mpkr-area-section-heading[aria-expanded=&quot;true&quot;] .mpkr-area-section-chevron {
+  transform: translateY(-35%) rotate(225deg);
+}
+
+${AREA_SELECTORS.page} .mpkr-info-heading > h2,
+${ROUTE_SELECTORS.page} .mpkr-info-heading > h2 {
+  margin: 0;
+}
+
+${AREA_SELECTORS.page} .mpkr-classic-routes-heading {
+  box-sizing: border-box;
+  width: 100%;
+}
+
+@media (max-width: 575px) {
+  ${AREA_SELECTORS.page} .mpkr-area-section-heading,
+  ${ROUTE_SELECTORS.page} .mpkr-area-section-heading {
+    padding-right: 1.6rem;
+  }
+
+  ${AREA_SELECTORS.page} .mpkr-area-section-hint,
+  ${ROUTE_SELECTORS.page} .mpkr-area-section-hint {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ${AREA_SELECTORS.page} .mpkr-area-section-chevron,
+  ${ROUTE_SELECTORS.page} .mpkr-area-section-chevron,
+  ${AREA_SELECTORS.page} .mpkr-area-section-heading,
+  ${ROUTE_SELECTORS.page} .mpkr-area-section-heading {
+    transition: none;
+  }
+}
+`;
+  function containsAuthoredSection(wrapper) {
+    return Array.from(wrapper.querySelectorAll(&quot;h2, h3&quot;)).some((heading) => {
+      return locateAuthoredSection(heading) !== void 0;
+    });
+  }
+  var PageSectionPresentation = class {
+    constructor(pageKind) {
+      this.pageKind = pageKind;
+    }
+    sections = [];
+    infoHeadings = [];
+    decoratedHeadings = [];
+    areaHeightWrappers = [];
+    style;
+    observer;
+    mount(root = document) {
+      const pageSelector = this.pageKind === &quot;area&quot; ? AREA_SELECTORS.page : ROUTE_SELECTORS.page;
+      const pageRoot = root instanceof HTMLElement &amp;&amp; root.matches(pageSelector) ? root : root.querySelector(pageSelector);
+      if (!pageRoot) {
+        return false;
+      }
+      if (this.pageKind === &quot;area&quot;) {
+        this.neutralizeAreaHeightWrappers(pageRoot);
+      }
+      this.mountInfoHeadings(pageRoot);
+      const managedHeadings = new Set(this.sections.map((state) => state.heading));
+      this.sections.forEach((state) => this.absorbDynamicBodyNodes(state));
+      for (const heading of pageRoot.querySelectorAll(&quot;h2, h3&quot;)) {
+        const title = normalizedSectionHeading(heading);
+        if (!title || managedHeadings.has(heading) || this.pageKind === &quot;route&quot; &amp;&amp; !SECTION_TITLE_TRANSLATIONS[title]) {
+          continue;
+        }
+        const section = locateAuthoredSection(heading);
+        if (section) {
+          this.collapseSection(
+            heading,
+            section.structuralNode,
+            SECTION_TITLE_TRANSLATIONS[title] ?? title
+          );
+        }
+      }
+      if (this.pageKind === &quot;area&quot;) {
+        this.decorateClassicRouteHeadings(pageRoot);
+      }
+      if (!this.sections.length &amp;&amp; !this.infoHeadings.length &amp;&amp; !this.decoratedHeadings.length &amp;&amp; !this.areaHeightWrappers.length) {
+        return false;
+      }
+      if (!this.style) {
+        pageRoot.ownerDocument.querySelectorAll(LEGACY_STYLE_SELECTOR).forEach((legacyStyle) => legacyStyle.remove());
+        const style = pageRoot.ownerDocument.createElement(&quot;style&quot;);
+        style.setAttribute(STYLE_ATTRIBUTE, &quot;true&quot;);
+        style.textContent = STYLE_TEXT2;
+        pageRoot.ownerDocument.head.append(style);
+        this.style = style;
+      }
+      if (!this.observer) {
+        const Observer = pageRoot.ownerDocument.defaultView?.MutationObserver ?? MutationObserver;
+        this.observer = new Observer((records) => {
+          if (records.some((record) => Array.from(record.addedNodes).some((node) => node instanceof Element &amp;&amp; !node.matches(
+            &quot;.mpkr-area-section-chevron, .mpkr-area-section-hint, .mpkr-area-section-body, .mpkr-info-heading&quot;
+          )))) {
+            this.mount(pageRoot.ownerDocument);
+          }
+        });
+        this.observer.observe(pageRoot, { childList: true, subtree: true });
+      }
+      return true;
+    }
+    destroy() {
+      this.observer?.disconnect();
+      this.observer = void 0;
+      for (const state of this.sections) {
+        state.heading.removeEventListener(&quot;click&quot;, state.onClick);
+        state.heading.removeEventListener(&quot;keydown&quot;, state.onKeyDown);
+        state.chevron.remove();
+        state.hint.remove();
+        if (state.nativeExpanderSnapshot) {
+          const { element, hidden } = state.nativeExpanderSnapshot;
+          if (hidden === null) element.removeAttribute(&quot;hidden&quot;);
+          else element.setAttribute(&quot;hidden&quot;, hidden);
+        }
+        for (const [name, value] of state.attributes) {
+          if (value === null) {
+            state.heading.removeAttribute(name);
+          } else {
+            state.heading.setAttribute(name, value);
+          }
+        }
+        const parent = state.body.parentNode;
+        if (parent) {
+          for (const node of state.nodes) {
+            parent.insertBefore(node, state.body);
+          }
+        }
+        state.body.remove();
+        state.marker.remove();
+        if (state.structuralSnapshot) {
+          const { element, className, style, hidden } = state.structuralSnapshot;
+          if (className === null) element.removeAttribute(&quot;class&quot;);
+          else element.setAttribute(&quot;class&quot;, className);
+          if (style === null) element.removeAttribute(&quot;style&quot;);
+          else element.setAttribute(&quot;style&quot;, style);
+          if (hidden === null) element.removeAttribute(&quot;hidden&quot;);
+          else element.setAttribute(&quot;hidden&quot;, hidden);
+        }
+      }
+      for (const state of this.infoHeadings) {
+        state.wrapper.remove();
+      }
+      for (const state of this.decoratedHeadings) {
+        if (state.className === null) {
+          state.heading.removeAttribute(&quot;class&quot;);
+        } else {
+          state.heading.setAttribute(&quot;class&quot;, state.className);
+        }
+      }
+      for (const state of this.areaHeightWrappers) {
+        if (state.className === null) {
+          state.wrapper.removeAttribute(&quot;class&quot;);
+        } else {
+          state.wrapper.setAttribute(&quot;class&quot;, state.className);
+        }
+        if (state.style === null) {
+          state.wrapper.removeAttribute(&quot;style&quot;);
+        } else {
+          state.wrapper.setAttribute(&quot;style&quot;, state.style);
+        }
+      }
+      this.style?.remove();
+      this.style = void 0;
+      this.sections.length = 0;
+      this.infoHeadings.length = 0;
+      this.decoratedHeadings.length = 0;
+      this.areaHeightWrappers.length = 0;
+    }
+    neutralizeAreaHeightWrappers(pageRoot) {
+      const managed = new Set(this.areaHeightWrappers.map((state) => state.wrapper));
+      pageRoot.querySelectorAll(AREA_SELECTORS.constrainedNarrativeWrapper).forEach((wrapper) => {
+        if (managed.has(wrapper) || !containsAuthoredSection(wrapper)) {
+          return;
+        }
+        this.areaHeightWrappers.push({
+          wrapper,
+          className: wrapper.getAttribute(&quot;class&quot;),
+          style: wrapper.getAttribute(&quot;style&quot;)
+        });
+        wrapper.classList.remove(...AREA_SELECTORS.constrainedNarrativeClasses);
+        wrapper.style.removeProperty(&quot;max-height&quot;);
+        wrapper.style.removeProperty(&quot;height&quot;);
+        wrapper.style.removeProperty(&quot;overflow&quot;);
+        wrapper.style.removeProperty(&quot;overflow-y&quot;);
+        if (!wrapper.getAttribute(&quot;style&quot;)?.trim()) {
+          wrapper.removeAttribute(&quot;style&quot;);
+        }
+      });
+    }
+    collapseSection(heading, bodyNode, title) {
+      const ownerDocument = heading.ownerDocument;
+      const structuralElement = bodyNode instanceof HTMLElement &amp;&amp; bodyNode.matches(AREA_SELECTORS.legacyTextSectionBody) ? bodyNode : void 0;
+      const structuralSnapshot = structuralElement ? {
+        element: structuralElement,
+        className: structuralElement.getAttribute(&quot;class&quot;),
+        style: structuralElement.getAttribute(&quot;style&quot;),
+        hidden: structuralElement.getAttribute(&quot;hidden&quot;)
+      } : void 0;
+      if (structuralElement) {
+        structuralElement.classList.remove(&quot;collapse&quot;, &quot;show&quot;);
+        structuralElement.removeAttribute(&quot;hidden&quot;);
+        structuralElement.style.removeProperty(&quot;display&quot;);
+        structuralElement.style.removeProperty(&quot;height&quot;);
+        if (!structuralElement.getAttribute(&quot;style&quot;)?.trim()) {
+          structuralElement.removeAttribute(&quot;style&quot;);
+        }
+      }
+      const body = ownerDocument.createElement(&quot;div&quot;);
+      body.className = &quot;mpkr-area-section-body&quot;;
+      body.id = this.uniqueContentId(ownerDocument);
+      const nodes = [];
+      let node = heading.nextSibling;
+      while (node) {
+        const next = node.nextSibling;
+        if (isAuthoredSectionBoundary(node)) {
+          break;
+        }
+        nodes.push(node);
+        node = next;
+      }
+      if (!nodes.includes(bodyNode)) {
+        return;
+      }
+      const marker = ownerDocument.createComment(&quot;mpkr-area-section-body-position&quot;);
+      bodyNode.parentNode?.insertBefore(marker, nodes[0]);
+      marker.parentNode?.insertBefore(body, marker.nextSibling);
+      body.append(...nodes);
+      const chevron = ownerDocument.createElement(&quot;span&quot;);
+      chevron.className = &quot;mpkr-area-section-chevron&quot;;
+      chevron.setAttribute(&quot;aria-hidden&quot;, &quot;true&quot;);
+      const hint = ownerDocument.createElement(&quot;span&quot;);
+      hint.className = &quot;mpkr-area-section-hint&quot;;
+      hint.setAttribute(&quot;aria-hidden&quot;, &quot;true&quot;);
+      const attributeNames = [
+        &quot;class&quot;,
+        &quot;role&quot;,
+        &quot;tabindex&quot;,
+        &quot;aria-expanded&quot;,
+        &quot;aria-controls&quot;,
+        &quot;aria-label&quot;,
+        &quot;data-toggle&quot;,
+        &quot;data-target&quot;
+      ];
+      const attributes = new Map(attributeNames.map((name) => [name, heading.getAttribute(name)]));
+      heading.removeAttribute(&quot;data-toggle&quot;);
+      heading.removeAttribute(&quot;data-target&quot;);
+      const nativeExpander = heading.querySelector(AREA_SELECTORS.legacyTextSectionExpander);
+      const nativeExpanderSnapshot = nativeExpander ? { element: nativeExpander, hidden: nativeExpander.getAttribute(&quot;hidden&quot;) } : void 0;
+      nativeExpander?.setAttribute(&quot;hidden&quot;, &quot;&quot;);
+      heading.classList.add(
+        &quot;title-with-border-bottom&quot;,
+        &quot;mb-1&quot;,
+        &quot;mpkr-info-heading&quot;,
+        &quot;mpkr-area-section-heading&quot;
+      );
+      heading.setAttribute(&quot;role&quot;, &quot;button&quot;);
+      heading.setAttribute(&quot;tabindex&quot;, &quot;0&quot;);
+      heading.setAttribute(&quot;aria-controls&quot;, body.id);
+      heading.append(hint, chevron);
+      const onClick = (event) => {
+        if (event.target instanceof Element &amp;&amp; event.target.closest(&quot;a, button, input, select, textarea&quot;)) {
+          return;
+        }
+        const state2 = this.sections.find((candidate) => candidate.heading === heading);
+        if (state2) {
+          this.setExpanded(state2, body.hasAttribute(&quot;hidden&quot;));
+        }
+      };
+      const onKeyDown = (event) => {
+        if (event.key !== &quot;Enter&quot; &amp;&amp; event.key !== &quot; &quot;) {
+          return;
+        }
+        event.preventDefault();
+        const state2 = this.sections.find((candidate) => candidate.heading === heading);
+        if (state2) {
+          this.setExpanded(state2, body.hasAttribute(&quot;hidden&quot;));
+        }
+      };
+      heading.addEventListener(&quot;click&quot;, onClick);
+      heading.addEventListener(&quot;keydown&quot;, onKeyDown);
+      const state = {
+        heading,
+        body,
+        marker,
+        nodes,
+        chevron,
+        hint,
+        attributes,
+        onClick,
+        onKeyDown,
+        title,
+        structuralSnapshot,
+        nativeExpanderSnapshot
+      };
+      this.sections.push(state);
+      this.setExpanded(state, false);
+    }
+    setExpanded(state, expanded) {
+      state.body.hidden = !expanded;
+      state.heading.setAttribute(&quot;aria-expanded&quot;, String(expanded));
+      state.heading.setAttribute(&quot;aria-label&quot;, `${state.title} ${expanded ? &quot;\uB0B4\uC6A9 \uC811\uAE30&quot; : &quot;\uB0B4\uC6A9 \uD3BC\uCE58\uAE30&quot;}`);
+      state.hint.textContent = expanded ? &quot;\uB20C\uB7EC\uC11C \uC811\uAE30&quot; : &quot;\uB20C\uB7EC\uC11C \uB0B4\uC6A9 \uBCF4\uAE30&quot;;
+    }
+    absorbDynamicBodyNodes(state) {
+      let sibling = state.body.nextSibling;
+      while (sibling) {
+        if (isAuthoredSectionBoundary(sibling)) {
+          break;
+        }
+        const next = sibling.nextSibling;
+        state.nodes.push(sibling);
+        state.body.append(sibling);
+        sibling = next;
+      }
+    }
+    mountInfoHeadings(pageRoot) {
+      const selector = this.pageKind === &quot;area&quot; ? `${AREA_SELECTORS.page} .description-details` : `${ROUTE_SELECTORS.page} ${ROUTE_SELECTORS.mainContent} .description-details`;
+      const title = this.pageKind === &quot;area&quot; ? &quot;\uC9C0\uC5ED \uC815\uBCF4&quot; : &quot;\uB8E8\uD2B8 \uC815\uBCF4&quot;;
+      const managedDetails = new Set(this.infoHeadings.map((state) => state.details));
+      pageRoot.ownerDocument.querySelectorAll(selector).forEach((details) => {
+        if (managedDetails.has(details)) {
+          return;
+        }
+        const wrapper = details.ownerDocument.createElement(&quot;div&quot;);
+        wrapper.className = &quot;title-with-border-bottom mb-1 mpkr-info-heading&quot;;
+        const heading = details.ownerDocument.createElement(&quot;h2&quot;);
+        heading.textContent = title;
+        wrapper.append(heading);
+        details.before(wrapper);
+        this.infoHeadings.push({ details, wrapper });
+      });
+    }
+    decorateClassicRouteHeadings(pageRoot) {
+      const managed = new Set(this.decoratedHeadings.map((state) => state.heading));
+      pageRoot.querySelectorAll(&quot;h2, h3&quot;).forEach((heading) => {
+        const title = normalizedSectionHeading(heading);
+        if (managed.has(heading) || !title.startsWith(&quot;Classic Climbing Routes&quot;) &amp;&amp; !title.startsWith(&quot;\uD074\uB798\uC2DD \uB8E8\uD2B8&quot;)) {
+          return;
+        }
+        this.decoratedHeadings.push({
+          heading,
+          className: heading.getAttribute(&quot;class&quot;)
+        });
+        heading.classList.add(
+          &quot;title-with-border-bottom&quot;,
+          &quot;mb-1&quot;,
+          &quot;mpkr-info-heading&quot;,
+          &quot;mpkr-classic-routes-heading&quot;
+        );
+      });
+    }
+    uniqueContentId(ownerDocument) {
+      let index = this.sections.length + 1;
+      let id = `mpkr-area-section-${index}`;
+      while (ownerDocument.getElementById(id)) {
+        index += 1;
+        id = `mpkr-area-section-${index}`;
+      }
+      return id;
+    }
+  };
+  var AreaPageSectionPresentation = class extends PageSectionPresentation {
+    constructor() {
+      super(&quot;area&quot;);
+    }
+  };
+  var RoutePageSectionPresentation = class extends PageSectionPresentation {
+    constructor() {
+      super(&quot;route&quot;);
+    }
+  };
+
+  // src/sites/mountain-project/contract/origins.ts
+  var MOUNTAIN_PROJECT_HOSTNAMES = [
+    &quot;mountainproject.com&quot;,
+    &quot;www.mountainproject.com&quot;
+  ];
+  var supportedHostnames = new Set(MOUNTAIN_PROJECT_HOSTNAMES);
+
+  // src/sites/mountain-project/contract/routes.ts
+  var MOUNTAIN_PROJECT_PATH_PATTERNS = {
+    area: /^\/area\/(\d+)(?:\/([^/]+))?$/,
+    route: /^\/route\/(\d+)(?:\/([^/]+))?$/,
+    routeStats: /^\/route\/stats\/(\d+)(?:\/([^/]+))?$/,
+    routeFinder: /^\/route-finder$/,
+    photo: /^\/photo\/(\d+)(?:\/([^/]+))?$/,
+    user: /^\/user\/(\d+)\/([^/]+)(?:\/(contributions|community))?$/,
+    contactUser: /^\/contact-user\/(\d+)$/,
+    gym: /^\/gym\/(\d+)(?:\/([^/]+))?$/,
+    map: /^\/map\/(\d+)(?:\/([^/]+))?$/,
+    helpArticle: /^\/help\/(\d+)\/([^/]+)$/,
+    contribution: /^\/(?:add|edit|suggest)\/(?:climb-area|route|photo|trail|video|text-section|symbol)(?:\/\d+)?$/,
+    contributionNestedPhoto: /^\/(?:area|route)\/\d+\/add\/photo$/,
+    contributionImageLink: /^\/edit\/imageLink\/\d+$/,
+    contributionTrailUpload: /^\/upload\/start\/trail$/,
+    contributionBook: /^\/edit\/book\/\d+$/,
+    contributionShare: /^\/share\/(?:trail|photo|video)$/,
+    contributionImprovement: /^\/improvement(?:\/[^/]+)+$/,
+    contributionUpdates: /^\/updates\/Climb-Lib-Models-(?:Area|Route|Photo|Trail)\/\d+(?:\/[^/]+)?$/
+  };
+  function normalizeMountainProjectPath(pathname) {
+    return pathname.replace(/\/+$/, &quot;&quot;) || &quot;/&quot;;
+  }
+  function parseEntityPath(pattern, pathname) {
+    const match = normalizeMountainProjectPath(pathname).match(pattern);
+    if (!match?.[1]) {
+      return void 0;
+    }
+    return {
+      id: match[1],
+      ...match[2] ? { slug: match[2] } : {}
+    };
+  }
+  function parseRoutePath(pathname) {
+    return parseEntityPath(MOUNTAIN_PROJECT_PATH_PATTERNS.route, pathname);
+  }
+
+  // src/sites/mountain-project/contract/selectors/route-list.ts
+  var ROUTE_LIST_SELECTORS = {
+    sidebarRow: &quot;.lef-nav-row&quot;,
+    rows: [
+      &quot;tr.route-row&quot;,
+      &quot;table.route-table tr:not(.screen-reader-only)&quot;,
+      &quot;li.route-row&quot;,
+      &quot;.route-list-item&quot;,
+      &quot;.classic-route&quot;,
+      &quot;.lef-nav-row&quot;
+    ].join(&quot;,&quot;),
+    secondaryContext: [
+      &quot;.scoreStars&quot;,
+      &quot;.route-stars&quot;,
+      &quot;.rating&quot;,
+      &quot;.actions&quot;,
+      &quot;.action&quot;,
+      &quot;.dropdown&quot;,
+      &quot;.menu&quot;,
+      &quot;button&quot;,
+      &quot;label&quot;
+    ].join(&quot;,&quot;),
+    screenReaderOnlyClass: &quot;screen-reader-only&quot;
+  };
+
+  // src/ui/route-list-presentation.ts
+  var STYLE_MARKER = &quot;data-mpkr-route-list-presentation&quot;;
+  var ROW_CLASS = &quot;mpkr-route-list-row&quot;;
+  var PRIMARY_LINK_CLASS = &quot;mpkr-route-list-primary&quot;;
+  var EXPANDED_LINK_CLASS = &quot;mpkr-route-list-primary-expanded&quot;;
+  var STYLE_TEXT3 = `
+.${ROW_CLASS} {
+  transition: background-color ${UI.motion.fast};
+}
+
+tr.${ROW_CLASS}:hover > td,
+tr.${ROW_CLASS}:focus-within > td,
+li.${ROW_CLASS}:hover,
+li.${ROW_CLASS}:focus-within,
+.route-list-item.${ROW_CLASS}:hover,
+.route-list-item.${ROW_CLASS}:focus-within,
+.classic-route.${ROW_CLASS}:hover,
+.classic-route.${ROW_CLASS}:focus-within,
+${ROUTE_LIST_SELECTORS.sidebarRow}.${ROW_CLASS}:hover,
+${ROUTE_LIST_SELECTORS.sidebarRow}.${ROW_CLASS}:focus-within {
+  background-color: ${UI.color.surfaceHover} !important;
+}
+
+.${PRIMARY_LINK_CLASS}:focus-visible {
+  outline: 3px solid ${UI.color.link};
+  outline-offset: 2px;
+  border-radius: ${UI.radius.small};
+}
+
+.${EXPANDED_LINK_CLASS} {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  min-height: 2rem;
+  padding: 0.3rem 0.35rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .${ROW_CLASS} {
+    transition: none;
+  }
+}
+`;
+  function routePath(anchor) {
+    try {
+      return Boolean(parseRoutePath(new URL(anchor.href, document.baseURI).pathname));
+    } catch {
+      return false;
+    }
+  }
+  function candidateRows(root) {
+    const rows = /* @__PURE__ */ new Set();
+    if (root instanceof HTMLElement &amp;&amp; root.matches(ROUTE_LIST_SELECTORS.rows)) {
+      rows.add(root);
+    }
+    root.querySelectorAll(ROUTE_LIST_SELECTORS.rows).forEach((row) => rows.add(row));
+    return Array.from(rows);
+  }
+  function primaryRouteLink(row) {
+    return Array.from(row.querySelectorAll(SHARED_SELECTORS.routeLinks)).find((anchor) => routePath(anchor) &amp;&amp; !anchor.closest(ROUTE_LIST_SELECTORS.secondaryContext));
+  }
+  function isOnlyContent(container, anchor) {
+    let current = anchor;
+    while (current !== container) {
+      const parent = current.parentNode;
+      if (!parent) return false;
+      if (Array.from(parent.childNodes).some((node) => node !== current &amp;&amp; (node.nodeType === Node.ELEMENT_NODE || node.nodeType === Node.TEXT_NODE &amp;&amp; Boolean(node.textContent?.trim())))) return false;
+      current = parent;
+    }
+    return true;
+  }
+  function canSafelyExpand(row, anchor) {
+    const cell = anchor.closest(&quot;td&quot;);
+    if (cell &amp;&amp; cell.closest(&quot;tr&quot;) === row) {
+      return cell === row.querySelector(&quot;td&quot;) &amp;&amp; isOnlyContent(cell, anchor) &amp;&amp; !anchor.closest(ROUTE_LIST_SELECTORS.secondaryContext);
+    }
+    return anchor.parentElement === row &amp;&amp; isOnlyContent(row, anchor) &amp;&amp; !row.querySelector(&quot;button, input, select, textarea&quot;);
+  }
+  var RouteListPresentation = class {
+    observer;
+    style;
+    root;
+    rows = /* @__PURE__ */ new Map();
+    links = /* @__PURE__ */ new Map();
+    mount(root = document) {
+      this.root = root;
+      this.ensureStyle(root);
+      const found = this.apply(root);
+      if (root === document &amp;&amp; !this.observer) {
+        this.observer = new MutationObserver((records) => {
+          for (const record of records) {
+            for (const node of record.addedNodes) {
+              if (node instanceof Element) {
+                this.apply(node);
+              }
+            }
+          }
+        });
+        this.observer.observe(document.documentElement, { childList: true, subtree: true });
+      }
+      return found;
+    }
+    destroy() {
+      this.observer?.disconnect();
+      this.observer = void 0;
+      for (const [row, className] of this.rows) {
+        this.restoreClassName(row, className);
+      }
+      for (const [link, className] of this.links) {
+        this.restoreClassName(link, className);
+      }
+      this.rows.clear();
+      this.links.clear();
+      this.style?.remove();
+      this.style = void 0;
+      this.root = void 0;
+    }
+    apply(root) {
+      let found = false;
+      for (const row of candidateRows(root)) {
+        if (row instanceof HTMLAnchorElement || row.classList.contains(ROUTE_LIST_SELECTORS.screenReaderOnlyClass)) {
+          continue;
+        }
+        const primary = primaryRouteLink(row);
+        if (!primary) {
+          continue;
+        }
+        if (!this.rows.has(row)) {
+          this.rows.set(row, row.getAttribute(&quot;class&quot;));
+        }
+        if (!this.links.has(primary)) {
+          this.links.set(primary, primary.getAttribute(&quot;class&quot;));
+        }
+        row.classList.add(ROW_CLASS);
+        primary.classList.add(PRIMARY_LINK_CLASS);
+        if (canSafelyExpand(row, primary)) {
+          primary.classList.add(EXPANDED_LINK_CLASS);
+        }
+        found = true;
+      }
+      return found;
+    }
+    ensureStyle(root) {
+      if (this.style?.isConnected) {
+        return;
+      }
+      const ownerDocument = root.nodeType === Node.DOCUMENT_NODE ? root : root.ownerDocument;
+      if (!ownerDocument) {
+        return;
+      }
+      const style = ownerDocument.createElement(&quot;style&quot;);
+      style.setAttribute(STYLE_MARKER, &quot;true&quot;);
+      style.textContent = STYLE_TEXT3;
+      ownerDocument.head.append(style);
+      this.style = style;
+    }
+    restoreClassName(element, className) {
+      if (className === null) {
+        element.removeAttribute(&quot;class&quot;);
+      } else {
+        element.setAttribute(&quot;class&quot;, className);
+      }
+    }
+  };
+
+  // src/ui/message-style.ts
+  var STATUS_MESSAGE_CSS = `
+.mpkr-status-message { box-sizing:border-box;display:block;margin:12px 0;padding:10px 12px;border-left:3px solid ${UI.color.link};background:${UI.color.surfaceHover};color:${UI.color.text};font:12px/1.75 ${UI.font.family};white-space:normal;overflow-wrap:anywhere;text-align:left; }
+.mpkr-status-message[hidden] { display:none; }
+.mpkr-status-message strong { display:block;font-size:13px;font-weight:600; }
+.mpkr-status-message p,.mpkr-status-message__detail { display:block; margin:3px 0 0;font-size:12px;line-height:1.75;color:${UI.color.muted}; }
+`;
+  var TRANSLATION_ACTION_CSS = `${STATUS_MESSAGE_CSS}
+.mpkr-translation-actions { display:inline-flex;max-width:100%;flex-wrap:wrap;align-items:center;gap:8px;margin:8px 0 4px; }
+.mpkr-translation-actions button { box-sizing:border-box;margin:0;padding:6px 10px;border:1px solid ${UI.color.border};border-radius:${UI.radius.control};background:${UI.color.surface};color:${UI.color.link};font:600 12px/1.5 ${UI.font.family};cursor:pointer;text-decoration:none; }
+.mpkr-translation-actions button:hover { background:${UI.color.surfaceHover}; }
+.mpkr-translation-actions button:focus-visible { outline:2px solid ${UI.color.link};outline-offset:3px; }
+.mpkr-translation-actions button:disabled { cursor:wait;opacity:.65; }
+.mpkr-translation-actions [hidden] { display:none; }
+.mpkr-translation-feedback { color:${UI.color.muted};font:12px/1.5 ${UI.font.family}; }
+`;
+  function setStatusMessage(element, message) {
+    if (element.textContent === message) return;
+    const split = message.indexOf(&quot;. &quot;);
+    if (split &lt; 0) {
+      element.textContent = message;
+      return;
+    }
+    const title = element.ownerDocument.createElement(&quot;strong&quot;);
+    title.textContent = message.slice(0, split + 2);
+    const detail = element.ownerDocument.createElement(&quot;span&quot;);
+    detail.className = &quot;mpkr-status-message__detail&quot;;
+    detail.textContent = message.slice(split + 2);
+    element.replaceChildren(title, detail);
+  }
+
+  // src/sites/mountain-project/contract/selectors/stats.ts
+  var STATS_SELECTORS = {
+    root: &quot;#route-stats&quot;,
+    tableRoot: &quot;#route-stats .onx-stats-table&quot;,
+    tableRootFallback: &quot;.onx-stats-table&quot;,
+    componentHeadings: &quot;.onx-stats-table h3&quot;,
+    ticksSectionId: &quot;#ticks-column&quot;,
+    ticksBodyId: 'tbody[id=&quot;ticks-body&quot;]',
+    tickRowLandmark: 'tr[id^=&quot;ticks.&quot;]',
+    tickRows: '#route-stats .onx-stats-table tr[id^=&quot;ticks.&quot;]',
+    tickAuthor: 'td:first-child [rel=&quot;author&quot;], td:first-child .author, td:first-child a[href*=&quot;/user/&quot;]',
+    frameBreadcrumb: &quot;.main-content-container #route-stats > .row.pt-main-content > .col-xs-12 > .mb-half.small.text-warm&quot;,
+    frameTitle: &quot;.main-content-container #route-stats > .row.pt-main-content > .col-xs-12 > h1&quot;,
+    frameMainContainer: &quot;.main-content-container&quot;,
+    frameContainerFluid: &quot;.main-content-container > .container-fluid&quot;,
+    frameLayoutRow: &quot;.main-content-container #route-stats > .row.pt-main-content&quot;,
+    maxHeightClass: &quot;max-height&quot;
+  };
+  var STATS_FRAME_CHROME_HIDE_SELECTORS = [
+    SHARED_SELECTORS.framePrintHeader,
+    SHARED_SELECTORS.frameHeader,
+    SHARED_SELECTORS.frameAdvertisement,
+    SHARED_SELECTORS.frameCookieConsent,
+    SHARED_SELECTORS.frameFooter,
+    STATS_SELECTORS.frameBreadcrumb,
+    STATS_SELECTORS.frameTitle
+  ];
+  var STATS_FRAME_CONTRACT = {
+    component: &quot;route-stats-frame&quot;,
+    key: &quot;frame-landmarks&quot;,
+    required: true,
+    candidates: [
+      { key: &quot;stats-root&quot;, selector: STATS_SELECTORS.root },
+      { key: &quot;stats-table-root&quot;, selector: STATS_SELECTORS.tableRootFallback }
+    ]
+  };
+  var STATS_TICKS_SECTION_CONTRACT = {
+    component: &quot;route-stats-presentation&quot;,
+    key: &quot;ticks-section&quot;,
+    required: false,
+    candidates: [
+      { key: &quot;section-id&quot;, selector: STATS_SELECTORS.ticksSectionId },
+      { key: &quot;tbody-id&quot;, selector: STATS_SELECTORS.ticksBodyId },
+      { key: &quot;tick-row-id&quot;, selector: STATS_SELECTORS.tickRowLandmark }
+    ]
+  };
+
+  // src/sites/mountain-project/contract/selectors/community.ts
+  var COMMUNITY_SELECTORS = {
+    topicBody: &quot;#forum-table .message-row .fr-view&quot;,
+    topicRow: &quot;#forum-table .message-row&quot;,
+    topicAuthor: '.bio > a[href*=&quot;/user/&quot;]',
+    activityComment: &quot;#whats-new .comment-row td > .row > .col-md-12&quot;,
+    activityRow: &quot;#whats-new .comment-row&quot;,
+    activityAuthor: 'td > a[href*=&quot;/user/&quot;]',
+    protectedContent: '.fr-view, .mpkr-activity-comment-source, .signature, blockquote, pre, code, cite, [contenteditable=&quot;true&quot;], textarea',
+    gymDetailTitle: &quot;#climbing-gyms .pt-main-content h1&quot;,
+    protectedGymValue: '#climbing-gyms .gym-info > div, #climbing-gyms table td.text-xs-right, #climbing-gyms .gym-breadcrumbs a[href*=&quot;/gyms/&quot;]',
+    uiExtra: &quot;#partner-finder p, #partner-finder div, #whats-new div, #topic-guts div, #forum-table div, #climbing-gyms .gym-count, #climbing-gyms .add-gym-cta p, #climbing-gyms .improve-gym-cta p, #climbing-gyms .photos-cta p, #climbing-gyms .stars-avg&quot;
+  };
+
+  // src/core/translation-text-policy.ts
+  var PlaceholderIntegrityError = class extends Error {
+    constructor(failedKinds, message = &quot;\uBC88\uC5ED\uAE30\uAC00 \uBCF4\uD638 \uD1A0\uD070\uC744 \uBCC0\uACBD\uD574 \uC548\uC804\uD558\uAC8C \uC6D0\uBB38\uC744 \uBCF5\uC6D0\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.&quot;) {
+      super(message);
+      this.failedKinds = failedKinds;
+      this.name = &quot;PlaceholderIntegrityError&quot;;
+    }
+  };
+
+  // src/rendering/dom-translation-format.ts
+  var SAFE_TAGS = /* @__PURE__ */ new Set([
+    &quot;A&quot;,
+    &quot;ABBR&quot;,
+    &quot;B&quot;,
+    &quot;BLOCKQUOTE&quot;,
+    &quot;BR&quot;,
+    &quot;CODE&quot;,
+    &quot;DIV&quot;,
+    &quot;EM&quot;,
+    &quot;H3&quot;,
+    &quot;H4&quot;,
+    &quot;H5&quot;,
+    &quot;H6&quot;,
+    &quot;I&quot;,
+    &quot;IMG&quot;,
+    &quot;KBD&quot;,
+    &quot;LI&quot;,
+    &quot;MARK&quot;,
+    &quot;OL&quot;,
+    &quot;P&quot;,
+    &quot;PRE&quot;,
+    &quot;S&quot;,
+    &quot;SMALL&quot;,
+    &quot;SPAN&quot;,
+    &quot;STRONG&quot;,
+    &quot;SUB&quot;,
+    &quot;SUP&quot;,
+    &quot;U&quot;,
+    &quot;UL&quot;
+  ]);
+  var VOID_TAGS = /* @__PURE__ */ new Set([&quot;BR&quot;, &quot;IMG&quot;]);
+  var BLOCKED_TAGS = /* @__PURE__ */ new Set([
+    &quot;SCRIPT&quot;,
+    &quot;STYLE&quot;,
+    &quot;NOSCRIPT&quot;,
+    &quot;TEMPLATE&quot;,
+    &quot;FORM&quot;,
+    &quot;INPUT&quot;,
+    &quot;TEXTAREA&quot;,
+    &quot;SELECT&quot;,
+    &quot;OPTION&quot;,
+    &quot;BUTTON&quot;,
+    &quot;IFRAME&quot;,
+    &quot;OBJECT&quot;,
+    &quot;EMBED&quot;,
+    &quot;LINK&quot;,
+    &quot;META&quot;
+  ]);
+  var GLOBAL_ATTRIBUTES = /* @__PURE__ */ new Set([&quot;class&quot;, &quot;title&quot;, &quot;lang&quot;, &quot;dir&quot;, &quot;role&quot;]);
+  var TAG_ATTRIBUTES = {
+    A: /* @__PURE__ */ new Set([&quot;href&quot;, &quot;target&quot;, &quot;rel&quot;, &quot;download&quot;, &quot;hreflang&quot;]),
+    IMG: /* @__PURE__ */ new Set([&quot;src&quot;, &quot;alt&quot;, &quot;width&quot;, &quot;height&quot;, &quot;loading&quot;]),
+    OL: /* @__PURE__ */ new Set([&quot;start&quot;, &quot;reversed&quot;, &quot;type&quot;]),
+    LI: /* @__PURE__ */ new Set([&quot;value&quot;]),
+    ABBR: /* @__PURE__ */ new Set([&quot;title&quot;])
+  };
+  function safeUrl(value, attribute) {
+    const normalized = value.trim().toLocaleLowerCase(&quot;en-US&quot;);
+    if (attribute === &quot;src&quot; &amp;&amp; normalized.startsWith(&quot;data:image/&quot;)) return true;
+    return !/^(?:javascript|vbscript|data):/u.test(normalized);
+  }
+  function descriptor(element) {
+    const attributes = [];
+    for (const attribute of Array.from(element.attributes)) {
+      const name = attribute.name.toLocaleLowerCase(&quot;en-US&quot;);
+      if (name === &quot;id&quot; || name === &quot;style&quot; || name.startsWith(&quot;on&quot;) || name.startsWith(&quot;data-&quot;)) continue;
+      const allowed = GLOBAL_ATTRIBUTES.has(name) || name.startsWith(&quot;aria-&quot;) || TAG_ATTRIBUTES[element.tagName]?.has(name);
+      if (!allowed) continue;
+      if ((name === &quot;href&quot; || name === &quot;src&quot;) &amp;&amp; !safeUrl(attribute.value, name)) continue;
+      attributes.push([name, attribute.value]);
+    }
+    return { tagName: SAFE_TAGS.has(element.tagName) ? element.tagName : &quot;SPAN&quot;, attributes, source: element };
+  }
+  function applyClickMeaning(clone, source) {
+    if (clone.tagName === &quot;A&quot; &amp;&amp; clone.hasAttribute(&quot;href&quot;) &amp;&amp; !source.hasAttribute(&quot;onclick&quot;)) return;
+    if (!source.matches('a[href], [role=&quot;button&quot;], [onclick]')) return;
+    clone.addEventListener(&quot;click&quot;, (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (source instanceof HTMLElement) source.click();
+    });
+  }
+  function createShell(value, ownerDocument) {
+    const element = ownerDocument.createElement(value.tagName.toLocaleLowerCase(&quot;en-US&quot;));
+    value.attributes.forEach(([name, attributeValue]) => element.setAttribute(name, attributeValue));
+    applyClickMeaning(element, value.source);
+    return element;
+  }
+  function safeClone(source, ownerDocument) {
+    if (BLOCKED_TAGS.has(source.tagName)) return void 0;
+    if (!SAFE_TAGS.has(source.tagName)) {
+      const fragment = ownerDocument.createDocumentFragment();
+      source.childNodes.forEach((child) => {
+        if (child instanceof Text) fragment.append(ownerDocument.createTextNode(child.nodeValue ?? &quot;&quot;));
+        else if (child instanceof Element) {
+          const clone2 = safeClone(child, ownerDocument);
+          if (clone2) fragment.append(clone2);
+        }
+      });
+      return fragment;
+    }
+    const clone = createShell(descriptor(source), ownerDocument);
+    if (!VOID_TAGS.has(source.tagName)) {
+      source.childNodes.forEach((child) => {
+        if (child instanceof Text) clone.append(ownerDocument.createTextNode(child.nodeValue ?? &quot;&quot;));
+        else if (child instanceof Element) {
+          const childClone = safeClone(child, ownerDocument);
+          if (childClone) clone.append(childClone);
+        }
+      });
+    }
+    return clone;
+  }
+  function escaped(value) {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, &quot;\\$&amp;&quot;);
+  }
+  function renderStructuredTranslation(format, translated, ownerDocument) {
+    const root = createShell(format.root, ownerDocument);
+    if (format.tokens.length === 0) {
+      root.textContent = translated;
+      return root;
+    }
+    const byValue = new Map(format.tokens.map((token) => [token.value, token]));
+    const pattern = new RegExp(
+      format.tokens.map(({ value }) => value).sort((left, right) => right.length - left.length).map(escaped).join(&quot;|&quot;),
+      &quot;gu&quot;
+    );
+    const seen = /* @__PURE__ */ new Set();
+    const stack = [{ element: root }];
+    let cursor = 0;
+    for (const match of translated.matchAll(pattern)) {
+      const index = match.index;
+      const value = match[0];
+      const token = byValue.get(value);
+      if (index === void 0 || !token || seen.has(value)) {
+        throw new PlaceholderIntegrityError([&quot;protected&quot;], &quot;DOM \uAD6C\uC870 \uBCF4\uD638 \uD1A0\uD070\uC774 \uC911\uBCF5\uB418\uAC70\uB098 \uC190\uC0C1\uB418\uC5C8\uC2B5\uB2C8\uB2E4.&quot;);
+      }
+      seen.add(value);
+      if (index > cursor) stack.at(-1).element.append(ownerDocument.createTextNode(translated.slice(cursor, index)));
+      if (token.kind === &quot;open&quot;) {
+        const element = createShell(token.element, ownerDocument);
+        stack.at(-1).element.append(element);
+        stack.push({ id: token.id, element });
+      } else if (token.kind === &quot;close&quot;) {
+        if (stack.length === 1 || stack.at(-1).id !== token.id) {
+          throw new PlaceholderIntegrityError([&quot;protected&quot;], &quot;DOM \uAD6C\uC870 \uBCF4\uD638 \uD1A0\uD070\uC758 \uC911\uCCA9 \uC21C\uC11C\uAC00 \uC190\uC0C1\uB418\uC5C8\uC2B5\uB2C8\uB2E4.&quot;);
+        }
+        stack.pop();
+      } else if (token.kind === &quot;void&quot;) {
+        stack.at(-1).element.append(createShell(token.element, ownerDocument));
+      } else {
+        const clone = safeClone(token.element.source, ownerDocument);
+        if (clone) stack.at(-1).element.append(clone);
+      }
+      cursor = index + value.length;
+    }
+    if (seen.size !== format.tokens.length || stack.length !== 1) {
+      throw new PlaceholderIntegrityError([&quot;protected&quot;], &quot;DOM \uAD6C\uC870 \uBCF4\uD638 \uD1A0\uD070\uC758 \uAC1C\uC218 \uB610\uB294 \uC911\uCCA9\uC774 \uC190\uC0C1\uB418\uC5C8\uC2B5\uB2C8\uB2E4.&quot;);
+    }
+    if (cursor &lt; translated.length) root.append(ownerDocument.createTextNode(translated.slice(cursor)));
+    return root;
+  }
+  function cloneStructuredListShell(format, ownerDocument) {
+    return format.parentList ? createShell(format.parentList, ownerDocument) : void 0;
+  }
+
+  // src/rendering/original-preserving-renderer.ts
+  var SAFE_TRANSLATION_TAGS = /* @__PURE__ */ new Set([
+    &quot;BLOCKQUOTE&quot;,
+    &quot;DIV&quot;,
+    &quot;H3&quot;,
+    &quot;H4&quot;,
+    &quot;H5&quot;,
+    &quot;H6&quot;,
+    &quot;P&quot;,
+    &quot;PRE&quot;
+  ]);
+  var OriginalPreservingRenderer = class {
+    style;
+    bindings = /* @__PURE__ */ new Map();
+    presentations = /* @__PURE__ */ new Set();
+    sectionPresentations = /* @__PURE__ */ new WeakMap();
+    originalDisplays = /* @__PURE__ */ new WeakMap();
+    inlineBindings = /* @__PURE__ */ new Map();
+    retranslateHandler;
+    setRetranslateHandler(handler) {
+      this.retranslateHandler = handler;
+    }
+    track(target) {
+      if (target.renderMode === &quot;inline&quot;) {
+        const existing2 = this.inlineBindings.get(target.id);
+        const source = target.sourceElements[0];
+        if (!source) return;
+        if (existing2) {
+          existing2.target = target;
+          return;
+        }
+        this.inlineBindings.set(target.id, {
+          target,
+          original: source.textContent ?? target.source
+        });
+        return;
+      }
+      const existing = this.bindings.get(target.id);
+      if (existing) {
+        existing.target = target;
+        target.sourceElements.forEach((element) => {
+          if (!this.originalDisplays.has(element)) {
+            this.originalDisplays.set(element, element.style.display);
+          }
+        });
+        return;
+      }
+      target.sourceElements.forEach((element) => {
+        this.originalDisplays.set(element, element.style.display);
+      });
+      const sectionRoot = this.sectionRoot(target);
+      let presentation = sectionRoot ? this.sectionPresentations.get(sectionRoot) : void 0;
+      if (!presentation) {
+        presentation = {
+          bindings: [],
+          forceOriginal: false,
+          sectionRoot,
+          lists: /* @__PURE__ */ new Map(),
+          translatedCount: 0
+        };
+        this.presentations.add(presentation);
+        if (sectionRoot) {
+          this.sectionPresentations.set(sectionRoot, presentation);
+        }
+      }
+      const binding = { target, presentation };
+      presentation.bindings.push(binding);
+      this.bindings.set(target.id, binding);
+    }
+    reset(target) {
+      if (target.renderMode === &quot;inline&quot;) {
+        const binding2 = this.inlineBindings.get(target.id);
+        const source = target.sourceElements[0];
+        if (!source) return;
+        if (binding2) {
+          binding2.target = target;
+          binding2.original = source.textContent ?? target.source;
+        } else {
+          this.track(target);
+        }
+        return;
+      }
+      this.track(target);
+      const binding = this.bindings.get(target.id);
+      if (!binding) {
+        return;
+      }
+      const presentation = binding.presentation;
+      binding.failureMessage = void 0;
+      this.removeCopy(binding);
+      this.showOriginal(binding.target, presentation);
+      if (presentation.translatedCount > 0) {
+        return;
+      }
+      this.releaseEmptyPresentation(presentation);
+    }
+    render(target, translated) {
+      if (!translated.trim()) {
+        return;
+      }
+      this.track(target);
+      if (target.renderMode === &quot;inline&quot;) {
+        const binding2 = this.inlineBindings.get(target.id);
+        const source = binding2?.target.sourceElements[0];
+        if (!binding2 || !source) return;
+        const leading = binding2.original.match(/^\s*/)?.[0] ?? &quot;&quot;;
+        const trailing = binding2.original.match(/\s*$/)?.[0] ?? &quot;&quot;;
+        source.textContent = `${leading}${translated}${trailing}`;
+        return;
+      }
+      const binding = this.bindings.get(target.id);
+      if (!binding) {
+        return;
+      }
+      binding.failureMessage = void 0;
+      if (binding.translated === void 0) binding.presentation.translatedCount += 1;
+      binding.translated = translated;
+      this.ensurePresentation(binding.presentation);
+      this.renderBinding(binding);
+      this.refreshPresentationState(binding.presentation);
+      if (binding.presentation.forceOriginal) this.showOriginal(target, binding.presentation);
+      else this.hideOriginal(target, binding.presentation);
+    }
+    showFailure(target, message) {
+      if (target.renderMode === &quot;inline&quot;) return;
+      this.track(target);
+      const binding = this.bindings.get(target.id);
+      if (!binding) return;
+      binding.failureMessage = message;
+      this.ensurePresentation(binding.presentation);
+      this.showOriginal(target, binding.presentation);
+      this.refreshPresentationState(binding.presentation);
+    }
+    hasFailureNotice(target) {
+      const status = this.bindings.get(target.id)?.presentation.status;
+      return Boolean(status?.isConnected &amp;&amp; !status.closest(&quot;[hidden]&quot;));
+    }
+    remove(id) {
+      const inline = this.inlineBindings.get(id);
+      if (inline) {
+        const source = inline.target.sourceElements[0];
+        if (source) source.textContent = inline.original;
+        this.inlineBindings.delete(id);
+        return;
+      }
+      const binding = this.bindings.get(id);
+      if (!binding) return;
+      this.removeCopy(binding);
+      this.showOriginal(binding.target, binding.presentation);
+      this.bindings.delete(id);
+      const presentation = binding.presentation;
+      presentation.bindings = presentation.bindings.filter((entry) => entry !== binding);
+      if (presentation.translatedCount === 0) this.releaseEmptyPresentation(presentation);
+      if (presentation.bindings.length === 0) {
+        this.presentations.delete(presentation);
+        if (presentation.sectionRoot) this.sectionPresentations.delete(presentation.sectionRoot);
+      }
+    }
+    releaseEmptyPresentation(presentation) {
+      presentation.toggleHost?.remove();
+      presentation.block?.remove();
+      presentation.block = void 0;
+      presentation.body = void 0;
+      presentation.toggle = void 0;
+      presentation.retranslate = void 0;
+      presentation.status = void 0;
+      presentation.feedback = void 0;
+      presentation.toggleHost = void 0;
+      presentation.lists.clear();
+      presentation.bindings.forEach((binding) => this.showOriginal(binding.target, presentation));
+      this.unwrapOriginalContent(presentation);
+    }
+    destroy() {
+      this.style?.remove();
+      this.style = void 0;
+      this.inlineBindings.forEach((binding) => {
+        const source = binding.target.sourceElements[0];
+        if (source) source.textContent = binding.original;
+      });
+      this.inlineBindings.clear();
+      this.presentations.forEach((presentation) => {
+        presentation.toggleHost?.remove();
+        presentation.block?.remove();
+        presentation.bindings.forEach((binding) => this.showOriginal(binding.target, presentation));
+        this.unwrapOriginalContent(presentation);
+      });
+      this.bindings.clear();
+      this.presentations.clear();
+      this.sectionPresentations = /* @__PURE__ */ new WeakMap();
+      this.originalDisplays = /* @__PURE__ */ new WeakMap();
+    }
+    sectionRoot(target) {
+      if (target.category === &quot;comment&quot;) {
+        return void 0;
+      }
+      for (const element of target.sourceElements) {
+        if (element.matches(SHARED_SELECTORS.authoredContent)) {
+          return element;
+        }
+        const root = element.closest(SHARED_SELECTORS.authoredContent);
+        if (root) {
+          return root;
+        }
+      }
+      return void 0;
+    }
+    ensurePresentation(presentation) {
+      if (presentation.block) {
+        return;
+      }
+      const first = presentation.bindings[0];
+      if (!first) {
+        return;
+      }
+      const ownerDocument = first.target.parent.ownerDocument;
+      if (!this.style) {
+        this.style = ownerDocument.createElement(&quot;style&quot;);
+        this.style.dataset.mpkrTranslationActions = &quot;&quot;;
+        this.style.textContent = TRANSLATION_ACTION_CSS;
+        ownerDocument.head.append(this.style);
+      }
+      const inlineCopy = first.target.renderMode === &quot;inline-copy&quot;;
+      const block = ownerDocument.createElement(inlineCopy ? &quot;span&quot; : &quot;div&quot;);
+      block.className = presentation.sectionRoot ? &quot;mpkr-machine-translation mpkr-section-translation&quot; : &quot;mpkr-machine-translation&quot;;
+      block.dataset.mpkrTranslationId = first.target.id;
+      block.style.color = &quot;inherit&quot;;
+      block.style.fontSize = &quot;inherit&quot;;
+      block.style.lineHeight = inlineCopy ? &quot;inherit&quot; : UI.font.bodyLineHeight;
+      block.style.margin = inlineCopy || presentation.sectionRoot ? &quot;0&quot; : &quot;0.5rem 0&quot;;
+      const body = ownerDocument.createElement(inlineCopy ? &quot;span&quot; : &quot;div&quot;);
+      body.className = &quot;mpkr-translation-body&quot;;
+      const status = ownerDocument.createElement(inlineCopy ? &quot;span&quot; : &quot;div&quot;);
+      status.className = &quot;mpkr-translation-status mpkr-status-message&quot;;
+      status.setAttribute(&quot;role&quot;, &quot;status&quot;);
+      status.setAttribute(&quot;aria-live&quot;, &quot;polite&quot;);
+      status.setAttribute(&quot;aria-atomic&quot;, &quot;true&quot;);
+      const feedback = ownerDocument.createElement(&quot;span&quot;);
+      feedback.className = &quot;mpkr-translation-feedback&quot;;
+      feedback.setAttribute(&quot;role&quot;, &quot;status&quot;);
+      feedback.setAttribute(&quot;aria-live&quot;, &quot;polite&quot;);
+      feedback.hidden = true;
+      const toggle = ownerDocument.createElement(&quot;button&quot;);
+      toggle.type = &quot;button&quot;;
+      toggle.className = &quot;mpkr-original-toggle&quot;;
+      toggle.textContent = presentation.forceOriginal ? &quot;\uC6D0\uBB38 \uC228\uAE30\uAE30&quot; : &quot;\uC6D0\uBB38 \uBCF4\uAE30&quot;;
+      toggle.setAttribute(&quot;aria-expanded&quot;, String(presentation.forceOriginal));
+      toggle.setAttribute(&quot;aria-label&quot;, presentation.forceOriginal ? &quot;\uC774 \uC139\uC158\uC758 \uC6D0\uBB38 \uC228\uAE30\uAE30&quot; : &quot;\uC774 \uC139\uC158\uC758 \uC6D0\uBB38 \uBCF4\uAE30&quot;);
+      toggle.addEventListener(&quot;click&quot;, (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        presentation.forceOriginal = !presentation.forceOriginal;
+        this.applyPresentation(presentation);
+      });
+      const retranslate = ownerDocument.createElement(&quot;button&quot;);
+      retranslate.type = &quot;button&quot;;
+      retranslate.className = &quot;mpkr-retranslate&quot;;
+      retranslate.textContent = &quot;\uC7AC\uBC88\uC5ED&quot;;
+      retranslate.setAttribute(&quot;aria-label&quot;, &quot;\uC774 \uC139\uC158 \uB2E4\uC2DC \uBC88\uC5ED&quot;);
+      retranslate.addEventListener(&quot;click&quot;, async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const handler = this.retranslateHandler;
+        if (!handler || retranslate.disabled) return;
+        const targetIds = presentation.bindings.map((binding) => binding.target).filter((target) => target.renderMode !== &quot;inline&quot;).map((target) => target.id);
+        if (targetIds.length === 0) return;
+        retranslate.disabled = true;
+        retranslate.setAttribute(&quot;aria-busy&quot;, &quot;true&quot;);
+        feedback.hidden = false;
+        feedback.textContent = &quot;\uC7AC\uBC88\uC5ED \uC911\u2026&quot;;
+        try {
+          const result = await handler(targetIds);
+          feedback.textContent = result === &quot;unchanged&quot; ? &quot;\uAE30\uC874 \uBC88\uC5ED\uACFC \uAC19\uC2B5\uB2C8\uB2E4.&quot; : result === &quot;failed&quot; ? &quot;\uC7AC\uBC88\uC5ED\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uC2DC\uB3C4\uD574 \uC8FC\uC138\uC694.&quot; : &quot;\uBC88\uC5ED\uC744 \uAC31\uC2E0\uD588\uC2B5\uB2C8\uB2E4.&quot;;
+          feedback.hidden = result === &quot;failed&quot; &amp;&amp; !status.hidden;
+        } catch {
+          feedback.textContent = &quot;\uC7AC\uBC88\uC5ED\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uC2DC\uB3C4\uD574 \uC8FC\uC138\uC694.&quot;;
+          feedback.hidden = !status.hidden;
+        } finally {
+          retranslate.disabled = false;
+          retranslate.removeAttribute(&quot;aria-busy&quot;);
+        }
+      });
+      block.append(body, status);
+      presentation.block = block;
+      presentation.body = body;
+      presentation.toggle = toggle;
+      presentation.retranslate = retranslate;
+      presentation.status = status;
+      presentation.feedback = feedback;
+      if (presentation.sectionRoot) {
+        this.wrapWholeRootOriginal(presentation);
+        presentation.sectionRoot.insertBefore(block, presentation.sectionRoot.firstChild);
+      } else {
+        first.target.parent.insertBefore(block, first.target.insertBefore ?? null);
+      }
+      const author = this.authorFor(first.target);
+      if (first.target.category === &quot;comment&quot; &amp;&amp; author?.parentElement) {
+        const toggleHost = ownerDocument.createElement(&quot;div&quot;);
+        toggleHost.className = &quot;mpkr-original-toggle-host mpkr-translation-actions&quot;;
+        author.insertAdjacentElement(&quot;afterend&quot;, toggleHost);
+        toggleHost.append(toggle);
+        toggleHost.append(retranslate, feedback);
+        presentation.toggleHost = toggleHost;
+      } else {
+        const actions = ownerDocument.createElement(&quot;span&quot;);
+        actions.className = &quot;mpkr-translation-actions&quot;;
+        actions.append(toggle, retranslate, feedback);
+        block.append(actions);
+      }
+      this.refreshPresentationState(presentation);
+    }
+    refreshPresentationState(presentation) {
+      const hasTranslation = presentation.translatedCount > 0;
+      const failure = presentation.bindings.find((binding) => binding.failureMessage)?.failureMessage;
+      if (presentation.body) presentation.body.hidden = !hasTranslation;
+      if (presentation.toggle) presentation.toggle.hidden = !hasTranslation;
+      if (presentation.status) {
+        setStatusMessage(presentation.status, failure ?? &quot;&quot;);
+        presentation.status.hidden = !failure;
+      }
+    }
+    authorFor(target) {
+      const source = target.sourceElements[0];
+      if (!source) {
+        return void 0;
+      }
+      const forumAuthor = source.closest(COMMUNITY_SELECTORS.topicRow)?.querySelector(COMMUNITY_SELECTORS.topicAuthor);
+      if (forumAuthor) return forumAuthor;
+      const activityAuthor = source.closest(COMMUNITY_SELECTORS.activityRow)?.querySelector(COMMUNITY_SELECTORS.activityAuthor);
+      if (activityAuthor) return activityAuthor;
+      const tickRow = source.closest(STATS_SELECTORS.tickRowLandmark);
+      if (tickRow) {
+        return tickRow.querySelector(STATS_SELECTORS.tickAuthor) ?? void 0;
+      }
+      const commentBody = target.parent.matches(SHARED_SELECTORS.commentBody) ? target.parent : source.closest(SHARED_SELECTORS.commentBody);
+      const localAuthor = commentBody?.querySelector(SHARED_SELECTORS.commentAuthor);
+      if (localAuthor) {
+        return localAuthor;
+      }
+      const commentContainer = commentBody?.closest(SHARED_SELECTORS.commentContainer);
+      return commentContainer?.querySelector(SHARED_SELECTORS.commentAuthor) ?? void 0;
+    }
+    wrapWholeRootOriginal(presentation) {
+      const root = presentation.sectionRoot;
+      if (!root || !presentation.bindings.some((binding) => binding.target.sourceElements.includes(root))) {
+        return;
+      }
+      const wrapper = root.ownerDocument.createElement(&quot;div&quot;);
+      wrapper.className = &quot;mpkr-original-section-content&quot;;
+      while (root.firstChild) {
+        wrapper.append(root.firstChild);
+      }
+      root.append(wrapper);
+      presentation.originalWrapper = wrapper;
+    }
+    unwrapOriginalContent(presentation) {
+      const root = presentation.sectionRoot;
+      const wrapper = presentation.originalWrapper;
+      if (!root || !wrapper) {
+        return;
+      }
+      while (wrapper.firstChild) {
+        root.insertBefore(wrapper.firstChild, wrapper);
+      }
+      wrapper.remove();
+      presentation.originalWrapper = void 0;
+    }
+    sourceForCopy = /* @__PURE__ */ new WeakMap();
+    insertInSourceOrder(parent, copy, source) {
+      if (source) this.sourceForCopy.set(copy, source);
+      let next = null;
+      for (let sibling = parent.lastElementChild; sibling; sibling = sibling.previousElementSibling) {
+        const siblingSource = this.sourceForCopy.get(sibling);
+        if (!source || !siblingSource || !(source.compareDocumentPosition(siblingSource) &amp; Node.DOCUMENT_POSITION_FOLLOWING)) break;
+        next = sibling;
+      }
+      parent.insertBefore(copy, next);
+    }
+    renderBinding(binding) {
+      const { presentation } = binding;
+      const body = presentation.body;
+      const source = binding.target.sourceElements[0];
+      const previous = binding.copy;
+      const previousParent = previous?.parentElement;
+      const previousNext = previous?.nextSibling ?? null;
+      previous?.remove();
+      let parent = previousParent ?? body;
+      if (!previousParent &amp;&amp; source?.tagName === &quot;LI&quot; &amp;&amp; source.parentElement) {
+        const listSource = source.parentElement;
+        let list = presentation.lists.get(listSource);
+        if (!list) {
+          list = binding.target.format ? cloneStructuredListShell(binding.target.format, body.ownerDocument) : void 0;
+          list ??= body.ownerDocument.createElement(listSource.tagName === &quot;OL&quot; ? &quot;ol&quot; : &quot;ul&quot;);
+          list.style.margin = &quot;0.35rem 0&quot;;
+          list.style.paddingLeft = &quot;1.4rem&quot;;
+          presentation.lists.set(listSource, list);
+          this.insertInSourceOrder(body, list, listSource);
+        }
+        parent = list;
+      }
+      const copy = binding.target.format ? renderStructuredTranslation(binding.target.format, binding.translated ?? &quot;&quot;, body.ownerDocument) : body.ownerDocument.createElement(
+        source?.tagName === &quot;LI&quot; ? &quot;li&quot; : source &amp;&amp; SAFE_TRANSLATION_TAGS.has(source.tagName) ? source.tagName.toLowerCase() : &quot;div&quot;
+      );
+      if (!binding.target.format) copy.textContent = binding.translated ?? &quot;&quot;;
+      if (copy.tagName !== &quot;LI&quot; &amp;&amp; binding.target.renderMode !== &quot;inline-copy&quot;) {
+        copy.style.marginTop = &quot;0.65rem&quot;;
+        copy.style.marginBottom = &quot;0&quot;;
+      }
+      binding.copy = copy;
+      if (previousParent) previousParent.insertBefore(copy, previousNext);
+      else this.insertInSourceOrder(parent, copy, source);
+      if (parent === body &amp;&amp; copy === body.firstElementChild &amp;&amp; binding.target.renderMode !== &quot;inline-copy&quot;) {
+        copy.style.marginTop = &quot;0&quot;;
+        const next = copy.nextElementSibling;
+        if (next &amp;&amp; ![&quot;UL&quot;, &quot;OL&quot;].includes(next.tagName)) next.style.marginTop = &quot;0.65rem&quot;;
+      }
+    }
+    removeCopy(binding) {
+      if (binding.translated) binding.presentation.translatedCount -= 1;
+      binding.translated = void 0;
+      binding.copy?.remove();
+      binding.copy = void 0;
+      for (const [source, list] of binding.presentation.lists) {
+        if (!list.childElementCount) {
+          list.remove();
+          binding.presentation.lists.delete(source);
+        }
+      }
+      const first = binding.presentation.body?.firstElementChild;
+      if (first &amp;&amp; ![&quot;UL&quot;, &quot;OL&quot;].includes(first.tagName)) first.style.marginTop = &quot;0&quot;;
+    }
+    applyPresentation(presentation) {
+      const showOriginal = presentation.forceOriginal;
+      if (presentation.block) {
+        presentation.block.style.display = &quot;&quot;;
+      }
+      if (presentation.toggle) {
+        presentation.toggle.textContent = showOriginal ? &quot;\uC6D0\uBB38 \uC228\uAE30\uAE30&quot; : &quot;\uC6D0\uBB38 \uBCF4\uAE30&quot;;
+        presentation.toggle.setAttribute(&quot;aria-expanded&quot;, String(showOriginal));
+        presentation.toggle.setAttribute(
+          &quot;aria-label&quot;,
+          showOriginal ? &quot;\uC774 \uC139\uC158\uC758 \uC6D0\uBB38 \uC228\uAE30\uAE30&quot; : &quot;\uC774 \uC139\uC158\uC758 \uC6D0\uBB38 \uBCF4\uAE30&quot;
+        );
+      }
+      presentation.bindings.forEach((binding) => {
+        if (showOriginal || !binding.translated) {
+          this.showOriginal(binding.target, presentation);
+        } else {
+          this.hideOriginal(binding.target, presentation);
+        }
+      });
+    }
+    hideOriginal(target, presentation) {
+      if (presentation.originalWrapper &amp;&amp; target.sourceElements.includes(presentation.sectionRoot)) {
+        presentation.originalWrapper.style.display = &quot;none&quot;;
+        return;
+      }
+      target.sourceElements.forEach((element) => {
+        element.style.display = &quot;none&quot;;
+      });
+    }
+    showOriginal(target, presentation) {
+      if (presentation.originalWrapper &amp;&amp; target.sourceElements.includes(presentation.sectionRoot)) {
+        presentation.originalWrapper.style.display = &quot;&quot;;
+        return;
+      }
+      target.sourceElements.forEach((element) => {
+        element.style.display = this.originalDisplays.get(element) ?? &quot;&quot;;
+      });
+    }
+  };
+
+  // &lt;stdin>
+  var finish = new AreaRoutePageFinish();
+  var sections = document.querySelector(&quot;#route-page&quot;) ? new RoutePageSectionPresentation() : new AreaPageSectionPresentation();
+  var lists = new RouteListPresentation();
+  var renderer = new OriginalPreservingRenderer();
+  for (const [index, source] of [...document.querySelectorAll(&quot;[data-original]&quot;)].entries()) {
+    renderer.render({ id: &quot;review-&quot; + index, category: &quot;description&quot;, source: source.textContent, sourceElements: [source], parent: source.parentElement }, source.dataset.translation);
+  }
+  renderer.setRetranslateHandler(async () => &quot;unchanged&quot;);
+  sections.mount();
+  lists.mount();
+  finish.mount();
+  for (const h of document.querySelectorAll(&quot;.mpkr-area-section-heading&quot;)) h.click();
+  window.checkReview = () => {
+    const h = document.querySelector(&quot;.mpkr-area-section-heading&quot;), body = document.getElementById(h.getAttribute(&quot;aria-controls&quot;));
+    h.dispatchEvent(new KeyboardEvent(&quot;keydown&quot;, { key: &quot;Enter&quot;, bubbles: true, cancelable: true }));
+    const collapsed = body.hidden &amp;&amp; h.getAttribute(&quot;aria-expanded&quot;) === &quot;false&quot;;
+    h.dispatchEvent(new KeyboardEvent(&quot;keydown&quot;, { key: &quot; &quot;, bubbles: true, cancelable: true }));
+    const expanded = !body.hidden &amp;&amp; h.getAttribute(&quot;aria-expanded&quot;) === &quot;true&quot;;
+    const action = document.querySelector(&quot;.mpkr-original-toggle&quot;);
+    const original = document.querySelector(&quot;[data-original]&quot;);
+    let originalToggle = null;
+    if (action) {
+      action.click();
+      const shown = getComputedStyle(original).display !== &quot;none&quot;;
+      action.click();
+      originalToggle = shown &amp;&amp; getComputedStyle(original).display === &quot;none&quot;;
+    }
+    const title = document.querySelector(&quot;h1&quot;);
+    const activeLineHeight = getComputedStyle(title).lineHeight;
+    finish.destroy();
+    const removed = !document.querySelector(&quot;[data-mpkr-area-route-finish]&quot;);
+    const restoredLineHeight = getComputedStyle(title).lineHeight;
+    finish.mount();
+    finish.mount();
+    const singleStyle = document.querySelectorAll(&quot;[data-mpkr-area-route-finish]&quot;).length === 1;
+    let firstRowTextOffset = 0;
+    const firstLink = document.querySelector(&quot;.mpkr-route-list-primary&quot;), grade = document.querySelector(&quot;.route-row .rateYDS&quot;);
+    if (firstLink &amp;&amp; grade) {
+      const range = document.createRange();
+      range.selectNodeContents(firstLink);
+      firstRowTextOffset = range.getBoundingClientRect().bottom - grade.getBoundingClientRect().bottom;
+    }
+    const sectionMargin = getComputedStyle(h).marginTop;
+    return {
+      sectionMargin,
+      collapsed,
+      expanded,
+      originalToggle,
+      removed,
+      singleStyle,
+      activeLineHeight,
+      restoredLineHeight,
+      firstRowTextOffset,
+      overflow: document.documentElement.scrollWidth - innerWidth,
+      overflowingControls: [...document.querySelectorAll(&quot;.mpkr-area-section-heading,.mpkr-translation-actions,.mpkr-route-list-primary&quot;)].filter((e) => e.getBoundingClientRect().right > innerWidth + 1).length,
+      passed: sectionMargin === &quot;24px&quot; &amp;&amp; Math.abs(firstRowTextOffset) &lt;= 1 &amp;&amp; collapsed &amp;&amp; expanded &amp;&amp; originalToggle !== false &amp;&amp; removed &amp;&amp; singleStyle &amp;&amp; document.documentElement.scrollWidth &lt;= innerWidth
+    };
+  };
+})();
+&lt;/script>&lt;/html>"></iframe></section><section><div class="label">Route · 루트 페이지</div><iframe title="루트 예시" srcdoc="&lt;!doctype html>&lt;html lang=&quot;ko&quot;>&lt;meta charset=&quot;utf-8&quot;>&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;>&lt;base href=&quot;https://www.mountainproject.com/&quot;>&lt;style>@font-face{font-family:ReviewKorean;src:url('file:///mnt/c/Windows/Fonts/malgun.ttf')}*{box-sizing:border-box}body{margin:0;padding:22px;background:white;color:#202124;font:16px/1.5 ReviewKorean,system-ui}h1{font-size:24px;line-height:1.2;margin:8px 0 10px}h2{font-size:16px;margin:24px 0 8px}p{margin:0 0 16px}.crumb,.meta{font-size:12px;color:#59635d}.mt-2{margin-top:32px!important}.mb-1{margin-bottom:16px!important}table{border-collapse:collapse;width:100%}td{font-size:14px;padding:4px}td:last-child{width:1%;text-align:right}.text-truncate{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}a{color:#0060a9;text-decoration:none}.screen-reader-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}.mpkr-translation-actions button{font-family:ReviewKorean,system-ui!important}&lt;/style>&lt;main id=&quot;route-page&quot;>&lt;div class=&quot;crumb&quot;>대한민국 › 북한산 › 인수봉&lt;/div>&lt;h1>긴 한글 이름도 읽기 편하게 이어지는 예시 루트&lt;/h1>&lt;p class=&quot;meta&quot;>5.10a · 트래드 · 3 피치&lt;/p>&lt;section>&lt;h2 class=&quot;mt-2&quot;>설명&lt;/h2>&lt;div class=&quot;fr-view&quot;>&lt;p data-original data-translation=&quot;제목과 본문, 원문 보기·재번역 버튼의 간격을 맞췄습니다. 버튼은 관련 설명 바로 아래에 모읍니다.&quot;>Original example paragraph kept in its native position.&lt;/p>&lt;/div>&lt;/section>&lt;section>&lt;h2 class=&quot;mt-2&quot;>위치&lt;/h2>&lt;div class=&quot;fr-view&quot;>&lt;p data-original data-translation=&quot;접근 정보에도 같은 줄 간격을 적용합니다. 긴 문장이 좁은 화면에서도 밖으로 넘치지 않는지 확인합니다.&quot;>Original example paragraph kept in its native position.&lt;/p>&lt;/div>&lt;/section>&lt;/main>&lt;script>(() => {
+  // src/sites/mountain-project/contract/selectors/area.ts
+  var AREA_SELECTORS = {
+    pageId: &quot;climb-area-page&quot;,
+    page: &quot;#climb-area-page&quot;,
+    pageTitle: &quot;h1&quot;,
+    semanticLandmarks: [
+      &quot;.left-nav .mp-sidebar&quot;,
+      &quot;#photo-carousel&quot;,
+      &quot;.description-details&quot;,
+      &quot;.fr-view&quot;,
+      &quot;#routeFinderForm&quot;,
+      &quot;table.route-table&quot;
+    ].join(&quot;, &quot;),
+    layoutRowRelative: &quot;.row.pt-main-content&quot;,
+    layoutRow: &quot;#climb-area-page .row.pt-main-content&quot;,
+    sidebarExact: &quot;#climb-area-page .row.pt-main-content > .col-md-3.left-nav&quot;,
+    sidebarFallback: &quot;#climb-area-page .left-nav&quot;,
+    mapLinksExact: &quot;#climb-area-page .row.pt-main-content > .col-md-3.left-nav .mp-sidebar a[href]&quot;,
+    mapLinksFallback: '#climb-area-page .left-nav a[href*=&quot;/map/&quot;]',
+    mainContentExact: &quot;#climb-area-page .row.pt-main-content > .col-md-9.main-content&quot;,
+    mainContentFallback: &quot;#climb-area-page .main-content&quot;,
+    photoCarouselRelative: &quot;#photo-carousel&quot;,
+    photoCarousel: &quot;#climb-area-page #photo-carousel&quot;,
+    photoContainerClasses: [&quot;float-xs-right&quot;, &quot;ml-1&quot;],
+    sectionHeadings: &quot;#climb-area-page h2&quot;,
+    routeTables: &quot;table.route-table&quot;,
+    screenReaderHeader: &quot;tr.screen-reader-only&quot;,
+    routeRowClass: &quot;route-row&quot;,
+    textSectionClass: &quot;text-section&quot;,
+    legacyTextSectionGroup: &quot;.list-group.mt-2&quot;,
+    legacyTextSectionHeading: &quot;.list-group-item-heading&quot;,
+    legacyTextSectionBody: &quot;.list-group-item-text&quot;,
+    legacyTextSectionExpander: &quot;.expander&quot;,
+    responsiveTableClass: &quot;table-responsive&quot;,
+    sidebarRow: &quot;.lef-nav-row&quot;,
+    warmText: &quot;.text-warm&quot;,
+    constrainedNarrativeWrapper: [
+      &quot;.max-height&quot;,
+      &quot;.max-height-xs-600&quot;,
+      &quot;.max-height-md-600&quot;,
+      &quot;.max-height-processed&quot;
+    ].join(&quot;&quot;),
+    constrainedNarrativeClasses: [
+      &quot;max-height&quot;,
+      &quot;max-height-xs-600&quot;,
+      &quot;max-height-md-600&quot;,
+      &quot;max-height-processed&quot;
+    ]
+  };
+  var AREA_PAGE_CONTRACT = {
+    component: &quot;area-page&quot;,
+    key: &quot;page-root&quot;,
+    required: true,
+    candidates: [
+      { key: &quot;area-page-id&quot;, selector: AREA_SELECTORS.page }
+    ]
+  };
+  var AREA_SIDEBAR_CONTRACT = {
+    component: &quot;south-korea-map&quot;,
+    key: &quot;area-sidebar&quot;,
+    required: true,
+    candidates: [
+      { key: &quot;bootstrap-v4&quot;, selector: AREA_SELECTORS.sidebarExact },
+      { key: &quot;semantic-left-nav&quot;, selector: AREA_SELECTORS.sidebarFallback }
+    ]
+  };
+  var AREA_MAIN_CONTENT_CONTRACT = {
+    component: &quot;south-korea-map&quot;,
+    key: &quot;main-content&quot;,
+    required: true,
+    candidates: [
+      { key: &quot;bootstrap-v4&quot;, selector: AREA_SELECTORS.mainContentExact },
+      { key: &quot;semantic-main-content&quot;, selector: AREA_SELECTORS.mainContentFallback }
+    ]
+  };
+  var AREA_MAP_LINK_CONTRACT = {
+    component: &quot;south-korea-map&quot;,
+    key: &quot;map-link&quot;,
+    required: false,
+    candidates: [
+      { key: &quot;bootstrap-v4-preview&quot;, selector: AREA_SELECTORS.mapLinksExact },
+      { key: &quot;semantic-map-link&quot;, selector: AREA_SELECTORS.mapLinksFallback }
+    ]
+  };
+
+  // src/sites/mountain-project/contract/selectors/route.ts
+  var ROUTE_SELECTORS = {
+    pageId: &quot;route-page&quot;,
+    page: &quot;#route-page&quot;,
+    youAndRoute: &quot;#you-and-route&quot;,
+    overviewExact: &quot;.col-lg-7.col-md-6&quot;,
+    rowExact: &quot;.row&quot;,
+    mainContent: &quot;.main-content&quot;,
+    summaryExact: &quot;.small.mb-1&quot;,
+    auxiliaryExact: &quot;.col-lg-5.col-md-6&quot;,
+    onxLandmark: &quot;.onx-explore&quot;,
+    carouselLandmark: &quot;#photo-carousel&quot;,
+    hiddenDesktop: &quot;.hidden-sm-down&quot;,
+    statsLinks: 'a[href*=&quot;/route/stats/&quot;]',
+    sunShade: &quot;#sun-shade&quot;,
+    classicVote: &quot;.is_classic_vote&quot;,
+    classicVoteUserData: [
+      &quot;.is_classic_vote .route-name&quot;,
+      &quot;.is_classic_vote .user-content&quot;,
+      &quot;.is_classic_vote [data-route-name]&quot;,
+      '.is_classic_vote a[href*=&quot;/route/&quot;]',
+      '.is_classic_vote a[href*=&quot;/area/&quot;]',
+      '.is_classic_vote a[href*=&quot;/user/&quot;]'
+    ].join(&quot;, &quot;)
+  };
+  var ROUTE_PAGE_CONTRACT = {
+    component: &quot;route-stats-embed&quot;,
+    key: &quot;route-page&quot;,
+    required: true,
+    candidates: [{ key: &quot;route-page-id&quot;, selector: ROUTE_SELECTORS.page }]
+  };
+  var ROUTE_YOU_AND_ROUTE_CONTRACT = {
+    component: &quot;route-stats-embed&quot;,
+    key: &quot;you-and-route&quot;,
+    required: true,
+    candidates: [{ key: &quot;you-and-route-id&quot;, selector: ROUTE_SELECTORS.youAndRoute }]
+  };
+  var ROUTE_AUXILIARY_CONTRACT = {
+    component: &quot;route-stats-embed&quot;,
+    key: &quot;auxiliary-regions&quot;,
+    required: true,
+    candidates: [
+      { key: &quot;bootstrap-v4-columns&quot;, selector: ROUTE_SELECTORS.auxiliaryExact },
+      { key: &quot;semantic-landmarks&quot;, selector: `${ROUTE_SELECTORS.onxLandmark}, ${ROUTE_SELECTORS.carouselLandmark}` }
+    ]
+  };
+
+  // src/ui/design-tokens.ts
+  var NAV = {
+    surface: &quot;#202124&quot;,
+    surfaceHover: &quot;#2c3036&quot;,
+    border: &quot;#5f6368&quot;,
+    divider: &quot;#5f6368&quot;,
+    text: &quot;#fff&quot;,
+    link: &quot;#91c3e8&quot;,
+    muted: &quot;#b8c6d4&quot;,
+    focus: &quot;#91c3e8&quot;,
+    switchOff: &quot;#5f6368&quot;,
+    switchBorder: &quot;#7a8791&quot;,
+    switchThumb: &quot;#fff&quot;,
+    switchOn: &quot;#5ba2d8&quot;,
+    switchOnThumb: &quot;#fff&quot;,
+    height: &quot;38px&quot;,
+    fontSize: &quot;12px&quot;
+  };
+  var UI = {
+    nav: NAV,
+    color: {
+      text: &quot;#202124&quot;,
+      muted: &quot;#59635d&quot;,
+      link: &quot;#0060a9&quot;,
+      linkHover: &quot;#004b84&quot;,
+      linkActive: &quot;#003e70&quot;,
+      surface: &quot;#fff&quot;,
+      surfaceSubtle: &quot;#f7f8f8&quot;,
+      surfaceHover: &quot;#edf5fa&quot;,
+      border: &quot;#c8ceca&quot;,
+      borderHover: &quot;#9eabb3&quot;,
+      warning: &quot;#6b5b35&quot;,
+      accentSurface: &quot;#e8f0eb&quot;,
+      accentText: &quot;#294c39&quot;,
+      buttonSurface: &quot;#f1f5f9&quot;,
+      buttonHover: &quot;#e4edf5&quot;,
+      buttonActive: &quot;#d8e5f0&quot;,
+      buttonBorder: &quot;#b8c6d4&quot;,
+      buttonBorderHover: &quot;#7f9bb5&quot;,
+      headingHover: &quot;rgba(0, 96, 169, 0.12)&quot;,
+      headingFocus: &quot;rgba(0, 96, 169, 0.14)&quot;
+    },
+    font: {
+      family: 'system-ui, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif',
+      caption: &quot;0.75rem&quot;,
+      small: &quot;0.85rem&quot;,
+      hint: &quot;0.9rem&quot;,
+      body: &quot;1rem&quot;,
+      controlWeight: &quot;600&quot;,
+      bodyLineHeight: &quot;1.65&quot;,
+      uiLineHeight: &quot;1.5&quot;
+    },
+    space: {
+      xs: &quot;0.25rem&quot;,
+      sm: &quot;0.5rem&quot;,
+      md: &quot;0.75rem&quot;,
+      lg: &quot;1rem&quot;,
+      xl: &quot;1.5rem&quot;
+    },
+    radius: {
+      small: &quot;2px&quot;,
+      control: &quot;4px&quot;,
+      nav: &quot;7px&quot;
+    },
+    motion: { fast: &quot;150ms ease&quot; }
+  };
+  var UI_TOKEN_CSS = `:root {${Object.entries(UI).flatMap(
+    ([group, values]) => Object.entries(values).map(
+      ([name, value]) => `--mpkr-${group}-${name.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)}:${value};`
+    )
+  ).join(&quot;&quot;)}}`;
+
+  // src/ui/area-route-page-finish.ts
+  var PAGE = `:is(${AREA_SELECTORS.page}, ${ROUTE_SELECTORS.page})`;
+  var STYLE_TEXT = `
+${PAGE} h1 {
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+${PAGE} .mpkr-info-heading {
+  /* Native mt-2/mb-1 utilities use !important. Keep these overrides scoped. */
+  margin-top: ${UI.space.xl} !important;
+  margin-bottom: ${UI.space.md} !important;
+  padding-bottom: 0.625rem;
+  border-bottom: 1px solid ${UI.color.border};
+  line-height: ${UI.font.uiLineHeight};
+  overflow-wrap: anywhere;
+}
+
+${PAGE} .mpkr-area-section-hint {
+  font-size: ${UI.font.caption};
+}
+
+${PAGE} .mpkr-area-section-heading {
+  padding-right: 8rem;
+}
+
+${PAGE} .mpkr-area-section-body .fr-view {
+  line-height: ${UI.font.bodyLineHeight};
+  overflow-wrap: anywhere;
+}
+
+${PAGE} .mpkr-area-section-body .fr-view p {
+  margin-top: 0;
+  margin-bottom: ${UI.space.md};
+}
+
+${PAGE} .mpkr-area-section-body .mpkr-translation-actions {
+  margin-top: ${UI.space.md};
+  margin-bottom: 0;
+}
+
+${PAGE} tr.mpkr-route-list-row {
+  height: 2.75rem;
+}
+
+${PAGE} tr.mpkr-route-list-row > td {
+  vertical-align: middle;
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+  border-bottom: 1px solid ${UI.color.border};
+}
+
+${PAGE} .mpkr-route-list-primary,
+${PAGE} .mpkr-route-list-primary .text-truncate {
+  overflow-wrap: anywhere;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+${PAGE} .mpkr-route-list-primary-expanded {
+  /* The table row owns the height so short names align with adjacent grades. */
+  min-height: 0;
+}
+
+/* Grade systems keep their native columns and visibility toggles. */
+${PAGE} .mpkr-route-list-row :is(.rateYDS, .rateFrench, .rateBritish) {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 575px) {
+  ${PAGE} .mpkr-area-section-heading {
+    padding-right: 1.6rem;
+  }
+}
+`;
+  var AreaRoutePageFinish = class {
+    style;
+    mount(ownerDocument = document) {
+      if (this.style?.isConnected || !ownerDocument.querySelector(PAGE)) return;
+      this.style = ownerDocument.createElement(&quot;style&quot;);
+      this.style.setAttribute(&quot;data-mpkr-area-route-finish&quot;, &quot;true&quot;);
+      this.style.textContent = STYLE_TEXT;
+      ownerDocument.head.append(this.style);
+    }
+    destroy() {
+      this.style?.remove();
+      this.style = void 0;
+    }
+  };
+
+  // src/sites/mountain-project/contract/text/sections.ts
+  var SECTION_TITLE_TRANSLATIONS = {
+    Description: &quot;\uC124\uBA85&quot;,
+    &quot;\uC124\uBA85&quot;: &quot;\uC124\uBA85&quot;,
+    &quot;Getting There&quot;: &quot;\uAC00\uB294 \uBC29\uBC95&quot;,
+    &quot;\uAC00\uB294 \uBC29\uBC95&quot;: &quot;\uAC00\uB294 \uBC29\uBC95&quot;,
+    Location: &quot;\uC704\uCE58&quot;,
+    &quot;\uC704\uCE58&quot;: &quot;\uC704\uCE58&quot;,
+    Protection: &quot;\uBCF4\uD638 \uC7A5\uBE44&quot;,
+    &quot;\uBCF4\uD638 \uC7A5\uBE44&quot;: &quot;\uBCF4\uD638 \uC7A5\uBE44&quot;,
+    Descent: &quot;\uD558\uAC15&quot;,
+    &quot;\uD558\uAC15&quot;: &quot;\uD558\uAC15&quot;,
+    &quot;Travel Information&quot;: &quot;\uC5EC\uD589 \uC815\uBCF4&quot;,
+    &quot;\uC5EC\uD589 \uC815\uBCF4&quot;: &quot;\uC5EC\uD589 \uC815\uBCF4&quot;,
+    &quot;Helpful Hints&quot;: &quot;\uC720\uC6A9\uD55C \uD301&quot;,
+    &quot;\uC720\uC6A9\uD55C \uD301&quot;: &quot;\uC720\uC6A9\uD55C \uD301&quot;,
+    OVERVIEW: &quot;\uAC1C\uC694&quot;,
+    &quot;\uAC1C\uC694&quot;: &quot;\uAC1C\uC694&quot;,
+    &quot;Official Park Info&quot;: &quot;\uACF5\uC6D0 \uACF5\uC2DD \uC815\uBCF4&quot;,
+    &quot;\uACF5\uC6D0 \uACF5\uC2DD \uC815\uBCF4&quot;: &quot;\uACF5\uC6D0 \uACF5\uC2DD \uC815\uBCF4&quot;,
+    Weather: &quot;\uB0A0\uC528&quot;,
+    &quot;\uB0A0\uC528&quot;: &quot;\uB0A0\uC528&quot;,
+    Access: &quot;\uC811\uADFC \uC815\uBCF4&quot;,
+    &quot;\uC811\uADFC \uC815\uBCF4&quot;: &quot;\uC811\uADFC \uC815\uBCF4&quot;,
+    &quot;The Cliffs&quot;: &quot;\uC554\uBCBD \uAD6C\uC5ED&quot;,
+    &quot;\uC554\uBCBD \uAD6C\uC5ED&quot;: &quot;\uC554\uBCBD \uAD6C\uC5ED&quot;,
+    &quot;Climbing Gear&quot;: &quot;\uB4F1\uBC18 \uC7A5\uBE44&quot;,
+    &quot;\uB4F1\uBC18 \uC7A5\uBE44&quot;: &quot;\uB4F1\uBC18 \uC7A5\uBE44&quot;,
+    &quot;Fixed Anchors in the Gunks&quot;: &quot;The Gunks\uC758 \uACE0\uC815 \uC575\uCEE4&quot;,
+    &quot;The Gunks\uC758 \uACE0\uC815 \uC575\uCEE4&quot;: &quot;The Gunks\uC758 \uACE0\uC815 \uC575\uCEE4&quot;,
+    Guidebooks: &quot;\uAC00\uC774\uB4DC\uBD81&quot;,
+    &quot;\uAC00\uC774\uB4DC\uBD81&quot;: &quot;\uAC00\uC774\uB4DC\uBD81&quot;,
+    &quot;Where to Stay&quot;: &quot;\uC219\uBC15 \uC815\uBCF4&quot;,
+    &quot;\uC219\uBC15 \uC815\uBCF4&quot;: &quot;\uC219\uBC15 \uC815\uBCF4&quot;,
+    &quot;Where to Eat&quot;: &quot;\uC2DD\uC0AC \uC815\uBCF4&quot;,
+    &quot;\uC2DD\uC0AC \uC815\uBCF4&quot;: &quot;\uC2DD\uC0AC \uC815\uBCF4&quot;,
+    &quot;Other Resources&quot;: &quot;\uAE30\uD0C0 \uC790\uB8CC&quot;,
+    &quot;\uAE30\uD0C0 \uC790\uB8CC&quot;: &quot;\uAE30\uD0C0 \uC790\uB8CC&quot;,
+    &quot;Rain and Wet Rock&quot;: &quot;\uBE44\uC640 \uC816\uC740 \uC554\uBCBD&quot;,
+    &quot;\uBE44\uC640 \uC816\uC740 \uC554\uBCBD&quot;: &quot;\uBE44\uC640 \uC816\uC740 \uC554\uBCBD&quot;,
+    &quot;Human Waste&quot;: &quot;\uBC30\uC124\uBB3C \uCC98\uB9AC&quot;,
+    &quot;\uBC30\uC124\uBB3C \uCC98\uB9AC&quot;: &quot;\uBC30\uC124\uBB3C \uCC98\uB9AC&quot;,
+    &quot;The Scenic Loop: Entry Fee, Reservation System, and Late Exit Passes&quot;: &quot;Scenic Loop: \uC785\uC7A5\uB8CC, \uC608\uC57D\uC81C \uBC0F \uB2A6\uC740 \uD1F4\uC7A5 \uD5C8\uAC00&quot;,
+    &quot;Scenic Loop: \uC785\uC7A5\uB8CC, \uC608\uC57D\uC81C \uBC0F \uB2A6\uC740 \uD1F4\uC7A5 \uD5C8\uAC00&quot;: &quot;Scenic Loop: \uC785\uC7A5\uB8CC, \uC608\uC57D\uC81C \uBC0F \uB2A6\uC740 \uD1F4\uC7A5 \uD5C8\uAC00&quot;,
+    &quot;Commercial, Large Groups (>15), and Guest Permit Lottery&quot;: &quot;\uC0C1\uC5C5 \uD65C\uB3D9, \uB300\uADDC\uBAA8 \uB2E8\uCCB4(15\uBA85 \uCD08\uACFC) \uBC0F \uAC8C\uC2A4\uD2B8 \uD5C8\uAC00 \uCD94\uCCA8&quot;,
+    &quot;\uC0C1\uC5C5 \uD65C\uB3D9, \uB300\uADDC\uBAA8 \uB2E8\uCCB4(15\uBA85 \uCD08\uACFC) \uBC0F \uAC8C\uC2A4\uD2B8 \uD5C8\uAC00 \uCD94\uCCA8&quot;: &quot;\uC0C1\uC5C5 \uD65C\uB3D9, \uB300\uADDC\uBAA8 \uB2E8\uCCB4(15\uBA85 \uCD08\uACFC) \uBC0F \uAC8C\uC2A4\uD2B8 \uD5C8\uAC00 \uCD94\uCCA8&quot;,
+    Camping: &quot;\uCEA0\uD551&quot;,
+    &quot;\uCEA0\uD551&quot;: &quot;\uCEA0\uD551&quot;,
+    &quot;Red Rock or Rocks?&quot;: &quot;Red Rock\uC778\uAC00 Red Rocks\uC778\uAC00?&quot;,
+    &quot;Red Rock\uC778\uAC00 Red Rocks\uC778\uAC00?&quot;: &quot;Red Rock\uC778\uAC00 Red Rocks\uC778\uAC00?&quot;
+  };
+
+  // src/sites/mountain-project/contract/selectors/shared.ts
+  var SHARED_SELECTORS = {
+    areaLinks: 'a[href*=&quot;/area/&quot;]',
+    routeLinks: 'a[href*=&quot;/route/&quot;]',
+    explicitBreadcrumb: [
+      &quot;.breadcrumbs&quot;,
+      &quot;.breadcrumb&quot;,
+      '[aria-label=&quot;breadcrumb&quot;]',
+      '[aria-label=&quot;Breadcrumb&quot;]'
+    ].join(&quot;, &quot;),
+    routeGuideLink: 'a[href$=&quot;/route-guide&quot;]',
+    leftNavigation: &quot;.left-nav&quot;,
+    sidebarContent: &quot;.mp-sidebar&quot;,
+    areaPage: &quot;#climb-area-page&quot;,
+    routePage: &quot;#route-page&quot;,
+    mainContentContainer: &quot;.main-content-container&quot;,
+    mainContent: &quot;.main-content&quot;,
+    authoredContent: &quot;.fr-view&quot;,
+    commentBody: &quot;.comment-body&quot;,
+    commentContainer: '.main-comment, [id^=&quot;Comment-&quot;], .comment-item, tr',
+    commentAuthor: [
+      &quot;.comment-author&quot;,
+      &quot;.author&quot;,
+      '[rel=&quot;author&quot;]',
+      '.user a[href*=&quot;/user/&quot;]',
+      'a[href*=&quot;/user/&quot;]'
+    ].join(&quot;, &quot;),
+    descriptionDetailsClass: &quot;.description-details&quot;,
+    descriptionDetails: &quot;table.description-details&quot;,
+    titleWithBorderBottomClass: &quot;title-with-border-bottom&quot;,
+    directUiText: [
+      &quot;.mp-sidebar .small.text-warm&quot;,
+      &quot;.comments .form-char-count&quot;,
+      &quot;.text-section > div&quot;,
+      &quot;#sort-dropdown > strong&quot;,
+      &quot;#sort-dropdown > .current-sort&quot;,
+      &quot;.dropdown-menu.dropdown-menu-right .dropdown-item.comments-sort&quot;
+    ].join(&quot;, &quot;),
+    frameHeader: &quot;#header-container&quot;,
+    framePrintHeader: &quot;#header-container-print&quot;,
+    frameFooter: &quot;#footer-container&quot;,
+    frameAdvertisement: &quot;#div-gpt-ad-1614709329076-0&quot;,
+    frameCookieConsent: &quot;#cookie-consent&quot;,
+    navigationAction: [
+      &quot;a[href]&quot;,
+      &quot;button[data-href]&quot;,
+      &quot;button[data-url]&quot;,
+      &quot;button[onclick]&quot;,
+      &quot;input[data-href]&quot;,
+      &quot;input[data-url]&quot;,
+      &quot;input[onclick]&quot;,
+      '[role=&quot;button&quot;][data-href]',
+      '[role=&quot;button&quot;][data-url]',
+      '[role=&quot;button&quot;][onclick]'
+    ].join(&quot;,&quot;)
+  };
+  var LOCATION_TRAIL_CONTRACT = {
+    component: &quot;location-trail&quot;,
+    key: &quot;breadcrumb&quot;,
+    required: false,
+    candidates: [
+      { key: &quot;explicit&quot;, selector: SHARED_SELECTORS.explicitBreadcrumb },
+      { key: &quot;legacy-route-guide&quot;, selector: SHARED_SELECTORS.routeGuideLink }
+    ]
+  };
+
+  // src/sites/mountain-project/dom/authored-section.ts
+  var HEADING_SELECTOR = &quot;h1, h2, h3&quot;;
+  var NON_TITLE_SELECTOR = [
+    &quot;a&quot;,
+    &quot;button&quot;,
+    &quot;.mpkr-area-section-hint&quot;,
+    &quot;.mpkr-area-section-chevron&quot;
+  ].join(&quot;, &quot;);
+  function normalizedSectionHeading(heading) {
+    return Array.from(heading.childNodes).filter((node) => node.nodeType !== Node.COMMENT_NODE &amp;&amp; (!(node instanceof HTMLElement) || !node.matches(NON_TITLE_SELECTOR))).map((node) => node.textContent ?? &quot;&quot;).join(&quot; &quot;).replace(/\s+/g, &quot; &quot;).trim();
+  }
+  function isAuthoredSectionBoundary(node) {
+    return node instanceof Element &amp;&amp; (node.matches(HEADING_SELECTOR) || node.querySelector(HEADING_SELECTOR) !== null);
+  }
+  function locateAuthoredSection(heading) {
+    const controlledId = heading.getAttribute(&quot;aria-controls&quot;);
+    const controlled = controlledId ? heading.ownerDocument.getElementById(controlledId) : null;
+    const controlledContent = controlled?.matches(SHARED_SELECTORS.authoredContent) ? controlled : controlled?.querySelector(SHARED_SELECTORS.authoredContent);
+    if (controlled &amp;&amp; controlledContent) {
+      return { content: controlledContent, structuralNode: controlled };
+    }
+    let sibling = heading.nextElementSibling;
+    while (sibling) {
+      if (isAuthoredSectionBoundary(sibling)) {
+        return void 0;
+      }
+      if (sibling.matches(SHARED_SELECTORS.authoredContent)) {
+        return {
+          content: sibling,
+          structuralNode: sibling
+        };
+      }
+      const nested = sibling.querySelector(SHARED_SELECTORS.authoredContent);
+      if (nested) {
+        return { content: nested, structuralNode: sibling };
+      }
+      sibling = sibling.nextElementSibling;
+    }
+    return void 0;
+  }
+
+  // src/ui/area-page-section-presentation.ts
+  var STYLE_ATTRIBUTE = &quot;data-mpkr-area-section-presentation&quot;;
+  var LEGACY_STYLE_SELECTOR = &quot;style[data-mpkr-area-priority]&quot;;
+  var STYLE_TEXT2 = `
+${AREA_SELECTORS.page} .mpkr-area-section-heading,
+${ROUTE_SELECTORS.page} .mpkr-area-section-heading {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  padding-right: 10.25rem;
+  text-indent: 0;
+  cursor: pointer;
+  user-select: none;
+  border-radius: ${UI.radius.small} ${UI.radius.small} 0 0;
+  transition: background-color ${UI.motion.fast}, color ${UI.motion.fast};
+}
+
+${AREA_SELECTORS.page} .mpkr-area-section-heading:hover,
+${ROUTE_SELECTORS.page} .mpkr-area-section-heading:hover {
+  background: ${UI.color.headingHover};
+  color: ${UI.color.linkHover};
+}
+
+${AREA_SELECTORS.page} .mpkr-area-section-heading:focus-visible,
+${ROUTE_SELECTORS.page} .mpkr-area-section-heading:focus-visible {
+  outline: 3px solid ${UI.color.link};
+  outline-offset: 2px;
+  background: ${UI.color.headingFocus};
+  color: ${UI.color.linkActive};
+}
+
+${AREA_SELECTORS.page} .mpkr-area-section-hint,
+${ROUTE_SELECTORS.page} .mpkr-area-section-hint {
+  position: absolute;
+  top: 50%;
+  right: 1.45rem;
+  color: ${UI.color.muted};
+  font-size: ${UI.font.hint};
+  font-weight: 400;
+  line-height: 1.2;
+  transform: translateY(-50%);
+  white-space: nowrap;
+}
+
+${AREA_SELECTORS.page} .mpkr-area-section-heading:hover .mpkr-area-section-hint,
+${ROUTE_SELECTORS.page} .mpkr-area-section-heading:hover .mpkr-area-section-hint,
+${AREA_SELECTORS.page} .mpkr-area-section-heading:focus-visible .mpkr-area-section-hint,
+${ROUTE_SELECTORS.page} .mpkr-area-section-heading:focus-visible .mpkr-area-section-hint {
+  color: ${UI.color.linkHover};
+}
+
+${AREA_SELECTORS.page} .mpkr-area-section-chevron,
+${ROUTE_SELECTORS.page} .mpkr-area-section-chevron {
+  position: absolute;
+  top: 50%;
+  right: 0.35rem;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: translateY(-65%) rotate(45deg);
+  transition: transform 160ms ease;
+}
+
+${AREA_SELECTORS.page} .mpkr-area-section-heading[aria-expanded=&quot;true&quot;] .mpkr-area-section-chevron,
+${ROUTE_SELECTORS.page} .mpkr-area-section-heading[aria-expanded=&quot;true&quot;] .mpkr-area-section-chevron {
+  transform: translateY(-35%) rotate(225deg);
+}
+
+${AREA_SELECTORS.page} .mpkr-info-heading > h2,
+${ROUTE_SELECTORS.page} .mpkr-info-heading > h2 {
+  margin: 0;
+}
+
+${AREA_SELECTORS.page} .mpkr-classic-routes-heading {
+  box-sizing: border-box;
+  width: 100%;
+}
+
+@media (max-width: 575px) {
+  ${AREA_SELECTORS.page} .mpkr-area-section-heading,
+  ${ROUTE_SELECTORS.page} .mpkr-area-section-heading {
+    padding-right: 1.6rem;
+  }
+
+  ${AREA_SELECTORS.page} .mpkr-area-section-hint,
+  ${ROUTE_SELECTORS.page} .mpkr-area-section-hint {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ${AREA_SELECTORS.page} .mpkr-area-section-chevron,
+  ${ROUTE_SELECTORS.page} .mpkr-area-section-chevron,
+  ${AREA_SELECTORS.page} .mpkr-area-section-heading,
+  ${ROUTE_SELECTORS.page} .mpkr-area-section-heading {
+    transition: none;
+  }
+}
+`;
+  function containsAuthoredSection(wrapper) {
+    return Array.from(wrapper.querySelectorAll(&quot;h2, h3&quot;)).some((heading) => {
+      return locateAuthoredSection(heading) !== void 0;
+    });
+  }
+  var PageSectionPresentation = class {
+    constructor(pageKind) {
+      this.pageKind = pageKind;
+    }
+    sections = [];
+    infoHeadings = [];
+    decoratedHeadings = [];
+    areaHeightWrappers = [];
+    style;
+    observer;
+    mount(root = document) {
+      const pageSelector = this.pageKind === &quot;area&quot; ? AREA_SELECTORS.page : ROUTE_SELECTORS.page;
+      const pageRoot = root instanceof HTMLElement &amp;&amp; root.matches(pageSelector) ? root : root.querySelector(pageSelector);
+      if (!pageRoot) {
+        return false;
+      }
+      if (this.pageKind === &quot;area&quot;) {
+        this.neutralizeAreaHeightWrappers(pageRoot);
+      }
+      this.mountInfoHeadings(pageRoot);
+      const managedHeadings = new Set(this.sections.map((state) => state.heading));
+      this.sections.forEach((state) => this.absorbDynamicBodyNodes(state));
+      for (const heading of pageRoot.querySelectorAll(&quot;h2, h3&quot;)) {
+        const title = normalizedSectionHeading(heading);
+        if (!title || managedHeadings.has(heading) || this.pageKind === &quot;route&quot; &amp;&amp; !SECTION_TITLE_TRANSLATIONS[title]) {
+          continue;
+        }
+        const section = locateAuthoredSection(heading);
+        if (section) {
+          this.collapseSection(
+            heading,
+            section.structuralNode,
+            SECTION_TITLE_TRANSLATIONS[title] ?? title
+          );
+        }
+      }
+      if (this.pageKind === &quot;area&quot;) {
+        this.decorateClassicRouteHeadings(pageRoot);
+      }
+      if (!this.sections.length &amp;&amp; !this.infoHeadings.length &amp;&amp; !this.decoratedHeadings.length &amp;&amp; !this.areaHeightWrappers.length) {
+        return false;
+      }
+      if (!this.style) {
+        pageRoot.ownerDocument.querySelectorAll(LEGACY_STYLE_SELECTOR).forEach((legacyStyle) => legacyStyle.remove());
+        const style = pageRoot.ownerDocument.createElement(&quot;style&quot;);
+        style.setAttribute(STYLE_ATTRIBUTE, &quot;true&quot;);
+        style.textContent = STYLE_TEXT2;
+        pageRoot.ownerDocument.head.append(style);
+        this.style = style;
+      }
+      if (!this.observer) {
+        const Observer = pageRoot.ownerDocument.defaultView?.MutationObserver ?? MutationObserver;
+        this.observer = new Observer((records) => {
+          if (records.some((record) => Array.from(record.addedNodes).some((node) => node instanceof Element &amp;&amp; !node.matches(
+            &quot;.mpkr-area-section-chevron, .mpkr-area-section-hint, .mpkr-area-section-body, .mpkr-info-heading&quot;
+          )))) {
+            this.mount(pageRoot.ownerDocument);
+          }
+        });
+        this.observer.observe(pageRoot, { childList: true, subtree: true });
+      }
+      return true;
+    }
+    destroy() {
+      this.observer?.disconnect();
+      this.observer = void 0;
+      for (const state of this.sections) {
+        state.heading.removeEventListener(&quot;click&quot;, state.onClick);
+        state.heading.removeEventListener(&quot;keydown&quot;, state.onKeyDown);
+        state.chevron.remove();
+        state.hint.remove();
+        if (state.nativeExpanderSnapshot) {
+          const { element, hidden } = state.nativeExpanderSnapshot;
+          if (hidden === null) element.removeAttribute(&quot;hidden&quot;);
+          else element.setAttribute(&quot;hidden&quot;, hidden);
+        }
+        for (const [name, value] of state.attributes) {
+          if (value === null) {
+            state.heading.removeAttribute(name);
+          } else {
+            state.heading.setAttribute(name, value);
+          }
+        }
+        const parent = state.body.parentNode;
+        if (parent) {
+          for (const node of state.nodes) {
+            parent.insertBefore(node, state.body);
+          }
+        }
+        state.body.remove();
+        state.marker.remove();
+        if (state.structuralSnapshot) {
+          const { element, className, style, hidden } = state.structuralSnapshot;
+          if (className === null) element.removeAttribute(&quot;class&quot;);
+          else element.setAttribute(&quot;class&quot;, className);
+          if (style === null) element.removeAttribute(&quot;style&quot;);
+          else element.setAttribute(&quot;style&quot;, style);
+          if (hidden === null) element.removeAttribute(&quot;hidden&quot;);
+          else element.setAttribute(&quot;hidden&quot;, hidden);
+        }
+      }
+      for (const state of this.infoHeadings) {
+        state.wrapper.remove();
+      }
+      for (const state of this.decoratedHeadings) {
+        if (state.className === null) {
+          state.heading.removeAttribute(&quot;class&quot;);
+        } else {
+          state.heading.setAttribute(&quot;class&quot;, state.className);
+        }
+      }
+      for (const state of this.areaHeightWrappers) {
+        if (state.className === null) {
+          state.wrapper.removeAttribute(&quot;class&quot;);
+        } else {
+          state.wrapper.setAttribute(&quot;class&quot;, state.className);
+        }
+        if (state.style === null) {
+          state.wrapper.removeAttribute(&quot;style&quot;);
+        } else {
+          state.wrapper.setAttribute(&quot;style&quot;, state.style);
+        }
+      }
+      this.style?.remove();
+      this.style = void 0;
+      this.sections.length = 0;
+      this.infoHeadings.length = 0;
+      this.decoratedHeadings.length = 0;
+      this.areaHeightWrappers.length = 0;
+    }
+    neutralizeAreaHeightWrappers(pageRoot) {
+      const managed = new Set(this.areaHeightWrappers.map((state) => state.wrapper));
+      pageRoot.querySelectorAll(AREA_SELECTORS.constrainedNarrativeWrapper).forEach((wrapper) => {
+        if (managed.has(wrapper) || !containsAuthoredSection(wrapper)) {
+          return;
+        }
+        this.areaHeightWrappers.push({
+          wrapper,
+          className: wrapper.getAttribute(&quot;class&quot;),
+          style: wrapper.getAttribute(&quot;style&quot;)
+        });
+        wrapper.classList.remove(...AREA_SELECTORS.constrainedNarrativeClasses);
+        wrapper.style.removeProperty(&quot;max-height&quot;);
+        wrapper.style.removeProperty(&quot;height&quot;);
+        wrapper.style.removeProperty(&quot;overflow&quot;);
+        wrapper.style.removeProperty(&quot;overflow-y&quot;);
+        if (!wrapper.getAttribute(&quot;style&quot;)?.trim()) {
+          wrapper.removeAttribute(&quot;style&quot;);
+        }
+      });
+    }
+    collapseSection(heading, bodyNode, title) {
+      const ownerDocument = heading.ownerDocument;
+      const structuralElement = bodyNode instanceof HTMLElement &amp;&amp; bodyNode.matches(AREA_SELECTORS.legacyTextSectionBody) ? bodyNode : void 0;
+      const structuralSnapshot = structuralElement ? {
+        element: structuralElement,
+        className: structuralElement.getAttribute(&quot;class&quot;),
+        style: structuralElement.getAttribute(&quot;style&quot;),
+        hidden: structuralElement.getAttribute(&quot;hidden&quot;)
+      } : void 0;
+      if (structuralElement) {
+        structuralElement.classList.remove(&quot;collapse&quot;, &quot;show&quot;);
+        structuralElement.removeAttribute(&quot;hidden&quot;);
+        structuralElement.style.removeProperty(&quot;display&quot;);
+        structuralElement.style.removeProperty(&quot;height&quot;);
+        if (!structuralElement.getAttribute(&quot;style&quot;)?.trim()) {
+          structuralElement.removeAttribute(&quot;style&quot;);
+        }
+      }
+      const body = ownerDocument.createElement(&quot;div&quot;);
+      body.className = &quot;mpkr-area-section-body&quot;;
+      body.id = this.uniqueContentId(ownerDocument);
+      const nodes = [];
+      let node = heading.nextSibling;
+      while (node) {
+        const next = node.nextSibling;
+        if (isAuthoredSectionBoundary(node)) {
+          break;
+        }
+        nodes.push(node);
+        node = next;
+      }
+      if (!nodes.includes(bodyNode)) {
+        return;
+      }
+      const marker = ownerDocument.createComment(&quot;mpkr-area-section-body-position&quot;);
+      bodyNode.parentNode?.insertBefore(marker, nodes[0]);
+      marker.parentNode?.insertBefore(body, marker.nextSibling);
+      body.append(...nodes);
+      const chevron = ownerDocument.createElement(&quot;span&quot;);
+      chevron.className = &quot;mpkr-area-section-chevron&quot;;
+      chevron.setAttribute(&quot;aria-hidden&quot;, &quot;true&quot;);
+      const hint = ownerDocument.createElement(&quot;span&quot;);
+      hint.className = &quot;mpkr-area-section-hint&quot;;
+      hint.setAttribute(&quot;aria-hidden&quot;, &quot;true&quot;);
+      const attributeNames = [
+        &quot;class&quot;,
+        &quot;role&quot;,
+        &quot;tabindex&quot;,
+        &quot;aria-expanded&quot;,
+        &quot;aria-controls&quot;,
+        &quot;aria-label&quot;,
+        &quot;data-toggle&quot;,
+        &quot;data-target&quot;
+      ];
+      const attributes = new Map(attributeNames.map((name) => [name, heading.getAttribute(name)]));
+      heading.removeAttribute(&quot;data-toggle&quot;);
+      heading.removeAttribute(&quot;data-target&quot;);
+      const nativeExpander = heading.querySelector(AREA_SELECTORS.legacyTextSectionExpander);
+      const nativeExpanderSnapshot = nativeExpander ? { element: nativeExpander, hidden: nativeExpander.getAttribute(&quot;hidden&quot;) } : void 0;
+      nativeExpander?.setAttribute(&quot;hidden&quot;, &quot;&quot;);
+      heading.classList.add(
+        &quot;title-with-border-bottom&quot;,
+        &quot;mb-1&quot;,
+        &quot;mpkr-info-heading&quot;,
+        &quot;mpkr-area-section-heading&quot;
+      );
+      heading.setAttribute(&quot;role&quot;, &quot;button&quot;);
+      heading.setAttribute(&quot;tabindex&quot;, &quot;0&quot;);
+      heading.setAttribute(&quot;aria-controls&quot;, body.id);
+      heading.append(hint, chevron);
+      const onClick = (event) => {
+        if (event.target instanceof Element &amp;&amp; event.target.closest(&quot;a, button, input, select, textarea&quot;)) {
+          return;
+        }
+        const state2 = this.sections.find((candidate) => candidate.heading === heading);
+        if (state2) {
+          this.setExpanded(state2, body.hasAttribute(&quot;hidden&quot;));
+        }
+      };
+      const onKeyDown = (event) => {
+        if (event.key !== &quot;Enter&quot; &amp;&amp; event.key !== &quot; &quot;) {
+          return;
+        }
+        event.preventDefault();
+        const state2 = this.sections.find((candidate) => candidate.heading === heading);
+        if (state2) {
+          this.setExpanded(state2, body.hasAttribute(&quot;hidden&quot;));
+        }
+      };
+      heading.addEventListener(&quot;click&quot;, onClick);
+      heading.addEventListener(&quot;keydown&quot;, onKeyDown);
+      const state = {
+        heading,
+        body,
+        marker,
+        nodes,
+        chevron,
+        hint,
+        attributes,
+        onClick,
+        onKeyDown,
+        title,
+        structuralSnapshot,
+        nativeExpanderSnapshot
+      };
+      this.sections.push(state);
+      this.setExpanded(state, false);
+    }
+    setExpanded(state, expanded) {
+      state.body.hidden = !expanded;
+      state.heading.setAttribute(&quot;aria-expanded&quot;, String(expanded));
+      state.heading.setAttribute(&quot;aria-label&quot;, `${state.title} ${expanded ? &quot;\uB0B4\uC6A9 \uC811\uAE30&quot; : &quot;\uB0B4\uC6A9 \uD3BC\uCE58\uAE30&quot;}`);
+      state.hint.textContent = expanded ? &quot;\uB20C\uB7EC\uC11C \uC811\uAE30&quot; : &quot;\uB20C\uB7EC\uC11C \uB0B4\uC6A9 \uBCF4\uAE30&quot;;
+    }
+    absorbDynamicBodyNodes(state) {
+      let sibling = state.body.nextSibling;
+      while (sibling) {
+        if (isAuthoredSectionBoundary(sibling)) {
+          break;
+        }
+        const next = sibling.nextSibling;
+        state.nodes.push(sibling);
+        state.body.append(sibling);
+        sibling = next;
+      }
+    }
+    mountInfoHeadings(pageRoot) {
+      const selector = this.pageKind === &quot;area&quot; ? `${AREA_SELECTORS.page} .description-details` : `${ROUTE_SELECTORS.page} ${ROUTE_SELECTORS.mainContent} .description-details`;
+      const title = this.pageKind === &quot;area&quot; ? &quot;\uC9C0\uC5ED \uC815\uBCF4&quot; : &quot;\uB8E8\uD2B8 \uC815\uBCF4&quot;;
+      const managedDetails = new Set(this.infoHeadings.map((state) => state.details));
+      pageRoot.ownerDocument.querySelectorAll(selector).forEach((details) => {
+        if (managedDetails.has(details)) {
+          return;
+        }
+        const wrapper = details.ownerDocument.createElement(&quot;div&quot;);
+        wrapper.className = &quot;title-with-border-bottom mb-1 mpkr-info-heading&quot;;
+        const heading = details.ownerDocument.createElement(&quot;h2&quot;);
+        heading.textContent = title;
+        wrapper.append(heading);
+        details.before(wrapper);
+        this.infoHeadings.push({ details, wrapper });
+      });
+    }
+    decorateClassicRouteHeadings(pageRoot) {
+      const managed = new Set(this.decoratedHeadings.map((state) => state.heading));
+      pageRoot.querySelectorAll(&quot;h2, h3&quot;).forEach((heading) => {
+        const title = normalizedSectionHeading(heading);
+        if (managed.has(heading) || !title.startsWith(&quot;Classic Climbing Routes&quot;) &amp;&amp; !title.startsWith(&quot;\uD074\uB798\uC2DD \uB8E8\uD2B8&quot;)) {
+          return;
+        }
+        this.decoratedHeadings.push({
+          heading,
+          className: heading.getAttribute(&quot;class&quot;)
+        });
+        heading.classList.add(
+          &quot;title-with-border-bottom&quot;,
+          &quot;mb-1&quot;,
+          &quot;mpkr-info-heading&quot;,
+          &quot;mpkr-classic-routes-heading&quot;
+        );
+      });
+    }
+    uniqueContentId(ownerDocument) {
+      let index = this.sections.length + 1;
+      let id = `mpkr-area-section-${index}`;
+      while (ownerDocument.getElementById(id)) {
+        index += 1;
+        id = `mpkr-area-section-${index}`;
+      }
+      return id;
+    }
+  };
+  var AreaPageSectionPresentation = class extends PageSectionPresentation {
+    constructor() {
+      super(&quot;area&quot;);
+    }
+  };
+  var RoutePageSectionPresentation = class extends PageSectionPresentation {
+    constructor() {
+      super(&quot;route&quot;);
+    }
+  };
+
+  // src/sites/mountain-project/contract/origins.ts
+  var MOUNTAIN_PROJECT_HOSTNAMES = [
+    &quot;mountainproject.com&quot;,
+    &quot;www.mountainproject.com&quot;
+  ];
+  var supportedHostnames = new Set(MOUNTAIN_PROJECT_HOSTNAMES);
+
+  // src/sites/mountain-project/contract/routes.ts
+  var MOUNTAIN_PROJECT_PATH_PATTERNS = {
+    area: /^\/area\/(\d+)(?:\/([^/]+))?$/,
+    route: /^\/route\/(\d+)(?:\/([^/]+))?$/,
+    routeStats: /^\/route\/stats\/(\d+)(?:\/([^/]+))?$/,
+    routeFinder: /^\/route-finder$/,
+    photo: /^\/photo\/(\d+)(?:\/([^/]+))?$/,
+    user: /^\/user\/(\d+)\/([^/]+)(?:\/(contributions|community))?$/,
+    contactUser: /^\/contact-user\/(\d+)$/,
+    gym: /^\/gym\/(\d+)(?:\/([^/]+))?$/,
+    map: /^\/map\/(\d+)(?:\/([^/]+))?$/,
+    helpArticle: /^\/help\/(\d+)\/([^/]+)$/,
+    contribution: /^\/(?:add|edit|suggest)\/(?:climb-area|route|photo|trail|video|text-section|symbol)(?:\/\d+)?$/,
+    contributionNestedPhoto: /^\/(?:area|route)\/\d+\/add\/photo$/,
+    contributionImageLink: /^\/edit\/imageLink\/\d+$/,
+    contributionTrailUpload: /^\/upload\/start\/trail$/,
+    contributionBook: /^\/edit\/book\/\d+$/,
+    contributionShare: /^\/share\/(?:trail|photo|video)$/,
+    contributionImprovement: /^\/improvement(?:\/[^/]+)+$/,
+    contributionUpdates: /^\/updates\/Climb-Lib-Models-(?:Area|Route|Photo|Trail)\/\d+(?:\/[^/]+)?$/
+  };
+  function normalizeMountainProjectPath(pathname) {
+    return pathname.replace(/\/+$/, &quot;&quot;) || &quot;/&quot;;
+  }
+  function parseEntityPath(pattern, pathname) {
+    const match = normalizeMountainProjectPath(pathname).match(pattern);
+    if (!match?.[1]) {
+      return void 0;
+    }
+    return {
+      id: match[1],
+      ...match[2] ? { slug: match[2] } : {}
+    };
+  }
+  function parseRoutePath(pathname) {
+    return parseEntityPath(MOUNTAIN_PROJECT_PATH_PATTERNS.route, pathname);
+  }
+
+  // src/sites/mountain-project/contract/selectors/route-list.ts
+  var ROUTE_LIST_SELECTORS = {
+    sidebarRow: &quot;.lef-nav-row&quot;,
+    rows: [
+      &quot;tr.route-row&quot;,
+      &quot;table.route-table tr:not(.screen-reader-only)&quot;,
+      &quot;li.route-row&quot;,
+      &quot;.route-list-item&quot;,
+      &quot;.classic-route&quot;,
+      &quot;.lef-nav-row&quot;
+    ].join(&quot;,&quot;),
+    secondaryContext: [
+      &quot;.scoreStars&quot;,
+      &quot;.route-stars&quot;,
+      &quot;.rating&quot;,
+      &quot;.actions&quot;,
+      &quot;.action&quot;,
+      &quot;.dropdown&quot;,
+      &quot;.menu&quot;,
+      &quot;button&quot;,
+      &quot;label&quot;
+    ].join(&quot;,&quot;),
+    screenReaderOnlyClass: &quot;screen-reader-only&quot;
+  };
+
+  // src/ui/route-list-presentation.ts
+  var STYLE_MARKER = &quot;data-mpkr-route-list-presentation&quot;;
+  var ROW_CLASS = &quot;mpkr-route-list-row&quot;;
+  var PRIMARY_LINK_CLASS = &quot;mpkr-route-list-primary&quot;;
+  var EXPANDED_LINK_CLASS = &quot;mpkr-route-list-primary-expanded&quot;;
+  var STYLE_TEXT3 = `
+.${ROW_CLASS} {
+  transition: background-color ${UI.motion.fast};
+}
+
+tr.${ROW_CLASS}:hover > td,
+tr.${ROW_CLASS}:focus-within > td,
+li.${ROW_CLASS}:hover,
+li.${ROW_CLASS}:focus-within,
+.route-list-item.${ROW_CLASS}:hover,
+.route-list-item.${ROW_CLASS}:focus-within,
+.classic-route.${ROW_CLASS}:hover,
+.classic-route.${ROW_CLASS}:focus-within,
+${ROUTE_LIST_SELECTORS.sidebarRow}.${ROW_CLASS}:hover,
+${ROUTE_LIST_SELECTORS.sidebarRow}.${ROW_CLASS}:focus-within {
+  background-color: ${UI.color.surfaceHover} !important;
+}
+
+.${PRIMARY_LINK_CLASS}:focus-visible {
+  outline: 3px solid ${UI.color.link};
+  outline-offset: 2px;
+  border-radius: ${UI.radius.small};
+}
+
+.${EXPANDED_LINK_CLASS} {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  min-height: 2rem;
+  padding: 0.3rem 0.35rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .${ROW_CLASS} {
+    transition: none;
+  }
+}
+`;
+  function routePath(anchor) {
+    try {
+      return Boolean(parseRoutePath(new URL(anchor.href, document.baseURI).pathname));
+    } catch {
+      return false;
+    }
+  }
+  function candidateRows(root) {
+    const rows = /* @__PURE__ */ new Set();
+    if (root instanceof HTMLElement &amp;&amp; root.matches(ROUTE_LIST_SELECTORS.rows)) {
+      rows.add(root);
+    }
+    root.querySelectorAll(ROUTE_LIST_SELECTORS.rows).forEach((row) => rows.add(row));
+    return Array.from(rows);
+  }
+  function primaryRouteLink(row) {
+    return Array.from(row.querySelectorAll(SHARED_SELECTORS.routeLinks)).find((anchor) => routePath(anchor) &amp;&amp; !anchor.closest(ROUTE_LIST_SELECTORS.secondaryContext));
+  }
+  function isOnlyContent(container, anchor) {
+    let current = anchor;
+    while (current !== container) {
+      const parent = current.parentNode;
+      if (!parent) return false;
+      if (Array.from(parent.childNodes).some((node) => node !== current &amp;&amp; (node.nodeType === Node.ELEMENT_NODE || node.nodeType === Node.TEXT_NODE &amp;&amp; Boolean(node.textContent?.trim())))) return false;
+      current = parent;
+    }
+    return true;
+  }
+  function canSafelyExpand(row, anchor) {
+    const cell = anchor.closest(&quot;td&quot;);
+    if (cell &amp;&amp; cell.closest(&quot;tr&quot;) === row) {
+      return cell === row.querySelector(&quot;td&quot;) &amp;&amp; isOnlyContent(cell, anchor) &amp;&amp; !anchor.closest(ROUTE_LIST_SELECTORS.secondaryContext);
+    }
+    return anchor.parentElement === row &amp;&amp; isOnlyContent(row, anchor) &amp;&amp; !row.querySelector(&quot;button, input, select, textarea&quot;);
+  }
+  var RouteListPresentation = class {
+    observer;
+    style;
+    root;
+    rows = /* @__PURE__ */ new Map();
+    links = /* @__PURE__ */ new Map();
+    mount(root = document) {
+      this.root = root;
+      this.ensureStyle(root);
+      const found = this.apply(root);
+      if (root === document &amp;&amp; !this.observer) {
+        this.observer = new MutationObserver((records) => {
+          for (const record of records) {
+            for (const node of record.addedNodes) {
+              if (node instanceof Element) {
+                this.apply(node);
+              }
+            }
+          }
+        });
+        this.observer.observe(document.documentElement, { childList: true, subtree: true });
+      }
+      return found;
+    }
+    destroy() {
+      this.observer?.disconnect();
+      this.observer = void 0;
+      for (const [row, className] of this.rows) {
+        this.restoreClassName(row, className);
+      }
+      for (const [link, className] of this.links) {
+        this.restoreClassName(link, className);
+      }
+      this.rows.clear();
+      this.links.clear();
+      this.style?.remove();
+      this.style = void 0;
+      this.root = void 0;
+    }
+    apply(root) {
+      let found = false;
+      for (const row of candidateRows(root)) {
+        if (row instanceof HTMLAnchorElement || row.classList.contains(ROUTE_LIST_SELECTORS.screenReaderOnlyClass)) {
+          continue;
+        }
+        const primary = primaryRouteLink(row);
+        if (!primary) {
+          continue;
+        }
+        if (!this.rows.has(row)) {
+          this.rows.set(row, row.getAttribute(&quot;class&quot;));
+        }
+        if (!this.links.has(primary)) {
+          this.links.set(primary, primary.getAttribute(&quot;class&quot;));
+        }
+        row.classList.add(ROW_CLASS);
+        primary.classList.add(PRIMARY_LINK_CLASS);
+        if (canSafelyExpand(row, primary)) {
+          primary.classList.add(EXPANDED_LINK_CLASS);
+        }
+        found = true;
+      }
+      return found;
+    }
+    ensureStyle(root) {
+      if (this.style?.isConnected) {
+        return;
+      }
+      const ownerDocument = root.nodeType === Node.DOCUMENT_NODE ? root : root.ownerDocument;
+      if (!ownerDocument) {
+        return;
+      }
+      const style = ownerDocument.createElement(&quot;style&quot;);
+      style.setAttribute(STYLE_MARKER, &quot;true&quot;);
+      style.textContent = STYLE_TEXT3;
+      ownerDocument.head.append(style);
+      this.style = style;
+    }
+    restoreClassName(element, className) {
+      if (className === null) {
+        element.removeAttribute(&quot;class&quot;);
+      } else {
+        element.setAttribute(&quot;class&quot;, className);
+      }
+    }
+  };
+
+  // src/ui/message-style.ts
+  var STATUS_MESSAGE_CSS = `
+.mpkr-status-message { box-sizing:border-box;display:block;margin:12px 0;padding:10px 12px;border-left:3px solid ${UI.color.link};background:${UI.color.surfaceHover};color:${UI.color.text};font:12px/1.75 ${UI.font.family};white-space:normal;overflow-wrap:anywhere;text-align:left; }
+.mpkr-status-message[hidden] { display:none; }
+.mpkr-status-message strong { display:block;font-size:13px;font-weight:600; }
+.mpkr-status-message p,.mpkr-status-message__detail { display:block; margin:3px 0 0;font-size:12px;line-height:1.75;color:${UI.color.muted}; }
+`;
+  var TRANSLATION_ACTION_CSS = `${STATUS_MESSAGE_CSS}
+.mpkr-translation-actions { display:inline-flex;max-width:100%;flex-wrap:wrap;align-items:center;gap:8px;margin:8px 0 4px; }
+.mpkr-translation-actions button { box-sizing:border-box;margin:0;padding:6px 10px;border:1px solid ${UI.color.border};border-radius:${UI.radius.control};background:${UI.color.surface};color:${UI.color.link};font:600 12px/1.5 ${UI.font.family};cursor:pointer;text-decoration:none; }
+.mpkr-translation-actions button:hover { background:${UI.color.surfaceHover}; }
+.mpkr-translation-actions button:focus-visible { outline:2px solid ${UI.color.link};outline-offset:3px; }
+.mpkr-translation-actions button:disabled { cursor:wait;opacity:.65; }
+.mpkr-translation-actions [hidden] { display:none; }
+.mpkr-translation-feedback { color:${UI.color.muted};font:12px/1.5 ${UI.font.family}; }
+`;
+  function setStatusMessage(element, message) {
+    if (element.textContent === message) return;
+    const split = message.indexOf(&quot;. &quot;);
+    if (split &lt; 0) {
+      element.textContent = message;
+      return;
+    }
+    const title = element.ownerDocument.createElement(&quot;strong&quot;);
+    title.textContent = message.slice(0, split + 2);
+    const detail = element.ownerDocument.createElement(&quot;span&quot;);
+    detail.className = &quot;mpkr-status-message__detail&quot;;
+    detail.textContent = message.slice(split + 2);
+    element.replaceChildren(title, detail);
+  }
+
+  // src/sites/mountain-project/contract/selectors/stats.ts
+  var STATS_SELECTORS = {
+    root: &quot;#route-stats&quot;,
+    tableRoot: &quot;#route-stats .onx-stats-table&quot;,
+    tableRootFallback: &quot;.onx-stats-table&quot;,
+    componentHeadings: &quot;.onx-stats-table h3&quot;,
+    ticksSectionId: &quot;#ticks-column&quot;,
+    ticksBodyId: 'tbody[id=&quot;ticks-body&quot;]',
+    tickRowLandmark: 'tr[id^=&quot;ticks.&quot;]',
+    tickRows: '#route-stats .onx-stats-table tr[id^=&quot;ticks.&quot;]',
+    tickAuthor: 'td:first-child [rel=&quot;author&quot;], td:first-child .author, td:first-child a[href*=&quot;/user/&quot;]',
+    frameBreadcrumb: &quot;.main-content-container #route-stats > .row.pt-main-content > .col-xs-12 > .mb-half.small.text-warm&quot;,
+    frameTitle: &quot;.main-content-container #route-stats > .row.pt-main-content > .col-xs-12 > h1&quot;,
+    frameMainContainer: &quot;.main-content-container&quot;,
+    frameContainerFluid: &quot;.main-content-container > .container-fluid&quot;,
+    frameLayoutRow: &quot;.main-content-container #route-stats > .row.pt-main-content&quot;,
+    maxHeightClass: &quot;max-height&quot;
+  };
+  var STATS_FRAME_CHROME_HIDE_SELECTORS = [
+    SHARED_SELECTORS.framePrintHeader,
+    SHARED_SELECTORS.frameHeader,
+    SHARED_SELECTORS.frameAdvertisement,
+    SHARED_SELECTORS.frameCookieConsent,
+    SHARED_SELECTORS.frameFooter,
+    STATS_SELECTORS.frameBreadcrumb,
+    STATS_SELECTORS.frameTitle
+  ];
+  var STATS_FRAME_CONTRACT = {
+    component: &quot;route-stats-frame&quot;,
+    key: &quot;frame-landmarks&quot;,
+    required: true,
+    candidates: [
+      { key: &quot;stats-root&quot;, selector: STATS_SELECTORS.root },
+      { key: &quot;stats-table-root&quot;, selector: STATS_SELECTORS.tableRootFallback }
+    ]
+  };
+  var STATS_TICKS_SECTION_CONTRACT = {
+    component: &quot;route-stats-presentation&quot;,
+    key: &quot;ticks-section&quot;,
+    required: false,
+    candidates: [
+      { key: &quot;section-id&quot;, selector: STATS_SELECTORS.ticksSectionId },
+      { key: &quot;tbody-id&quot;, selector: STATS_SELECTORS.ticksBodyId },
+      { key: &quot;tick-row-id&quot;, selector: STATS_SELECTORS.tickRowLandmark }
+    ]
+  };
+
+  // src/sites/mountain-project/contract/selectors/community.ts
+  var COMMUNITY_SELECTORS = {
+    topicBody: &quot;#forum-table .message-row .fr-view&quot;,
+    topicRow: &quot;#forum-table .message-row&quot;,
+    topicAuthor: '.bio > a[href*=&quot;/user/&quot;]',
+    activityComment: &quot;#whats-new .comment-row td > .row > .col-md-12&quot;,
+    activityRow: &quot;#whats-new .comment-row&quot;,
+    activityAuthor: 'td > a[href*=&quot;/user/&quot;]',
+    protectedContent: '.fr-view, .mpkr-activity-comment-source, .signature, blockquote, pre, code, cite, [contenteditable=&quot;true&quot;], textarea',
+    gymDetailTitle: &quot;#climbing-gyms .pt-main-content h1&quot;,
+    protectedGymValue: '#climbing-gyms .gym-info > div, #climbing-gyms table td.text-xs-right, #climbing-gyms .gym-breadcrumbs a[href*=&quot;/gyms/&quot;]',
+    uiExtra: &quot;#partner-finder p, #partner-finder div, #whats-new div, #topic-guts div, #forum-table div, #climbing-gyms .gym-count, #climbing-gyms .add-gym-cta p, #climbing-gyms .improve-gym-cta p, #climbing-gyms .photos-cta p, #climbing-gyms .stars-avg&quot;
+  };
+
+  // src/core/translation-text-policy.ts
+  var PlaceholderIntegrityError = class extends Error {
+    constructor(failedKinds, message = &quot;\uBC88\uC5ED\uAE30\uAC00 \uBCF4\uD638 \uD1A0\uD070\uC744 \uBCC0\uACBD\uD574 \uC548\uC804\uD558\uAC8C \uC6D0\uBB38\uC744 \uBCF5\uC6D0\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.&quot;) {
+      super(message);
+      this.failedKinds = failedKinds;
+      this.name = &quot;PlaceholderIntegrityError&quot;;
+    }
+  };
+
+  // src/rendering/dom-translation-format.ts
+  var SAFE_TAGS = /* @__PURE__ */ new Set([
+    &quot;A&quot;,
+    &quot;ABBR&quot;,
+    &quot;B&quot;,
+    &quot;BLOCKQUOTE&quot;,
+    &quot;BR&quot;,
+    &quot;CODE&quot;,
+    &quot;DIV&quot;,
+    &quot;EM&quot;,
+    &quot;H3&quot;,
+    &quot;H4&quot;,
+    &quot;H5&quot;,
+    &quot;H6&quot;,
+    &quot;I&quot;,
+    &quot;IMG&quot;,
+    &quot;KBD&quot;,
+    &quot;LI&quot;,
+    &quot;MARK&quot;,
+    &quot;OL&quot;,
+    &quot;P&quot;,
+    &quot;PRE&quot;,
+    &quot;S&quot;,
+    &quot;SMALL&quot;,
+    &quot;SPAN&quot;,
+    &quot;STRONG&quot;,
+    &quot;SUB&quot;,
+    &quot;SUP&quot;,
+    &quot;U&quot;,
+    &quot;UL&quot;
+  ]);
+  var VOID_TAGS = /* @__PURE__ */ new Set([&quot;BR&quot;, &quot;IMG&quot;]);
+  var BLOCKED_TAGS = /* @__PURE__ */ new Set([
+    &quot;SCRIPT&quot;,
+    &quot;STYLE&quot;,
+    &quot;NOSCRIPT&quot;,
+    &quot;TEMPLATE&quot;,
+    &quot;FORM&quot;,
+    &quot;INPUT&quot;,
+    &quot;TEXTAREA&quot;,
+    &quot;SELECT&quot;,
+    &quot;OPTION&quot;,
+    &quot;BUTTON&quot;,
+    &quot;IFRAME&quot;,
+    &quot;OBJECT&quot;,
+    &quot;EMBED&quot;,
+    &quot;LINK&quot;,
+    &quot;META&quot;
+  ]);
+  var GLOBAL_ATTRIBUTES = /* @__PURE__ */ new Set([&quot;class&quot;, &quot;title&quot;, &quot;lang&quot;, &quot;dir&quot;, &quot;role&quot;]);
+  var TAG_ATTRIBUTES = {
+    A: /* @__PURE__ */ new Set([&quot;href&quot;, &quot;target&quot;, &quot;rel&quot;, &quot;download&quot;, &quot;hreflang&quot;]),
+    IMG: /* @__PURE__ */ new Set([&quot;src&quot;, &quot;alt&quot;, &quot;width&quot;, &quot;height&quot;, &quot;loading&quot;]),
+    OL: /* @__PURE__ */ new Set([&quot;start&quot;, &quot;reversed&quot;, &quot;type&quot;]),
+    LI: /* @__PURE__ */ new Set([&quot;value&quot;]),
+    ABBR: /* @__PURE__ */ new Set([&quot;title&quot;])
+  };
+  function safeUrl(value, attribute) {
+    const normalized = value.trim().toLocaleLowerCase(&quot;en-US&quot;);
+    if (attribute === &quot;src&quot; &amp;&amp; normalized.startsWith(&quot;data:image/&quot;)) return true;
+    return !/^(?:javascript|vbscript|data):/u.test(normalized);
+  }
+  function descriptor(element) {
+    const attributes = [];
+    for (const attribute of Array.from(element.attributes)) {
+      const name = attribute.name.toLocaleLowerCase(&quot;en-US&quot;);
+      if (name === &quot;id&quot; || name === &quot;style&quot; || name.startsWith(&quot;on&quot;) || name.startsWith(&quot;data-&quot;)) continue;
+      const allowed = GLOBAL_ATTRIBUTES.has(name) || name.startsWith(&quot;aria-&quot;) || TAG_ATTRIBUTES[element.tagName]?.has(name);
+      if (!allowed) continue;
+      if ((name === &quot;href&quot; || name === &quot;src&quot;) &amp;&amp; !safeUrl(attribute.value, name)) continue;
+      attributes.push([name, attribute.value]);
+    }
+    return { tagName: SAFE_TAGS.has(element.tagName) ? element.tagName : &quot;SPAN&quot;, attributes, source: element };
+  }
+  function applyClickMeaning(clone, source) {
+    if (clone.tagName === &quot;A&quot; &amp;&amp; clone.hasAttribute(&quot;href&quot;) &amp;&amp; !source.hasAttribute(&quot;onclick&quot;)) return;
+    if (!source.matches('a[href], [role=&quot;button&quot;], [onclick]')) return;
+    clone.addEventListener(&quot;click&quot;, (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (source instanceof HTMLElement) source.click();
+    });
+  }
+  function createShell(value, ownerDocument) {
+    const element = ownerDocument.createElement(value.tagName.toLocaleLowerCase(&quot;en-US&quot;));
+    value.attributes.forEach(([name, attributeValue]) => element.setAttribute(name, attributeValue));
+    applyClickMeaning(element, value.source);
+    return element;
+  }
+  function safeClone(source, ownerDocument) {
+    if (BLOCKED_TAGS.has(source.tagName)) return void 0;
+    if (!SAFE_TAGS.has(source.tagName)) {
+      const fragment = ownerDocument.createDocumentFragment();
+      source.childNodes.forEach((child) => {
+        if (child instanceof Text) fragment.append(ownerDocument.createTextNode(child.nodeValue ?? &quot;&quot;));
+        else if (child instanceof Element) {
+          const clone2 = safeClone(child, ownerDocument);
+          if (clone2) fragment.append(clone2);
+        }
+      });
+      return fragment;
+    }
+    const clone = createShell(descriptor(source), ownerDocument);
+    if (!VOID_TAGS.has(source.tagName)) {
+      source.childNodes.forEach((child) => {
+        if (child instanceof Text) clone.append(ownerDocument.createTextNode(child.nodeValue ?? &quot;&quot;));
+        else if (child instanceof Element) {
+          const childClone = safeClone(child, ownerDocument);
+          if (childClone) clone.append(childClone);
+        }
+      });
+    }
+    return clone;
+  }
+  function escaped(value) {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, &quot;\\$&amp;&quot;);
+  }
+  function renderStructuredTranslation(format, translated, ownerDocument) {
+    const root = createShell(format.root, ownerDocument);
+    if (format.tokens.length === 0) {
+      root.textContent = translated;
+      return root;
+    }
+    const byValue = new Map(format.tokens.map((token) => [token.value, token]));
+    const pattern = new RegExp(
+      format.tokens.map(({ value }) => value).sort((left, right) => right.length - left.length).map(escaped).join(&quot;|&quot;),
+      &quot;gu&quot;
+    );
+    const seen = /* @__PURE__ */ new Set();
+    const stack = [{ element: root }];
+    let cursor = 0;
+    for (const match of translated.matchAll(pattern)) {
+      const index = match.index;
+      const value = match[0];
+      const token = byValue.get(value);
+      if (index === void 0 || !token || seen.has(value)) {
+        throw new PlaceholderIntegrityError([&quot;protected&quot;], &quot;DOM \uAD6C\uC870 \uBCF4\uD638 \uD1A0\uD070\uC774 \uC911\uBCF5\uB418\uAC70\uB098 \uC190\uC0C1\uB418\uC5C8\uC2B5\uB2C8\uB2E4.&quot;);
+      }
+      seen.add(value);
+      if (index > cursor) stack.at(-1).element.append(ownerDocument.createTextNode(translated.slice(cursor, index)));
+      if (token.kind === &quot;open&quot;) {
+        const element = createShell(token.element, ownerDocument);
+        stack.at(-1).element.append(element);
+        stack.push({ id: token.id, element });
+      } else if (token.kind === &quot;close&quot;) {
+        if (stack.length === 1 || stack.at(-1).id !== token.id) {
+          throw new PlaceholderIntegrityError([&quot;protected&quot;], &quot;DOM \uAD6C\uC870 \uBCF4\uD638 \uD1A0\uD070\uC758 \uC911\uCCA9 \uC21C\uC11C\uAC00 \uC190\uC0C1\uB418\uC5C8\uC2B5\uB2C8\uB2E4.&quot;);
+        }
+        stack.pop();
+      } else if (token.kind === &quot;void&quot;) {
+        stack.at(-1).element.append(createShell(token.element, ownerDocument));
+      } else {
+        const clone = safeClone(token.element.source, ownerDocument);
+        if (clone) stack.at(-1).element.append(clone);
+      }
+      cursor = index + value.length;
+    }
+    if (seen.size !== format.tokens.length || stack.length !== 1) {
+      throw new PlaceholderIntegrityError([&quot;protected&quot;], &quot;DOM \uAD6C\uC870 \uBCF4\uD638 \uD1A0\uD070\uC758 \uAC1C\uC218 \uB610\uB294 \uC911\uCCA9\uC774 \uC190\uC0C1\uB418\uC5C8\uC2B5\uB2C8\uB2E4.&quot;);
+    }
+    if (cursor &lt; translated.length) root.append(ownerDocument.createTextNode(translated.slice(cursor)));
+    return root;
+  }
+  function cloneStructuredListShell(format, ownerDocument) {
+    return format.parentList ? createShell(format.parentList, ownerDocument) : void 0;
+  }
+
+  // src/rendering/original-preserving-renderer.ts
+  var SAFE_TRANSLATION_TAGS = /* @__PURE__ */ new Set([
+    &quot;BLOCKQUOTE&quot;,
+    &quot;DIV&quot;,
+    &quot;H3&quot;,
+    &quot;H4&quot;,
+    &quot;H5&quot;,
+    &quot;H6&quot;,
+    &quot;P&quot;,
+    &quot;PRE&quot;
+  ]);
+  var OriginalPreservingRenderer = class {
+    style;
+    bindings = /* @__PURE__ */ new Map();
+    presentations = /* @__PURE__ */ new Set();
+    sectionPresentations = /* @__PURE__ */ new WeakMap();
+    originalDisplays = /* @__PURE__ */ new WeakMap();
+    inlineBindings = /* @__PURE__ */ new Map();
+    retranslateHandler;
+    setRetranslateHandler(handler) {
+      this.retranslateHandler = handler;
+    }
+    track(target) {
+      if (target.renderMode === &quot;inline&quot;) {
+        const existing2 = this.inlineBindings.get(target.id);
+        const source = target.sourceElements[0];
+        if (!source) return;
+        if (existing2) {
+          existing2.target = target;
+          return;
+        }
+        this.inlineBindings.set(target.id, {
+          target,
+          original: source.textContent ?? target.source
+        });
+        return;
+      }
+      const existing = this.bindings.get(target.id);
+      if (existing) {
+        existing.target = target;
+        target.sourceElements.forEach((element) => {
+          if (!this.originalDisplays.has(element)) {
+            this.originalDisplays.set(element, element.style.display);
+          }
+        });
+        return;
+      }
+      target.sourceElements.forEach((element) => {
+        this.originalDisplays.set(element, element.style.display);
+      });
+      const sectionRoot = this.sectionRoot(target);
+      let presentation = sectionRoot ? this.sectionPresentations.get(sectionRoot) : void 0;
+      if (!presentation) {
+        presentation = {
+          bindings: [],
+          forceOriginal: false,
+          sectionRoot,
+          lists: /* @__PURE__ */ new Map(),
+          translatedCount: 0
+        };
+        this.presentations.add(presentation);
+        if (sectionRoot) {
+          this.sectionPresentations.set(sectionRoot, presentation);
+        }
+      }
+      const binding = { target, presentation };
+      presentation.bindings.push(binding);
+      this.bindings.set(target.id, binding);
+    }
+    reset(target) {
+      if (target.renderMode === &quot;inline&quot;) {
+        const binding2 = this.inlineBindings.get(target.id);
+        const source = target.sourceElements[0];
+        if (!source) return;
+        if (binding2) {
+          binding2.target = target;
+          binding2.original = source.textContent ?? target.source;
+        } else {
+          this.track(target);
+        }
+        return;
+      }
+      this.track(target);
+      const binding = this.bindings.get(target.id);
+      if (!binding) {
+        return;
+      }
+      const presentation = binding.presentation;
+      binding.failureMessage = void 0;
+      this.removeCopy(binding);
+      this.showOriginal(binding.target, presentation);
+      if (presentation.translatedCount > 0) {
+        return;
+      }
+      this.releaseEmptyPresentation(presentation);
+    }
+    render(target, translated) {
+      if (!translated.trim()) {
+        return;
+      }
+      this.track(target);
+      if (target.renderMode === &quot;inline&quot;) {
+        const binding2 = this.inlineBindings.get(target.id);
+        const source = binding2?.target.sourceElements[0];
+        if (!binding2 || !source) return;
+        const leading = binding2.original.match(/^\s*/)?.[0] ?? &quot;&quot;;
+        const trailing = binding2.original.match(/\s*$/)?.[0] ?? &quot;&quot;;
+        source.textContent = `${leading}${translated}${trailing}`;
+        return;
+      }
+      const binding = this.bindings.get(target.id);
+      if (!binding) {
+        return;
+      }
+      binding.failureMessage = void 0;
+      if (binding.translated === void 0) binding.presentation.translatedCount += 1;
+      binding.translated = translated;
+      this.ensurePresentation(binding.presentation);
+      this.renderBinding(binding);
+      this.refreshPresentationState(binding.presentation);
+      if (binding.presentation.forceOriginal) this.showOriginal(target, binding.presentation);
+      else this.hideOriginal(target, binding.presentation);
+    }
+    showFailure(target, message) {
+      if (target.renderMode === &quot;inline&quot;) return;
+      this.track(target);
+      const binding = this.bindings.get(target.id);
+      if (!binding) return;
+      binding.failureMessage = message;
+      this.ensurePresentation(binding.presentation);
+      this.showOriginal(target, binding.presentation);
+      this.refreshPresentationState(binding.presentation);
+    }
+    hasFailureNotice(target) {
+      const status = this.bindings.get(target.id)?.presentation.status;
+      return Boolean(status?.isConnected &amp;&amp; !status.closest(&quot;[hidden]&quot;));
+    }
+    remove(id) {
+      const inline = this.inlineBindings.get(id);
+      if (inline) {
+        const source = inline.target.sourceElements[0];
+        if (source) source.textContent = inline.original;
+        this.inlineBindings.delete(id);
+        return;
+      }
+      const binding = this.bindings.get(id);
+      if (!binding) return;
+      this.removeCopy(binding);
+      this.showOriginal(binding.target, binding.presentation);
+      this.bindings.delete(id);
+      const presentation = binding.presentation;
+      presentation.bindings = presentation.bindings.filter((entry) => entry !== binding);
+      if (presentation.translatedCount === 0) this.releaseEmptyPresentation(presentation);
+      if (presentation.bindings.length === 0) {
+        this.presentations.delete(presentation);
+        if (presentation.sectionRoot) this.sectionPresentations.delete(presentation.sectionRoot);
+      }
+    }
+    releaseEmptyPresentation(presentation) {
+      presentation.toggleHost?.remove();
+      presentation.block?.remove();
+      presentation.block = void 0;
+      presentation.body = void 0;
+      presentation.toggle = void 0;
+      presentation.retranslate = void 0;
+      presentation.status = void 0;
+      presentation.feedback = void 0;
+      presentation.toggleHost = void 0;
+      presentation.lists.clear();
+      presentation.bindings.forEach((binding) => this.showOriginal(binding.target, presentation));
+      this.unwrapOriginalContent(presentation);
+    }
+    destroy() {
+      this.style?.remove();
+      this.style = void 0;
+      this.inlineBindings.forEach((binding) => {
+        const source = binding.target.sourceElements[0];
+        if (source) source.textContent = binding.original;
+      });
+      this.inlineBindings.clear();
+      this.presentations.forEach((presentation) => {
+        presentation.toggleHost?.remove();
+        presentation.block?.remove();
+        presentation.bindings.forEach((binding) => this.showOriginal(binding.target, presentation));
+        this.unwrapOriginalContent(presentation);
+      });
+      this.bindings.clear();
+      this.presentations.clear();
+      this.sectionPresentations = /* @__PURE__ */ new WeakMap();
+      this.originalDisplays = /* @__PURE__ */ new WeakMap();
+    }
+    sectionRoot(target) {
+      if (target.category === &quot;comment&quot;) {
+        return void 0;
+      }
+      for (const element of target.sourceElements) {
+        if (element.matches(SHARED_SELECTORS.authoredContent)) {
+          return element;
+        }
+        const root = element.closest(SHARED_SELECTORS.authoredContent);
+        if (root) {
+          return root;
+        }
+      }
+      return void 0;
+    }
+    ensurePresentation(presentation) {
+      if (presentation.block) {
+        return;
+      }
+      const first = presentation.bindings[0];
+      if (!first) {
+        return;
+      }
+      const ownerDocument = first.target.parent.ownerDocument;
+      if (!this.style) {
+        this.style = ownerDocument.createElement(&quot;style&quot;);
+        this.style.dataset.mpkrTranslationActions = &quot;&quot;;
+        this.style.textContent = TRANSLATION_ACTION_CSS;
+        ownerDocument.head.append(this.style);
+      }
+      const inlineCopy = first.target.renderMode === &quot;inline-copy&quot;;
+      const block = ownerDocument.createElement(inlineCopy ? &quot;span&quot; : &quot;div&quot;);
+      block.className = presentation.sectionRoot ? &quot;mpkr-machine-translation mpkr-section-translation&quot; : &quot;mpkr-machine-translation&quot;;
+      block.dataset.mpkrTranslationId = first.target.id;
+      block.style.color = &quot;inherit&quot;;
+      block.style.fontSize = &quot;inherit&quot;;
+      block.style.lineHeight = inlineCopy ? &quot;inherit&quot; : UI.font.bodyLineHeight;
+      block.style.margin = inlineCopy || presentation.sectionRoot ? &quot;0&quot; : &quot;0.5rem 0&quot;;
+      const body = ownerDocument.createElement(inlineCopy ? &quot;span&quot; : &quot;div&quot;);
+      body.className = &quot;mpkr-translation-body&quot;;
+      const status = ownerDocument.createElement(inlineCopy ? &quot;span&quot; : &quot;div&quot;);
+      status.className = &quot;mpkr-translation-status mpkr-status-message&quot;;
+      status.setAttribute(&quot;role&quot;, &quot;status&quot;);
+      status.setAttribute(&quot;aria-live&quot;, &quot;polite&quot;);
+      status.setAttribute(&quot;aria-atomic&quot;, &quot;true&quot;);
+      const feedback = ownerDocument.createElement(&quot;span&quot;);
+      feedback.className = &quot;mpkr-translation-feedback&quot;;
+      feedback.setAttribute(&quot;role&quot;, &quot;status&quot;);
+      feedback.setAttribute(&quot;aria-live&quot;, &quot;polite&quot;);
+      feedback.hidden = true;
+      const toggle = ownerDocument.createElement(&quot;button&quot;);
+      toggle.type = &quot;button&quot;;
+      toggle.className = &quot;mpkr-original-toggle&quot;;
+      toggle.textContent = presentation.forceOriginal ? &quot;\uC6D0\uBB38 \uC228\uAE30\uAE30&quot; : &quot;\uC6D0\uBB38 \uBCF4\uAE30&quot;;
+      toggle.setAttribute(&quot;aria-expanded&quot;, String(presentation.forceOriginal));
+      toggle.setAttribute(&quot;aria-label&quot;, presentation.forceOriginal ? &quot;\uC774 \uC139\uC158\uC758 \uC6D0\uBB38 \uC228\uAE30\uAE30&quot; : &quot;\uC774 \uC139\uC158\uC758 \uC6D0\uBB38 \uBCF4\uAE30&quot;);
+      toggle.addEventListener(&quot;click&quot;, (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        presentation.forceOriginal = !presentation.forceOriginal;
+        this.applyPresentation(presentation);
+      });
+      const retranslate = ownerDocument.createElement(&quot;button&quot;);
+      retranslate.type = &quot;button&quot;;
+      retranslate.className = &quot;mpkr-retranslate&quot;;
+      retranslate.textContent = &quot;\uC7AC\uBC88\uC5ED&quot;;
+      retranslate.setAttribute(&quot;aria-label&quot;, &quot;\uC774 \uC139\uC158 \uB2E4\uC2DC \uBC88\uC5ED&quot;);
+      retranslate.addEventListener(&quot;click&quot;, async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const handler = this.retranslateHandler;
+        if (!handler || retranslate.disabled) return;
+        const targetIds = presentation.bindings.map((binding) => binding.target).filter((target) => target.renderMode !== &quot;inline&quot;).map((target) => target.id);
+        if (targetIds.length === 0) return;
+        retranslate.disabled = true;
+        retranslate.setAttribute(&quot;aria-busy&quot;, &quot;true&quot;);
+        feedback.hidden = false;
+        feedback.textContent = &quot;\uC7AC\uBC88\uC5ED \uC911\u2026&quot;;
+        try {
+          const result = await handler(targetIds);
+          feedback.textContent = result === &quot;unchanged&quot; ? &quot;\uAE30\uC874 \uBC88\uC5ED\uACFC \uAC19\uC2B5\uB2C8\uB2E4.&quot; : result === &quot;failed&quot; ? &quot;\uC7AC\uBC88\uC5ED\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uC2DC\uB3C4\uD574 \uC8FC\uC138\uC694.&quot; : &quot;\uBC88\uC5ED\uC744 \uAC31\uC2E0\uD588\uC2B5\uB2C8\uB2E4.&quot;;
+          feedback.hidden = result === &quot;failed&quot; &amp;&amp; !status.hidden;
+        } catch {
+          feedback.textContent = &quot;\uC7AC\uBC88\uC5ED\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uC2DC\uB3C4\uD574 \uC8FC\uC138\uC694.&quot;;
+          feedback.hidden = !status.hidden;
+        } finally {
+          retranslate.disabled = false;
+          retranslate.removeAttribute(&quot;aria-busy&quot;);
+        }
+      });
+      block.append(body, status);
+      presentation.block = block;
+      presentation.body = body;
+      presentation.toggle = toggle;
+      presentation.retranslate = retranslate;
+      presentation.status = status;
+      presentation.feedback = feedback;
+      if (presentation.sectionRoot) {
+        this.wrapWholeRootOriginal(presentation);
+        presentation.sectionRoot.insertBefore(block, presentation.sectionRoot.firstChild);
+      } else {
+        first.target.parent.insertBefore(block, first.target.insertBefore ?? null);
+      }
+      const author = this.authorFor(first.target);
+      if (first.target.category === &quot;comment&quot; &amp;&amp; author?.parentElement) {
+        const toggleHost = ownerDocument.createElement(&quot;div&quot;);
+        toggleHost.className = &quot;mpkr-original-toggle-host mpkr-translation-actions&quot;;
+        author.insertAdjacentElement(&quot;afterend&quot;, toggleHost);
+        toggleHost.append(toggle);
+        toggleHost.append(retranslate, feedback);
+        presentation.toggleHost = toggleHost;
+      } else {
+        const actions = ownerDocument.createElement(&quot;span&quot;);
+        actions.className = &quot;mpkr-translation-actions&quot;;
+        actions.append(toggle, retranslate, feedback);
+        block.append(actions);
+      }
+      this.refreshPresentationState(presentation);
+    }
+    refreshPresentationState(presentation) {
+      const hasTranslation = presentation.translatedCount > 0;
+      const failure = presentation.bindings.find((binding) => binding.failureMessage)?.failureMessage;
+      if (presentation.body) presentation.body.hidden = !hasTranslation;
+      if (presentation.toggle) presentation.toggle.hidden = !hasTranslation;
+      if (presentation.status) {
+        setStatusMessage(presentation.status, failure ?? &quot;&quot;);
+        presentation.status.hidden = !failure;
+      }
+    }
+    authorFor(target) {
+      const source = target.sourceElements[0];
+      if (!source) {
+        return void 0;
+      }
+      const forumAuthor = source.closest(COMMUNITY_SELECTORS.topicRow)?.querySelector(COMMUNITY_SELECTORS.topicAuthor);
+      if (forumAuthor) return forumAuthor;
+      const activityAuthor = source.closest(COMMUNITY_SELECTORS.activityRow)?.querySelector(COMMUNITY_SELECTORS.activityAuthor);
+      if (activityAuthor) return activityAuthor;
+      const tickRow = source.closest(STATS_SELECTORS.tickRowLandmark);
+      if (tickRow) {
+        return tickRow.querySelector(STATS_SELECTORS.tickAuthor) ?? void 0;
+      }
+      const commentBody = target.parent.matches(SHARED_SELECTORS.commentBody) ? target.parent : source.closest(SHARED_SELECTORS.commentBody);
+      const localAuthor = commentBody?.querySelector(SHARED_SELECTORS.commentAuthor);
+      if (localAuthor) {
+        return localAuthor;
+      }
+      const commentContainer = commentBody?.closest(SHARED_SELECTORS.commentContainer);
+      return commentContainer?.querySelector(SHARED_SELECTORS.commentAuthor) ?? void 0;
+    }
+    wrapWholeRootOriginal(presentation) {
+      const root = presentation.sectionRoot;
+      if (!root || !presentation.bindings.some((binding) => binding.target.sourceElements.includes(root))) {
+        return;
+      }
+      const wrapper = root.ownerDocument.createElement(&quot;div&quot;);
+      wrapper.className = &quot;mpkr-original-section-content&quot;;
+      while (root.firstChild) {
+        wrapper.append(root.firstChild);
+      }
+      root.append(wrapper);
+      presentation.originalWrapper = wrapper;
+    }
+    unwrapOriginalContent(presentation) {
+      const root = presentation.sectionRoot;
+      const wrapper = presentation.originalWrapper;
+      if (!root || !wrapper) {
+        return;
+      }
+      while (wrapper.firstChild) {
+        root.insertBefore(wrapper.firstChild, wrapper);
+      }
+      wrapper.remove();
+      presentation.originalWrapper = void 0;
+    }
+    sourceForCopy = /* @__PURE__ */ new WeakMap();
+    insertInSourceOrder(parent, copy, source) {
+      if (source) this.sourceForCopy.set(copy, source);
+      let next = null;
+      for (let sibling = parent.lastElementChild; sibling; sibling = sibling.previousElementSibling) {
+        const siblingSource = this.sourceForCopy.get(sibling);
+        if (!source || !siblingSource || !(source.compareDocumentPosition(siblingSource) &amp; Node.DOCUMENT_POSITION_FOLLOWING)) break;
+        next = sibling;
+      }
+      parent.insertBefore(copy, next);
+    }
+    renderBinding(binding) {
+      const { presentation } = binding;
+      const body = presentation.body;
+      const source = binding.target.sourceElements[0];
+      const previous = binding.copy;
+      const previousParent = previous?.parentElement;
+      const previousNext = previous?.nextSibling ?? null;
+      previous?.remove();
+      let parent = previousParent ?? body;
+      if (!previousParent &amp;&amp; source?.tagName === &quot;LI&quot; &amp;&amp; source.parentElement) {
+        const listSource = source.parentElement;
+        let list = presentation.lists.get(listSource);
+        if (!list) {
+          list = binding.target.format ? cloneStructuredListShell(binding.target.format, body.ownerDocument) : void 0;
+          list ??= body.ownerDocument.createElement(listSource.tagName === &quot;OL&quot; ? &quot;ol&quot; : &quot;ul&quot;);
+          list.style.margin = &quot;0.35rem 0&quot;;
+          list.style.paddingLeft = &quot;1.4rem&quot;;
+          presentation.lists.set(listSource, list);
+          this.insertInSourceOrder(body, list, listSource);
+        }
+        parent = list;
+      }
+      const copy = binding.target.format ? renderStructuredTranslation(binding.target.format, binding.translated ?? &quot;&quot;, body.ownerDocument) : body.ownerDocument.createElement(
+        source?.tagName === &quot;LI&quot; ? &quot;li&quot; : source &amp;&amp; SAFE_TRANSLATION_TAGS.has(source.tagName) ? source.tagName.toLowerCase() : &quot;div&quot;
+      );
+      if (!binding.target.format) copy.textContent = binding.translated ?? &quot;&quot;;
+      if (copy.tagName !== &quot;LI&quot; &amp;&amp; binding.target.renderMode !== &quot;inline-copy&quot;) {
+        copy.style.marginTop = &quot;0.65rem&quot;;
+        copy.style.marginBottom = &quot;0&quot;;
+      }
+      binding.copy = copy;
+      if (previousParent) previousParent.insertBefore(copy, previousNext);
+      else this.insertInSourceOrder(parent, copy, source);
+      if (parent === body &amp;&amp; copy === body.firstElementChild &amp;&amp; binding.target.renderMode !== &quot;inline-copy&quot;) {
+        copy.style.marginTop = &quot;0&quot;;
+        const next = copy.nextElementSibling;
+        if (next &amp;&amp; ![&quot;UL&quot;, &quot;OL&quot;].includes(next.tagName)) next.style.marginTop = &quot;0.65rem&quot;;
+      }
+    }
+    removeCopy(binding) {
+      if (binding.translated) binding.presentation.translatedCount -= 1;
+      binding.translated = void 0;
+      binding.copy?.remove();
+      binding.copy = void 0;
+      for (const [source, list] of binding.presentation.lists) {
+        if (!list.childElementCount) {
+          list.remove();
+          binding.presentation.lists.delete(source);
+        }
+      }
+      const first = binding.presentation.body?.firstElementChild;
+      if (first &amp;&amp; ![&quot;UL&quot;, &quot;OL&quot;].includes(first.tagName)) first.style.marginTop = &quot;0&quot;;
+    }
+    applyPresentation(presentation) {
+      const showOriginal = presentation.forceOriginal;
+      if (presentation.block) {
+        presentation.block.style.display = &quot;&quot;;
+      }
+      if (presentation.toggle) {
+        presentation.toggle.textContent = showOriginal ? &quot;\uC6D0\uBB38 \uC228\uAE30\uAE30&quot; : &quot;\uC6D0\uBB38 \uBCF4\uAE30&quot;;
+        presentation.toggle.setAttribute(&quot;aria-expanded&quot;, String(showOriginal));
+        presentation.toggle.setAttribute(
+          &quot;aria-label&quot;,
+          showOriginal ? &quot;\uC774 \uC139\uC158\uC758 \uC6D0\uBB38 \uC228\uAE30\uAE30&quot; : &quot;\uC774 \uC139\uC158\uC758 \uC6D0\uBB38 \uBCF4\uAE30&quot;
+        );
+      }
+      presentation.bindings.forEach((binding) => {
+        if (showOriginal || !binding.translated) {
+          this.showOriginal(binding.target, presentation);
+        } else {
+          this.hideOriginal(binding.target, presentation);
+        }
+      });
+    }
+    hideOriginal(target, presentation) {
+      if (presentation.originalWrapper &amp;&amp; target.sourceElements.includes(presentation.sectionRoot)) {
+        presentation.originalWrapper.style.display = &quot;none&quot;;
+        return;
+      }
+      target.sourceElements.forEach((element) => {
+        element.style.display = &quot;none&quot;;
+      });
+    }
+    showOriginal(target, presentation) {
+      if (presentation.originalWrapper &amp;&amp; target.sourceElements.includes(presentation.sectionRoot)) {
+        presentation.originalWrapper.style.display = &quot;&quot;;
+        return;
+      }
+      target.sourceElements.forEach((element) => {
+        element.style.display = this.originalDisplays.get(element) ?? &quot;&quot;;
+      });
+    }
+  };
+
+  // &lt;stdin>
+  var finish = new AreaRoutePageFinish();
+  var sections = document.querySelector(&quot;#route-page&quot;) ? new RoutePageSectionPresentation() : new AreaPageSectionPresentation();
+  var lists = new RouteListPresentation();
+  var renderer = new OriginalPreservingRenderer();
+  for (const [index, source] of [...document.querySelectorAll(&quot;[data-original]&quot;)].entries()) {
+    renderer.render({ id: &quot;review-&quot; + index, category: &quot;description&quot;, source: source.textContent, sourceElements: [source], parent: source.parentElement }, source.dataset.translation);
+  }
+  renderer.setRetranslateHandler(async () => &quot;unchanged&quot;);
+  sections.mount();
+  lists.mount();
+  finish.mount();
+  for (const h of document.querySelectorAll(&quot;.mpkr-area-section-heading&quot;)) h.click();
+  window.checkReview = () => {
+    const h = document.querySelector(&quot;.mpkr-area-section-heading&quot;), body = document.getElementById(h.getAttribute(&quot;aria-controls&quot;));
+    h.dispatchEvent(new KeyboardEvent(&quot;keydown&quot;, { key: &quot;Enter&quot;, bubbles: true, cancelable: true }));
+    const collapsed = body.hidden &amp;&amp; h.getAttribute(&quot;aria-expanded&quot;) === &quot;false&quot;;
+    h.dispatchEvent(new KeyboardEvent(&quot;keydown&quot;, { key: &quot; &quot;, bubbles: true, cancelable: true }));
+    const expanded = !body.hidden &amp;&amp; h.getAttribute(&quot;aria-expanded&quot;) === &quot;true&quot;;
+    const action = document.querySelector(&quot;.mpkr-original-toggle&quot;);
+    const original = document.querySelector(&quot;[data-original]&quot;);
+    let originalToggle = null;
+    if (action) {
+      action.click();
+      const shown = getComputedStyle(original).display !== &quot;none&quot;;
+      action.click();
+      originalToggle = shown &amp;&amp; getComputedStyle(original).display === &quot;none&quot;;
+    }
+    const title = document.querySelector(&quot;h1&quot;);
+    const activeLineHeight = getComputedStyle(title).lineHeight;
+    finish.destroy();
+    const removed = !document.querySelector(&quot;[data-mpkr-area-route-finish]&quot;);
+    const restoredLineHeight = getComputedStyle(title).lineHeight;
+    finish.mount();
+    finish.mount();
+    const singleStyle = document.querySelectorAll(&quot;[data-mpkr-area-route-finish]&quot;).length === 1;
+    let firstRowTextOffset = 0;
+    const firstLink = document.querySelector(&quot;.mpkr-route-list-primary&quot;), grade = document.querySelector(&quot;.route-row .rateYDS&quot;);
+    if (firstLink &amp;&amp; grade) {
+      const range = document.createRange();
+      range.selectNodeContents(firstLink);
+      firstRowTextOffset = range.getBoundingClientRect().bottom - grade.getBoundingClientRect().bottom;
+    }
+    const sectionMargin = getComputedStyle(h).marginTop;
+    return {
+      sectionMargin,
+      collapsed,
+      expanded,
+      originalToggle,
+      removed,
+      singleStyle,
+      activeLineHeight,
+      restoredLineHeight,
+      firstRowTextOffset,
+      overflow: document.documentElement.scrollWidth - innerWidth,
+      overflowingControls: [...document.querySelectorAll(&quot;.mpkr-area-section-heading,.mpkr-translation-actions,.mpkr-route-list-primary&quot;)].filter((e) => e.getBoundingClientRect().right > innerWidth + 1).length,
+      passed: sectionMargin === &quot;24px&quot; &amp;&amp; Math.abs(firstRowTextOffset) &lt;= 1 &amp;&amp; collapsed &amp;&amp; expanded &amp;&amp; originalToggle !== false &amp;&amp; removed &amp;&amp; singleStyle &amp;&amp; document.documentElement.scrollWidth &lt;= innerWidth
+    };
+  };
+})();
+&lt;/script>&lt;/html>"></iframe></section></main><p class="note">원본 페이지 구조를 본뜬 검토용 예시입니다. 실제 사이트 화면 캡처나 등반 정보가 아닙니다.<br>글꼴·제목 크기는 MP 원본을 상속하며, 이번 단계에서는 지역·루트 화면의 간격과 줄바꿈을 적용했습니다.</p><script>window.checkReview=()=>[...document.querySelectorAll('iframe')].map(f=>({title:f.title,...f.contentWindow.checkReview()}));</script></html>

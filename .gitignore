@@ -4,3 +4,12 @@ node_modules/
 coverage/
 *.log
 .DS_Store
+/.tmp/
+
+# Keep site captures and earlier visual studies as local reference material.
+/previews/*
+!/previews/README.md
+
+# Raw live-browser captures remain local; store assets are published separately.
+/design/review/2026-09-29/
+/docs/forum-verification-2026-09-29/

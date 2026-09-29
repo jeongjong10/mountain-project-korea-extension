@@ -1,7 +1,27 @@
+import { UI } from '../design-tokens';
+import type { ContractDiagnosticSink } from '../../sites/mountain-project/contract/diagnostics';
+import {
+  isStatsInformationPath,
+  parseRoutePath,
+} from '../../sites/mountain-project/contract/routes';
+import { ROUTE_SELECTORS } from '../../sites/mountain-project/contract/selectors/route';
+import { SHARED_SELECTORS } from '../../sites/mountain-project/contract/selectors/shared';
+import {
+  STATS_FRAME_CHROME_HIDE_SELECTORS,
+  STATS_SELECTORS,
+} from '../../sites/mountain-project/contract/selectors/stats';
+import type { ContractDiagnostic } from '../../sites/mountain-project/contract/schema';
+import {
+  isCurrentStatsPath,
+  locateRouteStatsLayout,
+  locateStatsFrameLandmarks,
+  type RouteStatsLayout,
+} from '../../sites/mountain-project/dom/route-stats-layout';
+import { RouteStatsPresentation } from '../route-stats-presentation';
+import { connectEmbeddedFormNavigation } from '../embedded-form-navigation';
+import { connectEmbeddedScrollBoundary } from '../embedded-scroll-boundary';
+
 const SECTION_CLASS = 'mpkr-route-stats';
-const CONTENT_PATH_PATTERN = /^\/(?:area|route|photo|video|user)(?:\/|$)/;
-const ROUTE_PATH_PATTERN = /^\/route\/\d+\/[^/]+\/?$/;
-const STATS_PATH_PATTERN = /^\/route\/stats\/\d+\/[^/]+\/?$/;
 const LOAD_TIMEOUT_MS = 15_000;
 
 const LAYOUT_MARKER = 'data-mpkr-route-overview';
@@ -11,19 +31,19 @@ const AUXILIARY_MARKER = 'data-mpkr-route-auxiliary';
 const FRAME_MARKER = 'data-mpkr-route-stats-frame';
 
 const STYLE_TEXT = `
-#route-page .main-content > .row > [${LAYOUT_MARKER}='true'] {
+${ROUTE_SELECTORS.page} [${LAYOUT_MARKER}='true'] {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(18rem, 1fr);
   align-items: start;
-  gap: 1rem;
+  gap: ${UI.space.lg};
   flex: 0 0 100%;
   width: 100%;
   max-width: 100%;
   min-width: 0;
 }
 
-#route-page [${SUMMARY_MARKER}='true'],
-#route-page [${YOU_MARKER}='true'] {
+${ROUTE_SELECTORS.page} [${SUMMARY_MARKER}='true'],
+${ROUTE_SELECTORS.page} [${YOU_MARKER}='true'] {
   min-width: 0;
   max-width: 100%;
   margin-top: 0 !important;
@@ -31,87 +51,87 @@ const STYLE_TEXT = `
   white-space: normal;
 }
 
-#route-page [${SUMMARY_MARKER}='true'] .description-details {
+${ROUTE_SELECTORS.page} [${SUMMARY_MARKER}='true'] ${SHARED_SELECTORS.descriptionDetailsClass} {
   width: 100%;
 }
 
-#route-page [${YOU_MARKER}='true'] {
+${ROUTE_SELECTORS.page} [${YOU_MARKER}='true'] {
   display: block !important;
   width: 100%;
   padding-top: 0 !important;
 }
 
-#route-page [${SUMMARY_MARKER}='true'] > .mpkr-info-heading,
-#route-page [${YOU_MARKER}='true'] > .title-with-border-bottom:first-child,
-#route-page .${SECTION_CLASS}__heading-wrap {
+${ROUTE_SELECTORS.page} [${SUMMARY_MARKER}='true'] > .mpkr-info-heading,
+${ROUTE_SELECTORS.page} [${YOU_MARKER}='true'] > .title-with-border-bottom:first-child,
+${ROUTE_SELECTORS.page} .${SECTION_CLASS}__heading-wrap {
   box-sizing: border-box;
   display: flex;
   align-items: center;
   min-height: 2.5rem;
 }
 
-#route-page [${SUMMARY_MARKER}='true'] > .mpkr-info-heading,
-#route-page [${YOU_MARKER}='true'] > .title-with-border-bottom:first-child {
+${ROUTE_SELECTORS.page} [${SUMMARY_MARKER}='true'] > .mpkr-info-heading,
+${ROUTE_SELECTORS.page} [${YOU_MARKER}='true'] > .title-with-border-bottom:first-child {
   margin-top: 0 !important;
 }
 
-#route-page [${SUMMARY_MARKER}='true'] > .mpkr-info-heading > h2,
-#route-page [${YOU_MARKER}='true'] > .title-with-border-bottom:first-child > h2,
-#route-page .${SECTION_CLASS}__heading {
+${ROUTE_SELECTORS.page} [${SUMMARY_MARKER}='true'] > .mpkr-info-heading > h2,
+${ROUTE_SELECTORS.page} [${YOU_MARKER}='true'] > .title-with-border-bottom:first-child > h2,
+${ROUTE_SELECTORS.page} .${SECTION_CLASS}__heading {
   margin: 0;
   line-height: 1.35;
 }
 
-#route-page .main-content > .row > [${AUXILIARY_MARKER}='true'] {
+${ROUTE_SELECTORS.page} [${AUXILIARY_MARKER}='true'] {
   display: none !important;
 }
 
-#route-page .${SECTION_CLASS} {
+${ROUTE_SELECTORS.page} .${SECTION_CLASS} {
   width: 100%;
   min-width: 0;
   margin: 1.25rem 0 1.5rem;
 }
 
-#route-page .${SECTION_CLASS}__heading-wrap {
+${ROUTE_SELECTORS.page} .${SECTION_CLASS}__heading-wrap {
   justify-content: space-between;
-  gap: 0.75rem;
+  gap: ${UI.space.md};
   margin-bottom: 0.65rem;
 }
 
-#route-page .${SECTION_CLASS}__heading {
+${ROUTE_SELECTORS.page} .${SECTION_CLASS}__heading {
   flex: 1 1 auto;
   min-width: 0;
 }
 
-#route-page .${SECTION_CLASS}__frame-wrap {
+${ROUTE_SELECTORS.page} .${SECTION_CLASS}__frame-wrap {
   width: 100%;
   min-width: 0;
-  border: 1px solid #c8ceca;
-  border-radius: 4px;
-  background: #fff;
+  border: 1px solid ${UI.color.border};
+  border-radius: ${UI.radius.control};
+  background: ${UI.color.surface};
   overflow-x: auto;
   overflow-y: hidden;
 }
 
-#route-page .${SECTION_CLASS}__frame {
+${ROUTE_SELECTORS.page} .${SECTION_CLASS}__frame {
   display: block;
   width: 100%;
   min-height: 680px;
   border: 0;
-  background: #fff;
+  background: ${UI.color.surface};
 }
 
-#route-page .${SECTION_CLASS}__status {
+${ROUTE_SELECTORS.page} .${SECTION_CLASS}__status {
   margin: 0 0 0.6rem;
-  color: #59635d;
-  font-size: 0.85rem;
+  color: ${UI.color.muted};
+  font-size: ${UI.font.small};
 }
 
-#route-page .${SECTION_CLASS}__status[hidden] {
+${ROUTE_SELECTORS.page} .${SECTION_CLASS}__status[hidden] {
   display: none !important;
 }
 
-#route-page .${SECTION_CLASS}__external {
+${ROUTE_SELECTORS.page} .${SECTION_CLASS}__external {
   flex: 0 1 auto;
   margin-left: auto;
   text-align: right;
@@ -119,26 +139,26 @@ const STYLE_TEXT = `
 }
 
 @media (max-width: 767px) {
-  #route-page .main-content > .row > [${LAYOUT_MARKER}='true'] {
+  ${ROUTE_SELECTORS.page} [${LAYOUT_MARKER}='true'] {
     grid-template-columns: minmax(0, 1fr);
     gap: 0.85rem;
   }
 
-  #route-page [${SUMMARY_MARKER}='true'] .description-details td {
+  ${ROUTE_SELECTORS.page} [${SUMMARY_MARKER}='true'] ${SHARED_SELECTORS.descriptionDetailsClass} td {
     white-space: normal !important;
     overflow-wrap: anywhere;
   }
 
-  #route-page .${SECTION_CLASS}__frame {
+  ${ROUTE_SELECTORS.page} .${SECTION_CLASS}__frame {
     min-height: 620px;
   }
 
-  #route-page .${SECTION_CLASS}__heading-wrap {
+  ${ROUTE_SELECTORS.page} .${SECTION_CLASS}__heading-wrap {
     align-items: baseline;
     flex-wrap: wrap;
   }
 
-  #route-page .${SECTION_CLASS}__external {
+  ${ROUTE_SELECTORS.page} .${SECTION_CLASS}__external {
     margin-left: 0;
     text-align: left;
   }
@@ -146,13 +166,7 @@ const STYLE_TEXT = `
 `;
 
 const FRAME_STYLE_TEXT = `
-#header-container-print,
-#header-container,
-#div-gpt-ad-1614709329076-0,
-#cookie-consent,
-#footer-container,
-.main-content-container #route-stats > .row.pt-main-content > .col-xs-12 > .mb-half.small.text-warm,
-.main-content-container #route-stats > .row.pt-main-content > .col-xs-12 > h1 {
+${STATS_FRAME_CHROME_HIDE_SELECTORS.join(',\n')} {
   display: none !important;
 }
 
@@ -162,23 +176,23 @@ body {
 }
 
 body,
-.main-content-container {
+${STATS_SELECTORS.frameMainContainer} {
   margin-top: 0 !important;
   padding-top: 0 !important;
 }
 
-.main-content-container > .container-fluid {
+${STATS_SELECTORS.frameContainerFluid} {
   width: 100% !important;
   max-width: none !important;
   padding: 0.75rem !important;
 }
 
-.main-content-container #route-stats > .row.pt-main-content {
+${STATS_SELECTORS.frameLayoutRow} {
   padding-top: 0 !important;
 }
 
-.main-content-container #route-stats,
-.main-content-container #route-stats .onx-stats-table {
+${STATS_SELECTORS.root},
+${STATS_SELECTORS.tableRoot} {
   width: 100% !important;
   max-width: none !important;
   min-width: 0 !important;
@@ -196,36 +210,6 @@ interface AnchorSnapshot {
   readonly rel: string | null;
 }
 
-interface RouteLayout {
-  readonly mainContent: HTMLElement;
-  readonly row: HTMLElement;
-  readonly overview: HTMLElement;
-  readonly summary: HTMLElement;
-  readonly youAndRoute: HTMLElement;
-  readonly auxiliaryRegions: readonly [HTMLElement, HTMLElement];
-  readonly statsHref: string;
-  readonly statsUrl: URL;
-}
-
-const NAVIGATION_ACTION_SELECTOR = [
-  'a[href]',
-  'button[data-href]',
-  'button[data-url]',
-  'button[onclick]',
-  'input[data-href]',
-  'input[data-url]',
-  'input[onclick]',
-  '[role="button"][data-href]',
-  '[role="button"][data-url]',
-  '[role="button"][onclick]',
-].join(',');
-
-function directChildrenMatching(parent: Element, selector: string): HTMLElement[] {
-  return Array.from(parent.children).filter((child): child is HTMLElement => (
-    child instanceof HTMLElement && child.matches(selector)
-  ));
-}
-
 function resolveUrl(value: string | null, baseUrl: string): URL | undefined {
   if (!value || value.startsWith('#') || /^javascript:/i.test(value)) {
     return undefined;
@@ -235,77 +219,6 @@ function resolveUrl(value: string | null, baseUrl: string): URL | undefined {
   } catch {
     return undefined;
   }
-}
-
-function findStatsAnchor(
-  youAndRoute: HTMLElement,
-  currentUrl: URL,
-): { href: string; url: URL } | undefined {
-  for (const anchor of youAndRoute.querySelectorAll<HTMLAnchorElement>('a[href]')) {
-    const href = anchor.getAttribute('href');
-    const url = resolveUrl(href, currentUrl.href);
-    if (
-      href
-      && url
-      && url.origin === currentUrl.origin
-      && STATS_PATH_PATTERN.test(url.pathname)
-    ) {
-      return { href, url };
-    }
-  }
-  return undefined;
-}
-
-function findRouteLayout(root: ParentNode, currentUrl: URL): RouteLayout | undefined {
-  const page = root.querySelector<HTMLElement>('#route-page');
-  const youAndRoute = page?.querySelector<HTMLElement>('#you-and-route');
-  const overview = youAndRoute?.parentElement;
-  const row = overview?.parentElement;
-  const mainContent = row?.parentElement;
-
-  if (
-    !page
-    || !youAndRoute
-    || !overview?.matches('.col-lg-7.col-md-6')
-    || !row?.matches('.row')
-    || !mainContent?.matches('.main-content')
-    || !page.contains(mainContent)
-  ) {
-    return undefined;
-  }
-
-  const summary = directChildrenMatching(overview, '.small.mb-1').find((candidate) => {
-    const details = candidate.querySelector<HTMLTableElement>('table.description-details');
-    return Boolean(details && details.rows.length >= 2);
-  });
-  const stats = findStatsAnchor(youAndRoute, currentUrl);
-  if (!summary || !stats) {
-    return undefined;
-  }
-
-  const auxiliaryCandidates = directChildrenMatching(row, '.col-lg-5.col-md-6');
-  const onxRegion = auxiliaryCandidates.find((candidate) => (
-    candidate.querySelector('.onx-explore') !== null
-  ));
-  const carouselRegion = auxiliaryCandidates.find((candidate) => (
-    candidate !== onxRegion
-    && candidate.matches('.hidden-sm-down')
-    && candidate.querySelector('#photo-carousel') !== null
-  ));
-  if (!onxRegion || !carouselRegion) {
-    return undefined;
-  }
-
-  return {
-    mainContent,
-    row,
-    overview,
-    summary,
-    youAndRoute,
-    auxiliaryRegions: [onxRegion, carouselRegion],
-    statsHref: stats.href,
-    statsUrl: stats.url,
-  };
 }
 
 function inlineNavigationValue(element: Element): string | null {
@@ -334,7 +247,7 @@ export class RouteStatsEmbedLayout {
   private root: ParentNode | undefined;
   private currentUrl: URL | undefined;
   private pendingObserver: MutationObserver | undefined;
-  private layout: RouteLayout | undefined;
+  private layout: RouteStatsLayout | undefined;
   private section: HTMLElement | undefined;
   private style: HTMLStyleElement | undefined;
   private frameWrap: HTMLElement | undefined;
@@ -344,12 +257,22 @@ export class RouteStatsEmbedLayout {
   private readonly layoutAttributeSnapshots: AttributeSnapshot[] = [];
 
   private frameDocument: Document | undefined;
+  private disconnectFormNavigation: (() => void) | undefined;
+  private disconnectScrollBoundary: (() => void) | undefined;
+  private frameStatsPresentation: RouteStatsPresentation | undefined;
   private frameChromeStyle: HTMLStyleElement | undefined;
   private frameMarkerSnapshot: string | null | undefined;
   private frameMutationObserver: MutationObserver | undefined;
   private frameResizeObserver: ResizeObserver | undefined;
   private frameResizeTimer: ReturnType<typeof setTimeout> | undefined;
   private readonly navigationSnapshots = new Map<HTMLAnchorElement, AnchorSnapshot>();
+  private contractDiagnostic: ContractDiagnostic | undefined;
+
+  constructor(private readonly reportDiagnostic?: ContractDiagnosticSink) {}
+
+  get lastDiagnostic(): ContractDiagnostic | undefined {
+    return this.contractDiagnostic;
+  }
 
   private readonly handleFrameLoad = (): void => {
     if (!this.iframe || !this.layout) {
@@ -375,11 +298,7 @@ export class RouteStatsEmbedLayout {
       this.setStatus('loaded-limited', '');
       return;
     }
-    if (
-      loadedUrl.origin !== this.layout.statsUrl.origin
-      || loadedUrl.pathname.replace(/\/+$/, '')
-        !== this.layout.statsUrl.pathname.replace(/\/+$/, '')
-    ) {
+    if (!isCurrentStatsPath(loadedUrl, this.layout.statsUrl)) {
       this.markLoadFailed();
       return;
     }
@@ -394,7 +313,7 @@ export class RouteStatsEmbedLayout {
 
   private readonly handleFrameClickCapture = (event: Event): void => {
     const target = event.target as { closest?: (selector: string) => Element | null } | null;
-    const action = target?.closest?.(NAVIGATION_ACTION_SELECTOR);
+    const action = target?.closest?.(SHARED_SELECTORS.navigationAction);
     if (!action || action.tagName === 'A') {
       if (action?.tagName === 'A') {
         this.processNavigationAnchor(action);
@@ -413,40 +332,6 @@ export class RouteStatsEmbedLayout {
     }
   };
 
-  private readonly handleFrameSubmitCapture = (event: SubmitEvent): void => {
-    const target = event.target as Element | null;
-    if (target?.tagName !== 'FORM') {
-      return;
-    }
-    const form = target as HTMLFormElement;
-    const submitter = event.submitter as Element | null;
-    const method = submitter?.getAttribute('formmethod')
-      ?? form.getAttribute('method')
-      ?? 'get';
-    if (method.toLowerCase() !== 'get') {
-      return;
-    }
-
-    const action = submitter?.getAttribute('formaction')
-      ?? form.getAttribute('action')
-      ?? form.ownerDocument.location.href;
-    const url = resolveUrl(action, form.ownerDocument.location.href);
-    if (!url || !this.shouldOpenInNewTab(url)) {
-      return;
-    }
-
-    const FrameFormData = form.ownerDocument.defaultView?.FormData ?? FormData;
-    const formData = new FrameFormData(form);
-    for (const [name, value] of formData) {
-      if (typeof value === 'string') {
-        url.searchParams.append(name, value);
-      }
-    }
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    this.openInProtectedTab(url);
-  };
-
   mount(
     root: ParentNode = document,
     currentUrl: URL = new URL(window.location.href),
@@ -454,7 +339,7 @@ export class RouteStatsEmbedLayout {
     if (this.section?.isConnected && this.style?.isConnected) {
       return true;
     }
-    if (!ROUTE_PATH_PATTERN.test(currentUrl.pathname)) {
+    if (!parseRoutePath(currentUrl.pathname)) {
       return false;
     }
 
@@ -500,11 +385,23 @@ export class RouteStatsEmbedLayout {
     if (!this.root || !this.currentUrl) {
       return false;
     }
-    const layout = findRouteLayout(this.root, this.currentUrl);
-    const ownerDocument = layout?.mainContent.ownerDocument;
-    if (!layout || !ownerDocument?.head) {
+    const located = locateRouteStatsLayout(this.root, this.currentUrl);
+    if (!located.ok) {
+      this.recordDiagnostic(located.diagnostic);
       return false;
     }
+    const layout = located.value;
+    const ownerDocument = layout.mainContent.ownerDocument;
+    if (!ownerDocument.head) {
+      this.recordDiagnostic({
+        component: 'route-stats-embed',
+        key: 'document-head',
+        reason: 'Route document head is missing.',
+        page: this.currentUrl.href,
+      });
+      return false;
+    }
+    this.contractDiagnostic = undefined;
 
     const style = ownerDocument.createElement('style');
     style.dataset.mpKoreaRouteStats = 'styles';
@@ -515,7 +412,7 @@ export class RouteStatsEmbedLayout {
     this.mark(layout.youAndRoute, YOU_MARKER);
     const youHeadingCandidate = layout.youAndRoute.firstElementChild;
     const youHeading = youHeadingCandidate instanceof HTMLElement
-      && youHeadingCandidate.classList.contains('title-with-border-bottom')
+      && youHeadingCandidate.classList.contains(SHARED_SELECTORS.titleWithBorderBottomClass)
       ? youHeadingCandidate
       : undefined;
     if (youHeading) {
@@ -624,8 +521,24 @@ export class RouteStatsEmbedLayout {
   private connectFrameDocument(frameDocument: Document): void {
     this.frameDocument = frameDocument;
     this.applyFrameChromePresentation(frameDocument);
+    const statsPresentation = new RouteStatsPresentation();
+    if (statsPresentation.mount(frameDocument)) {
+      this.frameStatsPresentation = statsPresentation;
+    }
     frameDocument.addEventListener('click', this.handleFrameClickCapture, true);
-    frameDocument.addEventListener('submit', this.handleFrameSubmitCapture, true);
+    this.disconnectFormNavigation = connectEmbeddedFormNavigation(
+      frameDocument,
+      (url) => url.origin === this.layout?.statsUrl.origin
+        && isStatsInformationPath(url.pathname)
+        && this.shouldOpenInNewTab(url),
+    );
+    const parentWindow = this.iframe?.ownerDocument.defaultView;
+    if (parentWindow) {
+      this.disconnectScrollBoundary = connectEmbeddedScrollBoundary(
+        frameDocument,
+        parentWindow,
+      );
+    }
     this.processNavigationAnchors(frameDocument);
 
     const Observer = frameDocument.defaultView?.MutationObserver ?? MutationObserver;
@@ -649,7 +562,7 @@ export class RouteStatsEmbedLayout {
       subtree: true,
     });
 
-    const stats = frameDocument.querySelector<HTMLElement>('#route-stats');
+    const stats = frameDocument.querySelector<HTMLElement>(STATS_SELECTORS.root);
     const ResizeObserverConstructor = frameDocument.defaultView?.ResizeObserver;
     if (stats && ResizeObserverConstructor) {
       this.frameResizeObserver = new ResizeObserverConstructor(() => {
@@ -661,6 +574,8 @@ export class RouteStatsEmbedLayout {
   }
 
   private disconnectFrameDocument(): void {
+    this.frameStatsPresentation?.destroy();
+    this.frameStatsPresentation = undefined;
     this.frameMutationObserver?.disconnect();
     this.frameMutationObserver = undefined;
     this.frameResizeObserver?.disconnect();
@@ -671,8 +586,11 @@ export class RouteStatsEmbedLayout {
     }
     if (this.frameDocument) {
       this.frameDocument.removeEventListener('click', this.handleFrameClickCapture, true);
-      this.frameDocument.removeEventListener('submit', this.handleFrameSubmitCapture, true);
     }
+    this.disconnectFormNavigation?.();
+    this.disconnectFormNavigation = undefined;
+    this.disconnectScrollBoundary?.();
+    this.disconnectScrollBoundary = undefined;
     for (const [anchor, snapshot] of this.navigationSnapshots) {
       this.restoreNavigationAnchor(anchor, snapshot);
     }
@@ -682,18 +600,22 @@ export class RouteStatsEmbedLayout {
   }
 
   private applyFrameChromePresentation(frameDocument: Document): void {
-    const routeStats = frameDocument.querySelector('#route-stats');
-    const header = frameDocument.querySelector('#header-container');
-    if (!frameDocument.head || !frameDocument.documentElement || !routeStats || !header) {
+    const located = locateStatsFrameLandmarks(
+      frameDocument,
+      frameDocument.location?.href,
+    );
+    if (!located.ok) {
+      this.recordDiagnostic(located.diagnostic);
       return;
     }
+    const { documentElement, head } = located.value;
 
     const style = frameDocument.createElement('style');
     style.setAttribute(FRAME_MARKER, 'styles');
     style.textContent = FRAME_STYLE_TEXT;
-    this.frameMarkerSnapshot = frameDocument.documentElement.getAttribute(FRAME_MARKER);
-    frameDocument.documentElement.setAttribute(FRAME_MARKER, 'true');
-    frameDocument.head.append(style);
+    this.frameMarkerSnapshot = documentElement.getAttribute(FRAME_MARKER);
+    documentElement.setAttribute(FRAME_MARKER, 'true');
+    head.append(style);
     this.frameChromeStyle = style;
   }
 
@@ -765,15 +687,10 @@ export class RouteStatsEmbedLayout {
     if (url.origin !== this.layout.statsUrl.origin) {
       return true;
     }
-    if (
-      STATS_PATH_PATTERN.test(url.pathname)
-      && url.pathname.replace(/\/+$/, '')
-        === this.layout.statsUrl.pathname.replace(/\/+$/, '')
-    ) {
+    if (isCurrentStatsPath(url, this.layout.statsUrl)) {
       return false;
     }
-    return CONTENT_PATH_PATTERN.test(url.pathname)
-      || /^\/(?:forum|route-guide|international-climbing-grades)(?:\/|$)/.test(url.pathname);
+    return isStatsInformationPath(url.pathname);
   }
 
   private openInProtectedTab(url: URL): void {
@@ -798,7 +715,7 @@ export class RouteStatsEmbedLayout {
   }
 
   private resizeFrameToContent(): void {
-    const stats = this.frameDocument?.querySelector<HTMLElement>('#route-stats');
+    const stats = this.frameDocument?.querySelector<HTMLElement>(STATS_SELECTORS.root);
     if (!stats || !this.iframe) {
       return;
     }
@@ -833,6 +750,20 @@ export class RouteStatsEmbedLayout {
     } else {
       this.status.removeAttribute('role');
     }
+  }
+
+  private recordDiagnostic(diagnostic: ContractDiagnostic): void {
+    const previous = this.contractDiagnostic;
+    this.contractDiagnostic = diagnostic;
+    if (
+      previous?.component === diagnostic.component
+      && previous.key === diagnostic.key
+      && previous.reason === diagnostic.reason
+      && previous.page === diagnostic.page
+    ) {
+      return;
+    }
+    this.reportDiagnostic?.(diagnostic);
   }
 
   private clearLoadTimer(): void {

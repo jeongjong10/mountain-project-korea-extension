@@ -1,0 +1,67 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>@font-face{font-family:ReviewKorean;src:url('file:///mnt/c/Windows/Fonts/malgun.ttf')}*{box-sizing:border-box}body{margin:0;padding:28px 32px;background:#f7f8f8;color:#202124;font:14px/1.65 ReviewKorean,system-ui}.eyebrow{font-size:11px;color:#0060a9;letter-spacing:1.2px;font-weight:bold}h1{font-size:23px;margin:6px 0 10px}.intro,.note{font-size:13px;color:#59635d;line-height:1.8}.examples{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px}.label{font-size:12px;color:#59635d;margin-bottom:9px}article{background:white;border:1px solid #c8ceca;border-radius:7px;padding:22px}.crumb{font-size:11px;color:#59635d}h2{font-size:24px;line-height:1.4;overflow-wrap:anywhere;margin:8px 0 10px;letter-spacing:-.5px}.meta{font-size:12px;color:#59635d;margin:0 0 24px}.heading{display:flex;gap:8px;align-items:center;border-bottom:1px solid #c8ceca;padding-bottom:10px;margin:24px 0 12px}h3{font-size:16px;margin:0;flex:1}.fold{display:inline-flex;gap:8px;align-items:center;font-size:12px;color:#59635d;white-space:nowrap}.copy{font-size:16px;line-height:1.65;margin:0 0 12px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 0}button{font:600 12px/1.5 ReviewKorean,system-ui;color:#0060a9;border:1px solid #c8ceca;background:white;border-radius:4px;padding:6px 10px}.routes a{display:flex;align-items:center;gap:16px;min-height:44px;padding:10px 0;border-bottom:1px solid #e3e7e5;color:#0060a9;text-decoration:none;font-size:14px}.routes a span{flex:1;min-width:0}.routes b{font-size:13px;color:#202124;white-space:nowrap;font-weight:500;font-variant-numeric:tabular-nums}.end{border-top:1px solid #c8ceca;margin-top:24px;padding-top:12px}.external{font-size:12px;color:#0060a9;text-decoration:none}.note{margin-top:22px}@media(max-width:700px){body{padding:20px}.examples{grid-template-columns:1fr}article{padding:18px}}</style><div class="eyebrow">MP KOREA · 07</div><h1>페이지 마감 · 지역과 루트 화면 시안</h1><p class="intro">제목·본문·버튼 간격, 긴 한글 제목과 목록의 정렬을 맞추는 안입니다.<br>승인된 색상과 보조 아이콘을 이어서 사용합니다.</p><main class="examples"><section><div class="label">Area · 지역 페이지</div><article><div class="crumb">대한민국 › 서울·경기도</div><h2>북한산 · 인수봉</h2><p class="meta">지역 정보 · 등반 루트</p><div class="heading"><h3>설명</h3><span class="fold">눌러서 접기</span></div><p class="copy">지역 소개와 접근 정보가 긴 한글 문장으로 이어져도 편하게 읽을 수 있도록 줄 간격과 문단 간격을 맞춥니다.</p><div class="actions"><button class="original"></button><button class="retry"></button></div><div class="heading"><h3>등반 루트</h3><span class="fold">눌러서 접기</span></div><div class="routes"><a href="#"><span>예시 루트 A</span><b>5.8</b></a><a href="#"><span>이름이 긴 예시 루트도 두 줄로 자연스럽게 표시</span><b>5.10a</b></a><a href="#"><span>예시 루트 C</span><b>5.11b</b></a></div><div class="end"><a href="#" class="external">원본 지도 열기</a></div></article></section><section><div class="label">Route · 루트 페이지</div><article><div class="crumb">대한민국 › 북한산 › 인수봉</div><h2>긴 한글 이름도 읽기 편하게 이어지는 예시 루트</h2><p class="meta"><b>5.10a</b> · 트래드 · 3 피치</p><div class="heading"><h3>설명</h3><span class="fold">눌러서 접기</span></div><p class="copy">제목과 본문, 원문 보기·재번역 버튼의 간격을 맞춥니다. 버튼은 관련 설명 바로 아래에 모읍니다.</p><div class="actions"><button class="original"></button><button class="retry"></button></div><div class="heading"><h3>접근 방법</h3><span class="fold">눌러서 접기</span></div><p class="copy">접근 정보도 같은 글자 크기와 줄 간격으로 표시합니다.</p><div class="actions"><button class="original"></button><button class="retry"></button></div><div class="end"><a href="#" class="external">원본 통계 열기</a></div></article></section></main><p class="note"><b>컨펌 전 배치 시안입니다. 실제 페이지 마감은 아직 적용하지 않았습니다.</b><br>비교용 예시 내용이며 실제 루트 정보가 아닙니다. 다음 적용에서는 원본 페이지의 글꼴과 제목 구조를 기준으로 간격·줄바꿈·정렬을 조정합니다.</p><script>(() => {
+  // src/ui/control-icons.ts
+  var PATHS = {
+    original: ["M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"],
+    retry: ["M20 11a8 8 0 1 0-2 6M20 4v7h-7"],
+    external: ["M14 3h7v7M10 14 21 3M10 3H3v18h18v-7"],
+    expand: ["m6 9 6 6 6-6"],
+    collapse: ["m6 15 6-6 6 6"],
+    prepare: ["M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"]
+  };
+  var SVG_NS = "http://www.w3.org/2000/svg";
+  function createControlIcon(name, ownerDocument = document) {
+    const icon = ownerDocument.createElementNS(SVG_NS, "svg");
+    for (const [key, value] of Object.entries({
+      width: "16",
+      height: "16",
+      viewBox: "0 0 24 24",
+      fill: "none",
+      stroke: "currentColor",
+      "stroke-width": "1.75",
+      "stroke-linecap": "round",
+      "stroke-linejoin": "round",
+      "aria-hidden": "true",
+      focusable: "false",
+      "data-mpkr-icon": name
+    })) icon.setAttribute(key, value);
+    icon.style.cssText = "display:inline-block;width:16px;height:16px;flex:none;vertical-align:-.2em;pointer-events:none;";
+    for (const d of PATHS[name]) {
+      const path = ownerDocument.createElementNS(SVG_NS, "path");
+      path.setAttribute("d", d);
+      icon.append(path);
+    }
+    if (name === "original") {
+      const circle = ownerDocument.createElementNS(SVG_NS, "circle");
+      circle.setAttribute("cx", "12");
+      circle.setAttribute("cy", "12");
+      circle.setAttribute("r", "3");
+      icon.append(circle);
+    }
+    return icon;
+  }
+  function setIconLabel(control, name, text) {
+    let label = control.querySelector(":scope > [data-mpkr-icon-label]");
+    const current = control.querySelector(":scope > [data-mpkr-icon]");
+    if (!label || current?.getAttribute("data-mpkr-icon") !== name) {
+      const icon = createControlIcon(name, control.ownerDocument);
+      icon.style.marginInlineEnd = "6px";
+      label = control.ownerDocument.createElement("span");
+      label.dataset.mpkrIconLabel = "";
+      control.replaceChildren(icon, label);
+    }
+    if (label.textContent !== text) label.textContent = text;
+  }
+  function appendExternalIcon(link) {
+    if (link.querySelector(':scope > [data-mpkr-icon="external"]')) return;
+    const icon = createControlIcon("external", link.ownerDocument);
+    icon.style.marginInlineStart = "6px";
+    link.append(icon);
+  }
+
+  // <stdin>
+  document.querySelectorAll(".original").forEach((b) => setIconLabel(b, "original", "\uC6D0\uBB38 \uBCF4\uAE30"));
+  document.querySelectorAll(".retry").forEach((b) => setIconLabel(b, "retry", "\uC7AC\uBC88\uC5ED"));
+  document.querySelectorAll(".fold").forEach((b) => b.append(createControlIcon("collapse")));
+  document.querySelectorAll(".external").forEach(appendExternalIcon);
+})();
+</script></html>

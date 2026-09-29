@@ -1,0 +1,16 @@
+Built-in image_gen tool; ads-marketing promotional artwork.
+Final output: mpkr-small-promo-v1-440x280.png (440 x 280, RGB PNG).
+Original: mpkr-small-promo-v1-original.png (1698 x 926).
+Mechanical export preserves the complete artwork and aspect ratio, with navy background padding.
+
+Use case: ads-marketing.
+Create a finished Chrome Web Store small promotional tile for the unofficial browser extension Mountain Project Korea. Landscape canvas, aspect ratio exactly 11:7, ideally 1320x840 pixels for downsampling to 440x280. It must remain exceptionally clear and readable as a tiny storefront thumbnail.
+Design: premium modern outdoor editorial illustration. Deep midnight navy background, layered teal and muted jade granite mountain silhouettes, warm ivory typography, a tiny warm coral climbing rope/path connecting the foothills to a ridge. One small convincing rock climber silhouette on the right-hand granite face, with harness and rope. A subtle pale circular sun behind the ridge. Flat refined shapes with very restrained paper grain, clean confident silhouette and generous negative space. No photograph, no busy scenic detail, no browser UI.
+Composition: on the left about 56% is a bold, carefully kerned typography block; mountains and small climber occupy the right and continue subtly into lower edge. Full bleed background without outer border or rounded corners. Safe margin at least 7% on all sides. Strong visual hierarchy, two to three large text lines.
+Exact visible text only:
+"Mountain"
+"Project Korea"
+"한국어로 만나는 클라이밍"
+"비공식 확장 프로그램"
+First two lines are large warm ivory bold geometric sans-serif and are the product name, third is a crisp legible Korean sans-serif subtitle under it, fourth is smaller but legible at the lower left. Perfect Korean glyphs and exact spelling. The title must fit within its space and not run into the illustration.
+Original illustrative composition, do not reproduce the official Mountain Project or onX logos, no Google logo, no Chrome logo, no store badges, no review stars, no ratings, no claims of affiliation, no watermark. Finish as a polished real promotional banner, not a mockup shown on a screen. Opaque RGB background.

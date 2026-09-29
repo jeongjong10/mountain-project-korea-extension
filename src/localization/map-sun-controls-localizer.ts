@@ -1,3 +1,6 @@
+import { MAP_SELECTORS } from '../sites/mountain-project/contract/selectors/map';
+import { translateMapSunControlText } from '../sites/mountain-project/contract/text/map';
+
 type AttributeName = 'title' | 'aria-label' | 'alt';
 
 interface TextState {
@@ -11,40 +14,6 @@ interface AttributeState {
 }
 
 const ATTRIBUTES: readonly AttributeName[] = ['title', 'aria-label', 'alt'];
-const FIXED_TEXT: Readonly<Record<string, string>> = {
-  'Sun Angles': '태양 각도',
-  'Sunrise:': '일출:',
-  'Sunset:': '일몰:',
-  '· Sunset:': '· 일몰:',
-  'Time Zone': '시간대',
-  Jan: '1월',
-  Feb: '2월',
-  Mar: '3월',
-  Apr: '4월',
-  May: '5월',
-  Jun: '6월',
-  Jul: '7월',
-  Aug: '8월',
-  Sep: '9월',
-  Oct: '10월',
-  Nov: '11월',
-  Dec: '12월',
-  'Show Sun Angles': '태양 각도 표시',
-  'Hide Sun Angles': '태양 각도 숨기기',
-  'Toggle Sun Angles': '태양 각도 표시 전환',
-};
-
-function translate(value: string): string | undefined {
-  const normalized = value.replace(/\s+/g, ' ').trim();
-  const exact = FIXED_TEXT[normalized];
-  if (exact) {
-    return exact;
-  }
-
-  const date = normalized.match(/^on (.+)$/);
-  return date ? `날짜: ${date[1]}` : undefined;
-}
-
 function withWhitespace(source: string, translated: string): string {
   const leading = source.match(/^\s*/)?.[0] ?? '';
   const trailing = source.match(/\s*$/)?.[0] ?? '';
@@ -55,7 +24,7 @@ function isWithinControls(node: Node): boolean {
   const element = node.nodeType === Node.ELEMENT_NODE
     ? node as Element
     : node.parentElement;
-  return Boolean(element?.closest('#sun-controls'));
+  return Boolean(element?.closest(MAP_SELECTORS.sunControls));
 }
 
 /** Localizes the same-origin map's fixed sun UI without touching calculated values. */
@@ -66,7 +35,6 @@ export class MapSunControlsLocalizer {
   private readonly trackedAttributes = new Set<Element>();
   private observer: MutationObserver | undefined;
   private document: Document | undefined;
-  private defaultApplied = false;
 
   connect(document: Document): void {
     if (this.document === document && this.observer) {
@@ -125,16 +93,15 @@ export class MapSunControlsLocalizer {
   }
 
   private apply(root: ParentNode): void {
-    const controls = root instanceof Element && root.matches('#sun-controls')
+    const controls = root instanceof Element && root.matches(MAP_SELECTORS.sunControls)
       ? [root]
-      : Array.from(root.querySelectorAll('#sun-controls'));
-    if (root instanceof Element && root.closest('#sun-controls')) {
-      controls.push(root.closest('#sun-controls')!);
+      : Array.from(root.querySelectorAll(MAP_SELECTORS.sunControls));
+    if (root instanceof Element && root.closest(MAP_SELECTORS.sunControls)) {
+      controls.push(root.closest(MAP_SELECTORS.sunControls)!);
     }
 
     new Set(controls).forEach((container) => {
       this.translateSubtree(container);
-      this.applyCheckboxDefault(container);
     });
   }
 
@@ -163,7 +130,7 @@ export class MapSunControlsLocalizer {
     if (state && value === state.translated) {
       return;
     }
-    const translated = translate(value);
+    const translated = translateMapSunControlText(value);
     if (!translated) {
       if (state) {
         state.original = value;
@@ -192,7 +159,7 @@ export class MapSunControlsLocalizer {
       if (!value || (state && value === state.translated)) {
         continue;
       }
-      const translated = translate(value);
+      const translated = translateMapSunControlText(value);
       if (!translated) {
         if (state) {
           state.original = value;
@@ -212,32 +179,5 @@ export class MapSunControlsLocalizer {
       }
       element.setAttribute(name, translated);
     }
-  }
-
-  private applyCheckboxDefault(container: Element): void {
-    if (this.defaultApplied) {
-      return;
-    }
-    const checkbox = container.querySelector<HTMLInputElement>([
-      'input[type="checkbox"]#toggle-sun',
-      'input[type="checkbox"][id*="sun" i]',
-      'input[type="checkbox"][name*="sun" i]',
-    ].join(', ')) ?? (
-      container.querySelectorAll<HTMLInputElement>('input[type="checkbox"]').length === 1
-        ? container.querySelector<HTMLInputElement>('input[type="checkbox"]')
-        : null
-    );
-    if (!checkbox) {
-      return;
-    }
-
-    this.defaultApplied = true;
-    if (checkbox.checked) {
-      return;
-    }
-    checkbox.checked = true;
-    const FrameEvent = checkbox.ownerDocument.defaultView?.Event ?? Event;
-    checkbox.dispatchEvent(new FrameEvent('input', { bubbles: true }));
-    checkbox.dispatchEvent(new FrameEvent('change', { bubbles: true }));
   }
 }

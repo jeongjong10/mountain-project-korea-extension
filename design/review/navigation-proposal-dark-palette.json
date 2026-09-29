@@ -1,0 +1,15 @@
+{
+  "surface": "#202124",
+  "surfaceHover": "#2c3036",
+  "border": "#5f6368",
+  "divider": "#5f6368",
+  "text": "#fff",
+  "link": "#91c3e8",
+  "muted": "#b8c6d4",
+  "focus": "#91c3e8",
+  "switchOff": "#5f6368",
+  "switchBorder": "#7a8791",
+  "switchThumb": "#fff",
+  "switchOn": "#5ba2d8",
+  "switchOnThumb": "#fff"
+}

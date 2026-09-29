@@ -1,40 +1,56 @@
+import { UI } from './design-tokens';
+import { locateAreaPage } from '../sites/mountain-project/dom/area-page';
 import { MapSunControlsLocalizer } from '../localization/map-sun-controls-localizer';
+import { connectEmbeddedFormNavigation } from './embedded-form-navigation';
+import { connectEmbeddedScrollBoundary } from './embedded-scroll-boundary';
+import { isMountainProjectUrl } from '../sites/mountain-project/contract/origins';
+import { SOUTH_KOREA_MAP_URL } from '../sites/mountain-project/contract/regions/south-korea';
+import {
+  isMapInformationPath,
+  isInternalActionPath,
+  normalizeMountainProjectPath,
+  parseMapPath,
+} from '../sites/mountain-project/contract/routes';
+import { AREA_SELECTORS } from '../sites/mountain-project/contract/selectors/area';
+import {
+  MAP_FRAME_CHROME_HIDE_SELECTORS,
+  MAP_SELECTORS,
+} from '../sites/mountain-project/contract/selectors/map';
+import { SHARED_SELECTORS } from '../sites/mountain-project/contract/selectors/shared';
+import type {
+  ContractDiagnostic,
+} from '../sites/mountain-project/contract/schema';
+import type { ContractDiagnosticSink } from '../sites/mountain-project/contract/diagnostics';
+import {
+  isSouthKoreaAreaContext,
+} from '../sites/mountain-project/dom/location-trail';
+import {
+  locateAreaMapLayout,
+  locateMapFrameLandmarks,
+} from '../sites/mountain-project/dom/map-layout';
 
-const SOUTH_KOREA_AREA_PATH = '/area/106225629/south-korea';
-export const SOUTH_KOREA_MAP_URL =
-  'https://www.mountainproject.com/map/106225629/south-korea';
+export { SOUTH_KOREA_MAP_URL } from '../sites/mountain-project/contract/regions/south-korea';
 
 const CONTENT_ID = 'mpkr-south-korea-map-content';
 const SECTION_CLASS = 'mpkr-south-korea-map';
 const LOAD_TIMEOUT_MS = 15_000;
 const FRAME_CHROME_MARKER = 'data-mpkr-south-korea-map-chrome';
-const MOUNTAIN_PROJECT_HOSTS = new Set([
-  'mountainproject.com',
-  'www.mountainproject.com',
-]);
-
 const FRAME_CHROME_STYLE_TEXT = `
-#header-container-print,
-#header-container,
-#div-gpt-ad-1614709329076-0,
-.main-content-container .row.pt-main-content > .col-xs-12 > h1,
-.main-content-container .row.pt-main-content > .col-xs-12 > h1 + .text-warm,
-.main-content-container .row.pt-main-content > .col-xs-12 > h1 + .text-warm + .mt-2,
-#footer-container {
+${MAP_FRAME_CHROME_HIDE_SELECTORS.join(',\n')} {
   display: none !important;
 }
 
-.main-content-container {
+${MAP_SELECTORS.frameMainContainer} {
   margin-top: 0 !important;
   padding-top: 0 !important;
 }
 
-.main-content-container > .container-fluid {
+${MAP_SELECTORS.frameContainerFluid} {
   max-width: none !important;
   padding-top: 0.5rem !important;
 }
 
-#map-and-ride-finder-container {
+${MAP_SELECTORS.root} {
   height: max(520px, calc(100vh - 10rem)) !important;
 }
 `;
@@ -44,37 +60,12 @@ interface AnchorAttributeSnapshot {
   rel: string | null;
 }
 
-const CONTENT_PATH_PATTERNS = [
-  /^\/(?:area|route|photo|video|user)\/\d+(?:\/|$)/,
-  /^\/forum\/topic\/\d+(?:\/|$)/,
-  /^\/route-guide(?:\/|$)/,
-];
-
-const MAP_DETAIL_CONTEXT_SELECTOR = [
-  '#details-popup',
-  '#details-window',
-  '.ap-map-popup',
-].join(',');
-
-const NAVIGATION_ACTION_SELECTOR = [
-  'a[href]',
-  'button[data-href]',
-  'button[data-url]',
-  'button[onclick]',
-  'input[data-href]',
-  'input[data-url]',
-  'input[onclick]',
-  '[role="button"][data-href]',
-  '[role="button"][data-url]',
-  '[role="button"][onclick]',
-].join(',');
-
 const STYLE_TEXT = `
-#climb-area-page .${SECTION_CLASS} {
+${AREA_SELECTORS.page} .${SECTION_CLASS} {
   margin: 0 0 1rem;
 }
 
-#climb-area-page .${SECTION_CLASS}__heading {
+${AREA_SELECTORS.page} .${SECTION_CLASS}__heading {
   display: flex;
   align-items: center;
   flex-wrap: nowrap;
@@ -83,45 +74,45 @@ const STYLE_TEXT = `
   min-width: 0;
   text-indent: 0;
   cursor: pointer;
-  border-radius: 2px 2px 0 0;
-  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+  border-radius: ${UI.radius.small} ${UI.radius.small} 0 0;
+  transition: background-color ${UI.motion.fast}, border-color ${UI.motion.fast}, color ${UI.motion.fast};
 }
 
-#climb-area-page .${SECTION_CLASS}__heading:hover {
-  border-bottom-color: #0060a9;
-  background: rgba(0, 96, 169, 0.12);
-  color: #004b84;
+${AREA_SELECTORS.page} .${SECTION_CLASS}__heading:hover {
+  border-bottom-color: ${UI.color.link};
+  background: ${UI.color.headingHover};
+  color: ${UI.color.linkHover};
 }
 
-#climb-area-page .${SECTION_CLASS}__heading:focus-visible {
-  outline: 3px solid #0060a9;
+${AREA_SELECTORS.page} .${SECTION_CLASS}__heading:focus-visible {
+  outline: 3px solid ${UI.color.link};
   outline-offset: 2px;
-  background: rgba(0, 96, 169, 0.14);
-  color: #003e70;
+  background: ${UI.color.headingFocus};
+  color: ${UI.color.linkActive};
 }
 
-#climb-area-page .${SECTION_CLASS}__label {
+${AREA_SELECTORS.page} .${SECTION_CLASS}__label {
   flex: 0 1 auto;
   min-width: 0;
-  font-size: 1rem;
+  font-size: ${UI.font.body};
   font-weight: 700;
 }
 
-#climb-area-page .${SECTION_CLASS}__hint {
+${AREA_SELECTORS.page} .${SECTION_CLASS}__hint {
   flex: 0 0 auto;
   margin-left: 0.45rem;
-  color: #7a8791;
-  font-size: 0.9rem;
+  color: ${UI.color.muted};
+  font-size: ${UI.font.hint};
   font-weight: 400;
   white-space: nowrap;
 }
 
-#climb-area-page .${SECTION_CLASS}__heading:hover .${SECTION_CLASS}__hint,
-#climb-area-page .${SECTION_CLASS}__heading:focus-visible .${SECTION_CLASS}__hint {
-  color: #004f8c;
+${AREA_SELECTORS.page} .${SECTION_CLASS}__heading:hover .${SECTION_CLASS}__hint,
+${AREA_SELECTORS.page} .${SECTION_CLASS}__heading:focus-visible .${SECTION_CLASS}__hint {
+  color: ${UI.color.linkHover};
 }
 
-#climb-area-page .${SECTION_CLASS}__chevron {
+${AREA_SELECTORS.page} .${SECTION_CLASS}__chevron {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -134,129 +125,84 @@ const STYLE_TEXT = `
   transition: transform 160ms ease;
 }
 
-#climb-area-page .${SECTION_CLASS}__heading[aria-expanded='true']
+${AREA_SELECTORS.page} .${SECTION_CLASS}__heading[aria-expanded='true']
   .${SECTION_CLASS}__chevron {
   transform: rotate(180deg);
 }
 
-#climb-area-page .${SECTION_CLASS}__content {
+${AREA_SELECTORS.page} .${SECTION_CLASS}__content {
   padding: 0.75rem 0 0;
 }
 
-#climb-area-page .${SECTION_CLASS}__content[hidden] {
+${AREA_SELECTORS.page} .${SECTION_CLASS}__content[hidden] {
   display: none !important;
 }
 
-#climb-area-page .${SECTION_CLASS}__status {
+${AREA_SELECTORS.page} .${SECTION_CLASS}__status {
   margin: 0 0 0.6rem;
 }
 
-#climb-area-page .${SECTION_CLASS}__status {
-  color: #59635d;
-  font-size: 0.85rem;
+${AREA_SELECTORS.page} .${SECTION_CLASS}__status {
+  color: ${UI.color.muted};
+  font-size: ${UI.font.small};
 }
 
-#climb-area-page .${SECTION_CLASS}__frame-wrap {
+${AREA_SELECTORS.page} .${SECTION_CLASS}__frame-wrap {
   width: 100%;
-  border: 1px solid #c8ceca;
-  border-radius: 4px;
-  background: #f5f5f5;
+  border: 1px solid ${UI.color.border};
+  border-radius: ${UI.radius.control};
+  background: ${UI.color.surfaceSubtle};
   overflow: hidden;
 }
 
-#climb-area-page .${SECTION_CLASS}__frame {
+${AREA_SELECTORS.page} .${SECTION_CLASS}__frame {
   display: block;
   width: 100%;
   height: clamp(520px, 78vh, 760px);
   border: 0;
-  background: #fff;
+  background: ${UI.color.surface};
 }
 
-#climb-area-page .${SECTION_CLASS}__external {
+${AREA_SELECTORS.page} .${SECTION_CLASS}__external {
   display: inline-flex;
   align-items: center;
   flex: 0 0 auto;
   margin-left: auto;
   padding-left: 0.75rem;
   font-size: 0.8rem;
-  font-weight: 600;
+  font-weight: ${UI.font.controlWeight};
   white-space: nowrap;
 }
 
 @media (max-width: 575px) {
-  #climb-area-page .${SECTION_CLASS}__heading {
+  ${AREA_SELECTORS.page} .${SECTION_CLASS}__heading {
     flex-wrap: wrap;
   }
 
-  #climb-area-page .${SECTION_CLASS}__label,
-  #climb-area-page .${SECTION_CLASS}__hint {
+  ${AREA_SELECTORS.page} .${SECTION_CLASS}__label,
+  ${AREA_SELECTORS.page} .${SECTION_CLASS}__hint {
     order: 1;
   }
 
-  #climb-area-page .${SECTION_CLASS}__external {
+  ${AREA_SELECTORS.page} .${SECTION_CLASS}__external {
     order: 2;
     margin-left: auto;
     padding-left: 0.5rem;
     white-space: normal;
   }
 
-  #climb-area-page .${SECTION_CLASS}__chevron {
+  ${AREA_SELECTORS.page} .${SECTION_CLASS}__chevron {
     order: 3;
   }
 
-  #climb-area-page .${SECTION_CLASS}__frame {
+  ${AREA_SELECTORS.page} .${SECTION_CLASS}__frame {
     height: clamp(500px, 74vh, 640px);
   }
 }
 `;
 
-function pathFor(anchor: HTMLAnchorElement, baseUrl: URL): string | undefined {
-  try {
-    return new URL(anchor.getAttribute('href') ?? '', baseUrl).pathname.replace(/\/+$/, '');
-  } catch {
-    return undefined;
-  }
-}
-
-function isLocationTrailAnchor(anchor: HTMLAnchorElement): boolean {
-  if (anchor.closest([
-    '.breadcrumbs',
-    '.breadcrumb',
-    '[aria-label="breadcrumb"]',
-    '[aria-label="Breadcrumb"]',
-  ].join(', '))) {
-    return true;
-  }
-  const trail = anchor.parentElement;
-  return Boolean(trail?.matches('.text-warm, .small')
-    && trail.querySelector('a[href$="/route-guide"]'));
-}
-
 export function matchesSouthKoreaArea(url: URL, root: ParentNode = document): boolean {
-  const currentPath = url.pathname.replace(/\/+$/, '');
-  if (!MOUNTAIN_PROJECT_HOSTS.has(url.hostname)
-    || !/^\/area\/\d+(?:\/[^/]+)?$/.test(currentPath)) {
-    return false;
-  }
-  if (currentPath === SOUTH_KOREA_AREA_PATH) {
-    return true;
-  }
-  return Array.from(root.querySelectorAll<HTMLAnchorElement>('a[href*="/area/"]'))
-    .some((anchor) => pathFor(anchor, url) === SOUTH_KOREA_AREA_PATH
-      && isLocationTrailAnchor(anchor));
-}
-
-function mapUrlForArea(anchor: HTMLAnchorElement, baseUrl: URL): string | undefined {
-  try {
-    const url = new URL(anchor.getAttribute('href') ?? '', baseUrl);
-    const areaId = baseUrl.pathname.match(/^\/area\/(\d+)(?:\/|$)/)?.[1];
-    const mapId = url.pathname.match(/^\/map\/(\d+)(?:\/|$)/)?.[1];
-    return areaId && mapId === areaId && MOUNTAIN_PROJECT_HOSTS.has(url.hostname)
-      ? url.href
-      : undefined;
-  } catch {
-    return undefined;
-  }
+  return isSouthKoreaAreaContext(url, root);
 }
 
 function resolveUrl(value: string | null, documentUrl: string): URL | undefined {
@@ -272,18 +218,16 @@ function resolveUrl(value: string | null, documentUrl: string): URL | undefined 
 }
 
 function isInformationNavigation(element: Element, url: URL): boolean {
-  const mapUrl = new URL(SOUTH_KOREA_MAP_URL);
-  if (url.origin !== mapUrl.origin || url.pathname.startsWith('/map/')) {
+  if (!isMountainProjectUrl(url) || parseMapPath(url.pathname)) {
     return false;
   }
 
-  if (CONTENT_PATH_PATTERNS.some((pattern) => pattern.test(url.pathname))) {
+  if (isMapInformationPath(url.pathname)) {
     return true;
   }
 
-  return Boolean(element.closest(MAP_DETAIL_CONTEXT_SELECTOR))
-    && !url.pathname.startsWith('/ajax/')
-    && !url.pathname.startsWith('/auth/');
+  return Boolean(element.closest(MAP_SELECTORS.detailsContext))
+    && !isInternalActionPath(url.pathname);
 }
 
 function getAnchorNavigation(anchor: HTMLAnchorElement): URL | undefined {
@@ -318,7 +262,73 @@ function getInlineNavigationValue(element: Element): string | null {
   return locationCall?.[2] ?? null;
 }
 
-export class SouthKoreaMapEmbed {
+type AreaScopeMatcher = (url: URL, root: ParentNode) => boolean;
+
+/** Preserve the site's fixed notice, but leave enough document space to scroll map credits above it. */
+function connectMapNoticeSpace(frameDocument: Document): () => void {
+  const frameWindow = frameDocument.defaultView;
+  if (!frameWindow || !frameDocument.body) return () => undefined;
+
+  const spacer = frameDocument.createElement('div');
+  spacer.dataset.mpkrMapNoticeSpace = 'true';
+  spacer.setAttribute('aria-hidden', 'true');
+  spacer.style.cssText = 'display: block; width: 1px; clear: both; flex: none; pointer-events: none;';
+  let notice: Element | null = null;
+  let disconnected = false;
+
+  const update = (): void => {
+    if (disconnected) return;
+    const nextNotice = frameDocument.querySelector(MAP_SELECTORS.fixedAccessNotice);
+    if (nextNotice !== notice) {
+      if (notice) resizeObserver?.unobserve(notice);
+      notice = nextNotice;
+      if (notice) resizeObserver?.observe(notice);
+    }
+    const bounds = notice?.getBoundingClientRect();
+    const style = notice ? frameWindow.getComputedStyle(notice) : undefined;
+    const viewportHeight = frameWindow.innerHeight;
+    const obscuredHeight = bounds && bounds.width > 0 && bounds.height > 0
+      && bounds.top < viewportHeight && bounds.bottom >= viewportHeight - 1
+      && style?.position === 'fixed' && style.display !== 'none' && style.visibility !== 'hidden'
+      ? viewportHeight - Math.max(0, bounds.top)
+      : 0;
+
+    if (obscuredHeight <= 0) {
+      spacer.remove();
+      return;
+    }
+    const height = `${Math.ceil(obscuredHeight) + 16}px`;
+    if (spacer.style.height !== height) spacer.style.height = height;
+    if (spacer.parentNode !== frameDocument.body) frameDocument.body.append(spacer);
+  };
+  const Resize = frameWindow.ResizeObserver;
+  const resizeObserver = Resize ? new Resize(update) : undefined;
+  const observer = new frameWindow.MutationObserver((records) => {
+    if (records.some((record) => record.type === 'childList'
+      || record.target === notice || notice?.contains(record.target)
+      || record.target === frameDocument.body || record.target === frameDocument.documentElement)) {
+      update();
+    }
+  });
+  observer.observe(frameDocument.documentElement, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['class', 'style', 'hidden'],
+  });
+  frameWindow.addEventListener('resize', update);
+  update();
+
+  return () => {
+    disconnected = true;
+    observer.disconnect();
+    resizeObserver?.disconnect();
+    frameWindow.removeEventListener('resize', update);
+    spacer.remove();
+  };
+}
+
+export class AreaMapEmbed {
   private section: HTMLElement | undefined;
   private style: HTMLStyleElement | undefined;
   private toggle: HTMLElement | undefined;
@@ -329,15 +339,29 @@ export class SouthKoreaMapEmbed {
   private status: HTMLElement | undefined;
   private frameDocument: Document | undefined;
   private frameObserver: MutationObserver | undefined;
+  private disconnectFormNavigation: (() => void) | undefined;
+  private disconnectScrollBoundary: (() => void) | undefined;
+  private disconnectNoticeSpace: (() => void) | undefined;
   private frameChromeStyle: HTMLStyleElement | undefined;
   private frameDocumentMarkerSnapshot: string | null | undefined;
-  private mapUrl = SOUTH_KOREA_MAP_URL;
+  private mapUrl = '';
+  private mapLabel = '클라이밍 지도';
   private readonly sunControls = new MapSunControlsLocalizer();
   private readonly navigationAnchorSnapshots = new Map<
     HTMLAnchorElement,
     AnchorAttributeSnapshot
   >();
   private loadTimer: ReturnType<typeof setTimeout> | undefined;
+  private contractDiagnostic: ContractDiagnostic | undefined;
+
+  constructor(
+    private readonly reportDiagnostic?: ContractDiagnosticSink,
+    private readonly matchesArea: AreaScopeMatcher = (url, root) => locateAreaPage(root, url).ok,
+  ) {}
+
+  get lastDiagnostic(): ContractDiagnostic | undefined {
+    return this.contractDiagnostic;
+  }
 
   private readonly handleToggle = (): void => {
     if (!this.toggle || !this.content) {
@@ -348,7 +372,7 @@ export class SouthKoreaMapEmbed {
     this.toggle.setAttribute('aria-expanded', String(!expanded));
     this.toggle.setAttribute(
       'aria-label',
-      `대한민국 클라이밍 지도 ${expanded ? '내용 펼치기' : '내용 접기'}`,
+      `${this.mapLabel} ${expanded ? '내용 펼치기' : '내용 접기'}`,
     );
     this.content.hidden = expanded;
     if (this.hint) {
@@ -380,7 +404,7 @@ export class SouthKoreaMapEmbed {
 
   private readonly handleFrameClickCapture = (event: Event): void => {
     const target = event.target as { closest?: (selector: string) => Element | null } | null;
-    const action = target?.closest?.(NAVIGATION_ACTION_SELECTOR);
+    const action = target?.closest?.(SHARED_SELECTORS.navigationAction);
     if (!action) {
       return;
     }
@@ -399,51 +423,6 @@ export class SouthKoreaMapEmbed {
       event.stopImmediatePropagation();
       this.openInProtectedTab(url);
     }
-  };
-
-  private readonly handleFrameSubmitCapture = (event: SubmitEvent): void => {
-    const eventTarget = event.target as Element | null;
-    if (eventTarget?.tagName !== 'FORM') {
-      return;
-    }
-    const form = eventTarget as HTMLFormElement;
-
-    const submitter = event.submitter as Element | null;
-    const method = submitter?.getAttribute('formmethod')
-      ?? form.getAttribute('method')
-      ?? 'get';
-    if (method.toLowerCase() !== 'get') {
-      return;
-    }
-
-    const action = submitter?.getAttribute('formaction')
-      ?? form.getAttribute('action')
-      ?? form.ownerDocument.location.href;
-    const url = resolveUrl(action, form.ownerDocument.location.href);
-    if (!url || !isInformationNavigation(form, url)) {
-      return;
-    }
-
-    const FrameFormData = form.ownerDocument.defaultView?.FormData ?? FormData;
-    const formData = new FrameFormData(form);
-    const submitterName = submitter?.getAttribute('name');
-    if (submitterName) {
-      const submitterValue = (submitter as HTMLButtonElement | HTMLInputElement).value
-        ?? submitter!.getAttribute('value')
-        ?? '';
-      if (!formData.getAll(submitterName).includes(submitterValue)) {
-        formData.append(submitterName, submitterValue);
-      }
-    }
-    for (const [name, value] of formData) {
-      if (typeof value === 'string') {
-        url.searchParams.append(name, value);
-      }
-    }
-
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    this.openInProtectedTab(url);
   };
 
   private readonly handleFrameLoad = (): void => {
@@ -474,7 +453,8 @@ export class SouthKoreaMapEmbed {
 
     const expectedUrl = new URL(this.mapUrl);
     const isExpectedDocument = loadedUrl.origin === expectedUrl.origin
-      && loadedUrl.pathname.replace(/\/+$/, '') === expectedUrl.pathname;
+      && normalizeMountainProjectPath(loadedUrl.pathname)
+        === normalizeMountainProjectPath(expectedUrl.pathname);
 
     if (!isExpectedDocument) {
       this.markLoadFailed();
@@ -498,39 +478,33 @@ export class SouthKoreaMapEmbed {
     if (this.section?.isConnected && this.style?.isConnected) {
       return true;
     }
-    if (!matchesSouthKoreaArea(currentUrl, root)) {
+    if (!this.matchesArea(currentUrl, root)) {
       return false;
     }
 
-    const mapLink = Array.from(
-      root.querySelectorAll<HTMLAnchorElement>(
-        '#climb-area-page .row.pt-main-content > .col-md-3.left-nav .mp-sidebar a[href]',
-      ),
-    ).find((anchor) => Boolean(anchor.querySelector('.map-preview'))
-      && Boolean(mapUrlForArea(anchor, currentUrl)));
-    const areaSidebar = mapLink?.closest<HTMLElement>('.col-md-3.left-nav')
-      ?? root.querySelector<HTMLElement>(
-        '#climb-area-page .row.pt-main-content > .col-md-3.left-nav',
-      )
-      ?? undefined;
-    const layoutRow = areaSidebar?.parentElement;
-    const mainContent = Array.from(layoutRow?.children ?? []).find((child) => (
-      child instanceof HTMLElement
-      && child.matches('.col-md-9.main-content')
-    )) as HTMLElement | undefined;
-    const ownerDocument = mainContent?.ownerDocument;
-
-    if (
-      !areaSidebar
-      || !layoutRow?.matches('.row.pt-main-content')
-      || !mainContent
-      || !ownerDocument?.head
-    ) {
+    const located = locateAreaMapLayout(root, currentUrl);
+    if (!located.ok) {
+      this.recordDiagnostic(located.diagnostic);
+      return false;
+    }
+    const { mainContent, mapUrl, page } = located.value;
+    const ownerDocument = mainContent.ownerDocument;
+    if (!ownerDocument.head) {
+      this.recordDiagnostic({
+        component: 'south-korea-map',
+        key: 'document-head',
+        reason: 'Area document head is missing.',
+        page: currentUrl.href,
+      });
       return false;
     }
 
-    this.mapUrl = mapLink ? mapUrlForArea(mapLink, currentUrl) ?? SOUTH_KOREA_MAP_URL
-      : SOUTH_KOREA_MAP_URL;
+    this.contractDiagnostic = undefined;
+    this.mapUrl = mapUrl;
+    const areaName = page.querySelector('h1')?.childNodes[0]?.textContent?.trim();
+    this.mapLabel = matchesSouthKoreaArea(currentUrl, root)
+      ? '대한민국 클라이밍 지도'
+      : `${areaName || 'Area'} 클라이밍 지도`;
 
     const style = ownerDocument.createElement('style');
     style.dataset.mpKoreaSouthKoreaMap = 'styles';
@@ -539,7 +513,7 @@ export class SouthKoreaMapEmbed {
     const section = ownerDocument.createElement('section');
     section.className = SECTION_CLASS;
     section.dataset.mpKoreaSouthKoreaMap = 'true';
-    section.setAttribute('aria-label', '대한민국 클라이밍 지도');
+    section.setAttribute('aria-label', this.mapLabel);
 
     const heading = ownerDocument.createElement('div');
     heading.className = `title-with-border-bottom mb-1 mpkr-info-heading ${SECTION_CLASS}__heading ${SECTION_CLASS}__toggle`;
@@ -548,11 +522,11 @@ export class SouthKoreaMapEmbed {
     toggle.setAttribute('tabindex', '0');
     toggle.setAttribute('aria-expanded', 'false');
     toggle.setAttribute('aria-controls', CONTENT_ID);
-    toggle.setAttribute('aria-label', '대한민국 클라이밍 지도 내용 펼치기');
+    toggle.setAttribute('aria-label', `${this.mapLabel} 내용 펼치기`);
 
     const label = ownerDocument.createElement('span');
     label.className = `${SECTION_CLASS}__label`;
-    label.textContent = '대한민국 클라이밍 지도';
+    label.textContent = this.mapLabel;
 
     const hint = ownerDocument.createElement('span');
     hint.className = `${SECTION_CLASS}__hint`;
@@ -622,7 +596,8 @@ export class SouthKoreaMapEmbed {
     this.frameWrap = undefined;
     this.iframe = undefined;
     this.status = undefined;
-    this.mapUrl = SOUTH_KOREA_MAP_URL;
+    this.mapUrl = '';
+    this.mapLabel = '클라이밍 지도';
   }
 
   private createIframe(): void {
@@ -633,7 +608,7 @@ export class SouthKoreaMapEmbed {
     const iframe = this.frameWrap.ownerDocument.createElement('iframe');
     iframe.className = `${SECTION_CLASS}__frame`;
     iframe.src = this.mapUrl;
-    iframe.title = 'Mountain Project 대한민국 클라이밍 지도';
+    iframe.title = `Mountain Project ${this.mapLabel}`;
     iframe.loading = 'lazy';
     iframe.addEventListener('load', this.handleFrameLoad);
     iframe.addEventListener('error', this.handleFrameError);
@@ -650,7 +625,18 @@ export class SouthKoreaMapEmbed {
     this.applyFrameChromePresentation(frameDocument);
     this.sunControls.connect(frameDocument);
     frameDocument.addEventListener('click', this.handleFrameClickCapture, true);
-    frameDocument.addEventListener('submit', this.handleFrameSubmitCapture, true);
+    this.disconnectFormNavigation = connectEmbeddedFormNavigation(
+      frameDocument,
+      (url) => isMountainProjectUrl(url) && isMapInformationPath(url.pathname),
+    );
+    const parentWindow = this.iframe?.ownerDocument.defaultView;
+    if (parentWindow) {
+      this.disconnectScrollBoundary = connectEmbeddedScrollBoundary(
+        frameDocument,
+        parentWindow,
+        { ignoreWithin: MAP_SELECTORS.canvas },
+      );
+    }
     this.processNavigationAnchors(frameDocument);
 
     const Observer = frameDocument.defaultView?.MutationObserver ?? MutationObserver;
@@ -681,8 +667,11 @@ export class SouthKoreaMapEmbed {
     this.frameObserver = undefined;
     if (this.frameDocument) {
       this.frameDocument.removeEventListener('click', this.handleFrameClickCapture, true);
-      this.frameDocument.removeEventListener('submit', this.handleFrameSubmitCapture, true);
     }
+    this.disconnectFormNavigation?.();
+    this.disconnectFormNavigation = undefined;
+    this.disconnectScrollBoundary?.();
+    this.disconnectScrollBoundary = undefined;
     this.sunControls.disconnect();
     this.restoreFrameChromePresentation();
     this.frameDocument = undefined;
@@ -783,14 +772,15 @@ export class SouthKoreaMapEmbed {
   }
 
   private applyFrameChromePresentation(frameDocument: Document): void {
-    const documentElement = frameDocument.documentElement;
-    const hasExpectedChrome = frameDocument.querySelector('#header-container');
-    const hasExpectedMap = frameDocument.querySelector(
-      '#map-and-ride-finder-container #ap-map-container',
+    const located = locateMapFrameLandmarks(
+      frameDocument,
+      frameDocument.location?.href,
     );
-    if (!frameDocument.head || !documentElement || !hasExpectedChrome || !hasExpectedMap) {
+    if (!located.ok) {
+      this.recordDiagnostic(located.diagnostic);
       return;
     }
+    const { documentElement, head } = located.value;
 
     const style = frameDocument.createElement('style');
     style.setAttribute(FRAME_CHROME_MARKER, 'styles');
@@ -800,11 +790,19 @@ export class SouthKoreaMapEmbed {
       FRAME_CHROME_MARKER,
     );
     documentElement.setAttribute(FRAME_CHROME_MARKER, 'true');
-    frameDocument.head.append(style);
+    head.append(style);
     this.frameChromeStyle = style;
+    this.disconnectNoticeSpace = connectMapNoticeSpace(frameDocument);
+  }
+
+  private recordDiagnostic(diagnostic: ContractDiagnostic): void {
+    this.contractDiagnostic = diagnostic;
+    this.reportDiagnostic?.(diagnostic);
   }
 
   private restoreFrameChromePresentation(): void {
+    this.disconnectNoticeSpace?.();
+    this.disconnectNoticeSpace = undefined;
     this.frameChromeStyle?.remove();
     this.frameChromeStyle = undefined;
 
@@ -827,5 +825,12 @@ export class SouthKoreaMapEmbed {
       clearTimeout(this.loadTimer);
       this.loadTimer = undefined;
     }
+  }
+}
+
+/** @deprecated Use AreaMapEmbed for global Area maps. */
+export class SouthKoreaMapEmbed extends AreaMapEmbed {
+  constructor(reportDiagnostic?: ContractDiagnosticSink) {
+    super(reportDiagnostic, matchesSouthKoreaArea);
   }
 }

@@ -1,0 +1,1377 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>@font-face{font-family:ReviewKorean;src:url('file:///mnt/c/Windows/Fonts/malgun.ttf')}*{box-sizing:border-box}body{margin:0;padding:28px 32px;background:#f7f8f8;color:#202124;font:14px/1.65 ReviewKorean,system-ui}h1{font-size:23px;margin:0 0 10px}h2{font-size:18px}h3{font-size:14px;font-weight:400}.intro,.note{font-size:13px;color:#59635d}.label{font-size:12px;color:#59635d;margin:22px 0 8px}.card{background:white;border:1px solid #c8ceca;border-radius:7px;padding:22px}a{color:#0060a9;text-decoration:none}.text-center{text-align:center}.gateway{min-height:140px;padding:20px}.gateway h1{font-size:26px}.text-truncate{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.float-xs-left{float:left}.float-xs-right{float:right}.clearfix:after{content:'';display:table;clear:both}.ml-half{margin-left:8px}.mb-half{margin-bottom:8px}.dashes{display:none}button{font-family:inherit}.states{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}.state{border:1px solid #c8ceca;border-radius:4px;padding:14px;background:#f7f8f8}.state p{margin:0 0 8px;color:#59635d;font-size:12px}.state button{font-size:12px;color:#0060a9;background:white;border:1px solid #b8c6d4;border-radius:4px;padding:7px 10px}.state button:disabled{opacity:.65}.note{margin-top:20px}@media(max-width:575px){body{padding:20px}.card{padding:16px}.states{grid-template-columns:1fr}}</style><script id="proposal-css" type="text/plain">
+[data-mpkr-south-korea-gateway=true]{--mpkr-gateway-foreground:#202124;--mpkr-gateway-dark:#202124;min-height:140px}
+.mpkr-south-korea-gateway__content{padding:16px calc(var(--mpkr-gateway-arrow-rail-width) + 16px) 16px 16px}
+.mpkr-south-korea-gateway__title{margin:0 0 8px;line-height:1.4}
+.mpkr-south-korea-gateway__copy{margin:0;font-size:14px;line-height:1.65}
+.mpkr-directory-tabs{gap:24px}
+.mpkr-directory-tabs button{min-height:40px;padding:6px 0;color:#59635d}
+.mpkr-directory-tabs button[aria-selected=true]{color:#0060a9}
+.mpkr-directory-load{margin-left:auto;min-height:36px}
+.mpkr-directory-countries{column-count:3;column-gap:24px}
+.mpkr-directory-country{margin-bottom:16px}
+.mpkr-directory .clearfix>div:first-child{display:flex;align-items:baseline;gap:12px;min-height:36px;padding:6px 0;border-bottom:1px solid #e3e7e5}
+.mpkr-directory .clearfix a{float:none;order:0;flex:1;min-width:0;max-width:none!important;overflow-wrap:anywhere;white-space:normal}
+.mpkr-directory .number{float:none;order:1;min-width:4ch;text-align:right;font-variant-numeric:tabular-nums;color:#59635d}
+@media(max-width:700px){.mpkr-directory-countries{column-count:2}}
+@media(max-width:543px){.mpkr-directory-countries{column-count:1}.mpkr-directory-load{margin-left:0}.mpkr-directory-toolbar{gap:12px}}
+</script><h1>다음 시안 · 메인 진입 영역과 지역 디렉터리</h1><p class="intro">기존 이동 방식과 대륙 탭을 유지하면서, 제목·행 간격·등록 수 정렬을 정리하는 안입니다.</p><div class="label">메인 · 대한민국 바로가기</div><div class="gateway text-center pb-2 border-light"><h1>Beyond the Guidebook</h1><h3>Routes shared by climbers</h3></div><div class="label">지역 디렉터리 · 일부 국가 예시</div><div class="card"><div id="route-guide"><a href="#">원본 아메리카 목록</a></div></div><div class="label">등록 수 버튼의 상태</div><div class="states"><div class="state"><p>조회 중 · 버튼 중복 실행 방지</p><button id="loading" disabled></button></div><div class="state"><p>일부 등록 수를 확인하지 못했습니다.</p><button id="partial"></button></div></div><p class="note"><b>컨펌 전 시안이며 제품에는 아직 적용하지 않았습니다.</b><br>표시된 등록 수는 배치 확인용 예시 값입니다. 실제 소스의 진입 영역·디렉터리에 검토용 스타일만 덧씌웠습니다.</p><script>(() => {
+  // src/ui/control-icons.ts
+  var PATHS = {
+    original: ["M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"],
+    retry: ["M20 11a8 8 0 1 0-2 6M20 4v7h-7"],
+    external: ["M14 3h7v7M10 14 21 3M10 3H3v18h18v-7"],
+    expand: ["m6 9 6 6 6-6"],
+    collapse: ["m6 15 6-6 6 6"],
+    prepare: ["M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"]
+  };
+  var SVG_NS = "http://www.w3.org/2000/svg";
+  function createControlIcon(name, ownerDocument = document) {
+    const icon = ownerDocument.createElementNS(SVG_NS, "svg");
+    for (const [key, value] of Object.entries({
+      width: "16",
+      height: "16",
+      viewBox: "0 0 24 24",
+      fill: "none",
+      stroke: "currentColor",
+      "stroke-width": "1.75",
+      "stroke-linecap": "round",
+      "stroke-linejoin": "round",
+      "aria-hidden": "true",
+      focusable: "false",
+      "data-mpkr-icon": name
+    })) icon.setAttribute(key, value);
+    icon.style.cssText = "display:inline-block;width:16px;height:16px;flex:none;vertical-align:-.2em;pointer-events:none;";
+    for (const d of PATHS[name]) {
+      const path = ownerDocument.createElementNS(SVG_NS, "path");
+      path.setAttribute("d", d);
+      icon.append(path);
+    }
+    if (name === "original") {
+      const circle = ownerDocument.createElementNS(SVG_NS, "circle");
+      circle.setAttribute("cx", "12");
+      circle.setAttribute("cy", "12");
+      circle.setAttribute("r", "3");
+      icon.append(circle);
+    }
+    return icon;
+  }
+  function setIconLabel(control, name, text) {
+    let label = control.querySelector(":scope > [data-mpkr-icon-label]");
+    const current = control.querySelector(":scope > [data-mpkr-icon]");
+    if (!label || current?.getAttribute("data-mpkr-icon") !== name) {
+      const icon = createControlIcon(name, control.ownerDocument);
+      icon.style.marginInlineEnd = "6px";
+      label = control.ownerDocument.createElement("span");
+      label.dataset.mpkrIconLabel = "";
+      control.replaceChildren(icon, label);
+    }
+    if (label.textContent !== text) label.textContent = text;
+  }
+
+  // src/ui/design-tokens.ts
+  var NAV = {
+    surface: "#202124",
+    surfaceHover: "#2c3036",
+    border: "#5f6368",
+    divider: "#5f6368",
+    text: "#fff",
+    link: "#91c3e8",
+    muted: "#b8c6d4",
+    focus: "#91c3e8",
+    switchOff: "#5f6368",
+    switchBorder: "#7a8791",
+    switchThumb: "#fff",
+    switchOn: "#5ba2d8",
+    switchOnThumb: "#fff",
+    height: "38px",
+    fontSize: "12px"
+  };
+  var UI = {
+    nav: NAV,
+    color: {
+      text: "#202124",
+      muted: "#59635d",
+      link: "#0060a9",
+      linkHover: "#004b84",
+      linkActive: "#003e70",
+      surface: "#fff",
+      surfaceSubtle: "#f7f8f8",
+      surfaceHover: "#edf5fa",
+      border: "#c8ceca",
+      borderHover: "#9eabb3",
+      warning: "#6b5b35",
+      accentSurface: "#e8f0eb",
+      accentText: "#294c39",
+      buttonSurface: "#f1f5f9",
+      buttonHover: "#e4edf5",
+      buttonActive: "#d8e5f0",
+      buttonBorder: "#b8c6d4",
+      buttonBorderHover: "#7f9bb5",
+      headingHover: "rgba(0, 96, 169, 0.12)",
+      headingFocus: "rgba(0, 96, 169, 0.14)"
+    },
+    font: {
+      family: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+      caption: "0.75rem",
+      small: "0.85rem",
+      hint: "0.9rem",
+      body: "1rem",
+      controlWeight: "600",
+      bodyLineHeight: "1.65",
+      uiLineHeight: "1.5"
+    },
+    space: {
+      xs: "0.25rem",
+      sm: "0.5rem",
+      md: "0.75rem",
+      lg: "1rem",
+      xl: "1.5rem"
+    },
+    radius: {
+      small: "2px",
+      control: "4px",
+      nav: "7px"
+    },
+    motion: { fast: "150ms ease" }
+  };
+  var UI_TOKEN_CSS = `:root {${Object.entries(UI).flatMap(
+    ([group, values]) => Object.entries(values).map(
+      ([name, value]) => `--mpkr-${group}-${name.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)}:${value};`
+    )
+  ).join("")}}`;
+
+  // src/sites/mountain-project/contract/origins.ts
+  var MOUNTAIN_PROJECT_CANONICAL_ORIGIN = "https://www.mountainproject.com";
+  var MOUNTAIN_PROJECT_HOSTNAMES = [
+    "mountainproject.com",
+    "www.mountainproject.com"
+  ];
+  var supportedHostnames = new Set(MOUNTAIN_PROJECT_HOSTNAMES);
+  function isMountainProjectHostname(hostname) {
+    return supportedHostnames.has(hostname.toLowerCase());
+  }
+  function isMountainProjectUrl(url) {
+    return url.protocol === "https:" && isMountainProjectHostname(url.hostname);
+  }
+  function buildMountainProjectUrl(path) {
+    return new URL(path, MOUNTAIN_PROJECT_CANONICAL_ORIGIN).href;
+  }
+
+  // src/sites/mountain-project/contract/routes.ts
+  var MOUNTAIN_PROJECT_PATH_PATTERNS = {
+    area: /^\/area\/(\d+)(?:\/([^/]+))?$/,
+    route: /^\/route\/(\d+)(?:\/([^/]+))?$/,
+    routeStats: /^\/route\/stats\/(\d+)(?:\/([^/]+))?$/,
+    routeFinder: /^\/route-finder$/,
+    photo: /^\/photo\/(\d+)(?:\/([^/]+))?$/,
+    user: /^\/user\/(\d+)\/([^/]+)(?:\/(contributions|community))?$/,
+    contactUser: /^\/contact-user\/(\d+)$/,
+    gym: /^\/gym\/(\d+)(?:\/([^/]+))?$/,
+    map: /^\/map\/(\d+)(?:\/([^/]+))?$/,
+    helpArticle: /^\/help\/(\d+)\/([^/]+)$/,
+    contribution: /^\/(?:add|edit|suggest)\/(?:climb-area|route|photo|trail|video|text-section|symbol)(?:\/\d+)?$/,
+    contributionNestedPhoto: /^\/(?:area|route)\/\d+\/add\/photo$/,
+    contributionImageLink: /^\/edit\/imageLink\/\d+$/,
+    contributionTrailUpload: /^\/upload\/start\/trail$/,
+    contributionBook: /^\/edit\/book\/\d+$/,
+    contributionShare: /^\/share\/(?:trail|photo|video)$/,
+    contributionImprovement: /^\/improvement(?:\/[^/]+)+$/,
+    contributionUpdates: /^\/updates\/Climb-Lib-Models-(?:Area|Route|Photo|Trail)\/\d+(?:\/[^/]+)?$/
+  };
+  function normalizeMountainProjectPath(pathname) {
+    return pathname.replace(/\/+$/, "") || "/";
+  }
+  function parseEntityPath(pattern, pathname) {
+    const match = normalizeMountainProjectPath(pathname).match(pattern);
+    if (!match?.[1]) {
+      return void 0;
+    }
+    return {
+      id: match[1],
+      ...match[2] ? { slug: match[2] } : {}
+    };
+  }
+  function parseAreaPath(pathname) {
+    return parseEntityPath(MOUNTAIN_PROJECT_PATH_PATTERNS.area, pathname);
+  }
+  function buildEntityPath(prefix, id, slug) {
+    return `${prefix}/${encodeURIComponent(id)}${slug ? `/${encodeURIComponent(slug)}` : ""}`;
+  }
+  function buildAreaPath(id, slug) {
+    return buildEntityPath("/area", id, slug);
+  }
+  function buildMapPath(id, slug) {
+    return buildEntityPath("/map", id, slug);
+  }
+
+  // src/sites/mountain-project/dom/directory-counts.ts
+  function areaId(url) {
+    try {
+      const parsed = new URL(url);
+      return isMountainProjectUrl(parsed) ? parseAreaPath(parsed.pathname)?.id : void 0;
+    } catch {
+      return;
+    }
+  }
+  function readDirectoryCounts(html, url) {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    const counts = /* @__PURE__ */ new Map();
+    const number = (value) => {
+      const text = value?.trim();
+      return text && /^(?:\d+|\d{1,3}(?:,\d{3})+)$/.test(text) ? Number(text.replaceAll(",", "")) : void 0;
+    };
+    for (const row of doc.querySelectorAll(".lef-nav-row")) {
+      const href = row.querySelector("a[href]")?.getAttribute("href");
+      const id2 = href ? areaId(new URL(href, url).href) : void 0;
+      const count = number(row.querySelector(".text-warm")?.textContent);
+      if (id2 && count !== void 0) counts.set(id2, count);
+    }
+    const id = areaId(url);
+    for (const heading of doc.querySelectorAll("h2")) {
+      const match = heading.textContent?.trim().match(/^([\d,]+) Total Climbs$/);
+      const count = number(match?.[1]);
+      if (id && count !== void 0) counts.set(id, count);
+    }
+    return counts;
+  }
+  var DirectoryCounts = class {
+    constructor(origin) {
+      this.origin = origin;
+    }
+    controller = new AbortController();
+    pages = /* @__PURE__ */ new Map();
+    queue = [];
+    active = 0;
+    pump() {
+      while (this.active < 2 && this.queue.length) this.queue.shift()();
+    }
+    read(source, retry = false) {
+      if (this.controller.signal.aborted || !areaId(source)) return Promise.resolve(/* @__PURE__ */ new Map());
+      const url = new URL(source);
+      url.protocol = new URL(this.origin).protocol;
+      url.host = new URL(this.origin).host;
+      if (!isMountainProjectUrl(url)) return Promise.resolve(/* @__PURE__ */ new Map());
+      if (retry) this.pages.delete(url.href);
+      const existing = this.pages.get(url.href);
+      if (existing) return existing;
+      const promise = new Promise((resolve) => {
+        this.queue.push(() => {
+          if (this.controller.signal.aborted) {
+            resolve(/* @__PURE__ */ new Map());
+            return;
+          }
+          this.active++;
+          const controller = new AbortController();
+          const abort = () => controller.abort();
+          this.controller.signal.addEventListener("abort", abort, { once: true });
+          const timer = setTimeout(abort, 1e4);
+          void fetch(url.href, { signal: controller.signal, credentials: "omit", cache: "no-cache" }).then(async (response) => {
+            if (!response.ok || !response.headers.get("content-type")?.includes("text/html")) return /* @__PURE__ */ new Map();
+            return readDirectoryCounts(await response.text(), url.href);
+          }).catch(() => /* @__PURE__ */ new Map()).then(resolve).finally(() => {
+            clearTimeout(timer);
+            this.controller.signal.removeEventListener("abort", abort);
+            this.active--;
+            this.pump();
+          });
+        });
+      });
+      this.pages.set(url.href, promise);
+      this.pump();
+      return promise;
+    }
+    destroy() {
+      this.controller.abort();
+      this.pump();
+      this.pages.clear();
+    }
+  };
+
+  // src/sites/mountain-project/contract/regions/south-korea.ts
+  var SOUTH_KOREA_AREA_ID = "106225629";
+  var SOUTH_KOREA_AREA_SLUG = "south-korea";
+  var SOUTH_KOREA_AREA_PATH = buildAreaPath(
+    SOUTH_KOREA_AREA_ID,
+    SOUTH_KOREA_AREA_SLUG
+  );
+  var SOUTH_KOREA_MAP_PATH = buildMapPath(
+    SOUTH_KOREA_AREA_ID,
+    SOUTH_KOREA_AREA_SLUG
+  );
+  var SOUTH_KOREA_AREA_URL = buildMountainProjectUrl(SOUTH_KOREA_AREA_PATH);
+  var SOUTH_KOREA_MAP_URL = buildMountainProjectUrl(SOUTH_KOREA_MAP_PATH);
+  var SOUTH_KOREA_AREAS = [
+    {
+      id: "126256865",
+      sourceName: "Gamaksan (Dawn Wall), Paju-si, Gyeonggi-do (Seolma 12 Bridge)",
+      koreanName: "\uAC10\uC545\uC0B0(\uC0C8\uBCBD\uBCBD), \uD30C\uC8FC\uC2DC, \uACBD\uAE30\uB3C4(\uC124\uB9C812\uAD50)"
+    },
+    {
+      id: "119456790",
+      sourceName: "Gangwon-do (Northeast Korea)",
+      koreanName: "\uAC15\uC6D0\uB3C4(\uD55C\uAD6D \uBD81\uB3D9\uBD80)"
+    },
+    {
+      id: "119631691",
+      sourceName: "Jeju Island",
+      koreanName: "\uC81C\uC8FC\uB3C4"
+    },
+    {
+      id: "119456771",
+      sourceName: "North/South Chungcheong-do (Midwest/West Korea)",
+      koreanName: "\uCDA9\uCCAD\uBD81\uB3C4/\uCDA9\uCCAD\uB0A8\uB3C4(\uD55C\uAD6D \uC911\uC11C\uBD80/\uC11C\uBD80)"
+    },
+    {
+      id: "119456816",
+      sourceName: "North/South Gyeongsang-do (East/Southeast Korea)",
+      koreanName: "\uACBD\uC0C1\uBD81\uB3C4/\uACBD\uC0C1\uB0A8\uB3C4(\uD55C\uAD6D \uB3D9\uBD80/\uB0A8\uB3D9\uBD80)"
+    },
+    {
+      id: "119456784",
+      sourceName: "North/South Jeolla-do (Southwest Korea)",
+      koreanName: "\uC804\uB77C\uBD81\uB3C4/\uC804\uB77C\uB0A8\uB3C4(\uD55C\uAD6D \uB0A8\uC11C\uBD80)"
+    },
+    {
+      id: "119456750",
+      sourceName: "Seoul/Gyeonggi-do (Northwest Korea)",
+      koreanName: "\uC11C\uC6B8/\uACBD\uAE30\uB3C4(\uD55C\uAD6D \uBD81\uC11C\uBD80)"
+    }
+  ];
+  var SOUTH_KOREA_AREA_IDS = /* @__PURE__ */ new Set([
+    SOUTH_KOREA_AREA_ID,
+    ...SOUTH_KOREA_AREAS.map(({ id }) => id)
+  ]);
+  var SOUTH_KOREA_NAME_ALIASES = /* @__PURE__ */ new Set([
+    "South Korea",
+    "S Korea",
+    "\uB300\uD55C\uBBFC\uAD6D",
+    ...SOUTH_KOREA_AREAS.flatMap(({ sourceName, koreanName }) => [sourceName, koreanName])
+  ]);
+  var koreanAreaNames = new Map(
+    SOUTH_KOREA_AREAS.map(({ id, koreanName }) => [id, koreanName])
+  );
+
+  // src/sites/mountain-project/contract/directory-destinations.ts
+  var ASIA_DIRECTORY_COUNTRIES = [
+    {
+      "label": "\uC77C\uBCF8",
+      "url": "https://www.mountainproject.com/area/106103884/japan",
+      "countSourceUrl": "https://www.mountainproject.com/area/106661515/asia",
+      "regions": [
+        {
+          "label": "\uC624\uAC00\uC640\uC57C\uB9C8",
+          "url": "https://www.mountainproject.com/area/107002294/ogawayama",
+          "countSourceUrl": "https://www.mountainproject.com/area/107006459/nagano-prefecture"
+        },
+        {
+          "label": "\uBBF8\uC988\uAC00\uD0A4",
+          "url": "https://www.mountainproject.com/area/107002228/mizugaki-yama",
+          "countSourceUrl": "https://www.mountainproject.com/area/107002181/yamanashi-prefecture"
+        },
+        {
+          "label": "\uBBF8\uD0C0\uCF00",
+          "url": "https://www.mountainproject.com/area/106672476/mitake",
+          "countSourceUrl": "https://www.mountainproject.com/area/107017265/tokyo-prefecture"
+        },
+        {
+          "label": "\uC870\uAC00\uC0AC\uD0A4",
+          "url": "https://www.mountainproject.com/area/107001454/jogasaki",
+          "countSourceUrl": "https://www.mountainproject.com/area/107001362/shizuoka-prefecture"
+        },
+        {
+          "label": "\uC870\uC57C\uB9C8",
+          "url": "https://www.mountainproject.com/area/107001457/joyama",
+          "countSourceUrl": "https://www.mountainproject.com/area/107001362/shizuoka-prefecture"
+        },
+        {
+          "label": "\uC624\uD0A4\uB098\uC640",
+          "url": "https://www.mountainproject.com/area/106103893/okinawa",
+          "countSourceUrl": "https://www.mountainproject.com/area/107017272/okinawa-prefecture"
+        }
+      ]
+    },
+    {
+      "label": "\uD0DC\uAD6D",
+      "url": "https://www.mountainproject.com/area/105894648/thailand",
+      "countSourceUrl": "https://www.mountainproject.com/area/106661515/asia",
+      "regions": [
+        {
+          "label": "\uD1A4\uC0AC\uC774\xB7\uB77C\uC77C\uB808\uC774",
+          "url": "https://www.mountainproject.com/area/105894664/laem-phra-nang-railay-tonsai",
+          "countSourceUrl": "https://www.mountainproject.com/area/113942607/south-islands-beaches"
+        },
+        {
+          "label": "\uD06C\uB808\uC774\uC9C0 \uD638\uC2A4",
+          "url": "https://www.mountainproject.com/area/106579963/crazy-horse",
+          "countSourceUrl": "https://www.mountainproject.com/area/105894652/northwest-around-chiang-mai"
+        },
+        {
+          "label": "\uB86D\uBD80\uB9AC",
+          "url": "https://www.mountainproject.com/area/123709930/lop-buri",
+          "countSourceUrl": "https://www.mountainproject.com/area/113942570/central-around-bangkok"
+        },
+        {
+          "label": "\uCF54\uD0C0\uC624",
+          "url": "https://www.mountainproject.com/area/108569570/koh-tao",
+          "countSourceUrl": "https://www.mountainproject.com/area/113942607/south-islands-beaches"
+        },
+        {
+          "label": "\uB0A8\uD30C\uD30C\uC57C\uC774",
+          "url": "https://www.mountainproject.com/area/109633316/namphapayai-camp-saraburi",
+          "countSourceUrl": "https://www.mountainproject.com/area/113942570/central-around-bangkok"
+        },
+        {
+          "label": "\uCF54\uD53C\uD53C",
+          "url": "https://www.mountainproject.com/area/105894719/koh-phi-phi",
+          "countSourceUrl": "https://www.mountainproject.com/area/113942607/south-islands-beaches"
+        }
+      ]
+    },
+    {
+      "label": "\uC911\uAD6D",
+      "url": "https://www.mountainproject.com/area/106661526/china",
+      "countSourceUrl": "https://www.mountainproject.com/area/106661515/asia",
+      "regions": [
+        {
+          "label": "\uC591\uC234",
+          "url": "https://www.mountainproject.com/area/106763709/yangshuo",
+          "countSourceUrl": "https://www.mountainproject.com/area/106763699/guangxi-province"
+        },
+        {
+          "label": "\uCFE4\uBC0D \uC77C\uB300",
+          "url": "https://www.mountainproject.com/area/111756279/kunming-area",
+          "countSourceUrl": "https://www.mountainproject.com/area/106122293/yunnan-province"
+        },
+        {
+          "label": "\uB9AC\uC7A5 \uC77C\uB300",
+          "url": "https://www.mountainproject.com/area/111783092/lijiang-area",
+          "countSourceUrl": "https://www.mountainproject.com/area/106122293/yunnan-province"
+        },
+        {
+          "label": "\uB2E4\uB9AC \uC77C\uB300",
+          "url": "https://www.mountainproject.com/area/106469244/dali-area",
+          "countSourceUrl": "https://www.mountainproject.com/area/106122293/yunnan-province"
+        },
+        {
+          "label": "\uD64D\uCF69",
+          "url": "https://www.mountainproject.com/area/106142585/hong-kong",
+          "countSourceUrl": "https://www.mountainproject.com/area/106661526/china"
+        }
+      ]
+    },
+    {
+      "label": "\uB300\uB9CC",
+      "url": "https://www.mountainproject.com/area/106444540/taiwan",
+      "countSourceUrl": "https://www.mountainproject.com/area/106661515/asia",
+      "regions": [
+        {
+          "label": "\uB871\uB3D9",
+          "url": "https://www.mountainproject.com/area/106594934/long-dong-dragon-cave",
+          "countSourceUrl": "https://www.mountainproject.com/area/106444540/taiwan"
+        },
+        {
+          "label": "\uAC00\uC624\uC29D",
+          "url": "https://www.mountainproject.com/area/108565545/kaohsiung",
+          "countSourceUrl": "https://www.mountainproject.com/area/106444540/taiwan"
+        },
+        {
+          "label": "\uAD6C\uAD00",
+          "url": "https://www.mountainproject.com/area/120904480/guguan",
+          "countSourceUrl": "https://www.mountainproject.com/area/106444540/taiwan"
+        },
+        {
+          "label": "\uB7EC\uD558\uC774",
+          "url": "https://www.mountainproject.com/area/107817784/rehai",
+          "countSourceUrl": "https://www.mountainproject.com/area/106444540/taiwan"
+        }
+      ]
+    },
+    {
+      "label": "\uBCA0\uD2B8\uB0A8",
+      "url": "https://www.mountainproject.com/area/107058176/vietnam",
+      "countSourceUrl": "https://www.mountainproject.com/area/106661515/asia",
+      "regions": [
+        {
+          "label": "\uD6C4\uB8FD",
+          "url": "https://www.mountainproject.com/area/115968522/huu-lung",
+          "countSourceUrl": "https://www.mountainproject.com/area/107058176/vietnam"
+        },
+        {
+          "label": "\uAE5F\uBC14 \uC12C",
+          "url": "https://www.mountainproject.com/area/200490968/cat-ba-island",
+          "countSourceUrl": "https://www.mountainproject.com/area/107070390/ha-long-bay"
+        },
+        {
+          "label": "\uB780\uD558 \uBCA0\uC774",
+          "url": "https://www.mountainproject.com/area/107069005/lan-ha-bay",
+          "countSourceUrl": "https://www.mountainproject.com/area/107070390/ha-long-bay"
+        }
+      ]
+    },
+    {
+      "label": "\uB77C\uC624\uC2A4",
+      "url": "https://www.mountainproject.com/area/106649458/laos",
+      "countSourceUrl": "https://www.mountainproject.com/area/106661515/asia",
+      "regions": [
+        {
+          "label": "\uD0C0\uCF01",
+          "url": "https://www.mountainproject.com/area/107457704/thakhek-pha-tam-kam",
+          "countSourceUrl": "https://www.mountainproject.com/area/106649458/laos"
+        },
+        {
+          "label": "\uBC29\uBE44\uC5E5",
+          "url": "https://www.mountainproject.com/area/106649480/vang-vieng",
+          "countSourceUrl": "https://www.mountainproject.com/area/106649458/laos"
+        },
+        {
+          "label": "\uB8E8\uC559\uD504\uB77C\uBC29",
+          "url": "https://www.mountainproject.com/area/106649793/luang-prabang",
+          "countSourceUrl": "https://www.mountainproject.com/area/106649458/laos"
+        }
+      ]
+    },
+    {
+      "label": "\uB9D0\uB808\uC774\uC2DC\uC544",
+      "url": "https://www.mountainproject.com/area/106072512/malaysia",
+      "countSourceUrl": "https://www.mountainproject.com/area/106661515/asia",
+      "regions": [
+        {
+          "label": "\uBC14\uD22C \uCF00\uC774\uBE0C",
+          "url": "https://www.mountainproject.com/area/106334639/batu-caves",
+          "countSourceUrl": "https://www.mountainproject.com/area/106072512/malaysia"
+        },
+        {
+          "label": "\uD398\uB97C\uB9AC\uC2A4",
+          "url": "https://www.mountainproject.com/area/116545838/perlis",
+          "countSourceUrl": "https://www.mountainproject.com/area/106072512/malaysia"
+        },
+        {
+          "label": "\uBD80\uD0B7 \uD0C0\uCFE4",
+          "url": "https://www.mountainproject.com/area/110064383/bukit-takun",
+          "countSourceUrl": "https://www.mountainproject.com/area/106072512/malaysia"
+        }
+      ]
+    },
+    {
+      "label": "\uD280\uB974\uD0A4\uC608",
+      "url": "https://www.mountainproject.com/area/106298981/turkey",
+      "countSourceUrl": "https://www.mountainproject.com/area/106661515/asia",
+      "regions": [
+        {
+          "label": "\uAC8C\uC774\uC774\uD06C\uBC14\uC774\uB974",
+          "url": "https://www.mountainproject.com/area/106943653/antalya-geyikbayiri",
+          "countSourceUrl": "https://www.mountainproject.com/area/106298981/turkey"
+        },
+        {
+          "label": "\uB2F7\uCC28",
+          "url": "https://www.mountainproject.com/area/112776400/datca",
+          "countSourceUrl": "https://www.mountainproject.com/area/106298981/turkey"
+        },
+        {
+          "label": "\uC54C\uB77C\uB2E4\uC744\uB77C\uB974",
+          "url": "https://www.mountainproject.com/area/112227314/aladaglar-national-park",
+          "countSourceUrl": "https://www.mountainproject.com/area/106298981/turkey"
+        },
+        {
+          "label": "\uC62C\uB9BC\uD3EC\uC2A4",
+          "url": "https://www.mountainproject.com/area/106815423/olympos",
+          "countSourceUrl": "https://www.mountainproject.com/area/106298981/turkey"
+        }
+      ]
+    }
+  ];
+  var EUROPE_DIRECTORY_COUNTRIES = [
+    {
+      "label": "\uADF8\uB9AC\uC2A4",
+      "url": "https://www.mountainproject.com/area/106481757/greece",
+      "countSourceUrl": "https://www.mountainproject.com/area/106660030/europe",
+      "regions": [
+        {
+          "label": "\uCE7C\uB9BC\uB178\uC2A4",
+          "url": "https://www.mountainproject.com/area/106093650/kalymnos",
+          "countSourceUrl": "https://www.mountainproject.com/area/106481757/greece"
+        },
+        {
+          "label": "\uB808\uC624\uB2C8\uB514\uC624",
+          "url": "https://www.mountainproject.com/area/112079025/leonidio",
+          "countSourceUrl": "https://www.mountainproject.com/area/112078972/peloponnese"
+        },
+        {
+          "label": "\uD0A4\uD30C\uB9AC\uC2DC",
+          "url": "https://www.mountainproject.com/area/112079055/kyparissi",
+          "countSourceUrl": "https://www.mountainproject.com/area/112078972/peloponnese"
+        },
+        {
+          "label": "\uBA54\uD14C\uC624\uB77C",
+          "url": "https://www.mountainproject.com/area/106482471/meteora",
+          "countSourceUrl": "https://www.mountainproject.com/area/106481757/greece"
+        }
+      ]
+    },
+    {
+      "label": "\uC2A4\uD398\uC778",
+      "url": "https://www.mountainproject.com/area/106111770/spain",
+      "countSourceUrl": "https://www.mountainproject.com/area/106660030/europe",
+      "regions": [
+        {
+          "label": "\uC2DC\uC6B0\uB77C\uB098",
+          "url": "https://www.mountainproject.com/area/106624710/siurana",
+          "countSourceUrl": "https://www.mountainproject.com/area/202763017/tarragona"
+        },
+        {
+          "label": "\uB9C8\uB974\uAC08\uB808\uD504",
+          "url": "https://www.mountainproject.com/area/106631762/margalef",
+          "countSourceUrl": "https://www.mountainproject.com/area/202763017/tarragona"
+        },
+        {
+          "label": "\uB85C\uB370\uC57C\uB974",
+          "url": "https://www.mountainproject.com/area/106548182/rodellar",
+          "countSourceUrl": "https://www.mountainproject.com/area/106548172/aragon"
+        },
+        {
+          "label": "\uC5D8\uCD08\uB85C",
+          "url": "https://www.mountainproject.com/area/106822180/el-chorro",
+          "countSourceUrl": "https://www.mountainproject.com/area/106472986/andalucia"
+        },
+        {
+          "label": "\uCD9C\uB9AC\uC57C",
+          "url": "https://www.mountainproject.com/area/107892183/chulilla",
+          "countSourceUrl": "https://www.mountainproject.com/area/107892167/valencia"
+        },
+        {
+          "label": "\uC54C\uBC14\uB77C\uC2E0",
+          "url": "https://www.mountainproject.com/area/114053913/albarracin",
+          "countSourceUrl": "https://www.mountainproject.com/area/106548172/aragon"
+        },
+        {
+          "label": "\uBAAC\uC138\uB77C\uD2B8",
+          "url": "https://www.mountainproject.com/area/106492100/montserrat",
+          "countSourceUrl": "https://www.mountainproject.com/area/202763028/barcelona"
+        },
+        {
+          "label": "\uC62C\uB9AC\uC544\uB098",
+          "url": "https://www.mountainproject.com/area/108688807/oliana",
+          "countSourceUrl": "https://www.mountainproject.com/area/108688762/lleida"
+        }
+      ]
+    },
+    {
+      "label": "\uD504\uB791\uC2A4",
+      "url": "https://www.mountainproject.com/area/106192575/france",
+      "countSourceUrl": "https://www.mountainproject.com/area/106660030/europe",
+      "regions": [
+        {
+          "label": "\uC138\uC6B0\uC2A4",
+          "url": "https://www.mountainproject.com/area/106334422/ceuse",
+          "countSourceUrl": "https://www.mountainproject.com/area/112172798/05-southern-alps"
+        },
+        {
+          "label": "\uD401\uD150\uBE14\uB85C",
+          "url": "https://www.mountainproject.com/area/106008886/fontainebleau",
+          "countSourceUrl": "https://www.mountainproject.com/area/106192575/france"
+        },
+        {
+          "label": "\uCE7C\uB791\uD06C",
+          "url": "https://www.mountainproject.com/area/106925583/calanques",
+          "countSourceUrl": "https://www.mountainproject.com/area/106192575/france"
+        },
+        {
+          "label": "\uBCA0\uB974\uB3D9",
+          "url": "https://www.mountainproject.com/area/107437053/gorge-du-verdon",
+          "countSourceUrl": "https://www.mountainproject.com/area/106192575/france"
+        },
+        {
+          "label": "\uBDD4\uC6B1\uC2A4",
+          "url": "https://www.mountainproject.com/area/106484746/buoux",
+          "countSourceUrl": "https://www.mountainproject.com/area/112168700/06-provence"
+        },
+        {
+          "label": "\uC624\uB974\uD53C\uC5D0\uB974",
+          "url": "https://www.mountainproject.com/area/107399770/orpierre",
+          "countSourceUrl": "https://www.mountainproject.com/area/112172798/05-southern-alps"
+        }
+      ]
+    },
+    {
+      "label": "\uC774\uD0C8\uB9AC\uC544",
+      "url": "https://www.mountainproject.com/area/105967155/italy",
+      "countSourceUrl": "https://www.mountainproject.com/area/106660030/europe",
+      "regions": [
+        {
+          "label": "\uC544\uB974\uCF54 \uBC0F \uC8FC\uBCC0",
+          "url": "https://www.mountainproject.com/area/106350563/arco-and-surrounding-area",
+          "countSourceUrl": "https://www.mountainproject.com/area/105967155/italy"
+        },
+        {
+          "label": "\uD53C\uB0A0\uB808 \uB9AC\uAD6C\uB808",
+          "url": "https://www.mountainproject.com/area/107467705/finale-ligure",
+          "countSourceUrl": "https://www.mountainproject.com/area/113708717/liguria-region"
+        },
+        {
+          "label": "\uB3CC\uB85C\uBBF8\uD14C",
+          "url": "https://www.mountainproject.com/area/105967163/dolomites",
+          "countSourceUrl": "https://www.mountainproject.com/area/105967155/italy"
+        },
+        {
+          "label": "\uC0AC\uB974\uB370\uB0D0",
+          "url": "https://www.mountainproject.com/area/117093397/sardinia",
+          "countSourceUrl": "https://www.mountainproject.com/area/105967155/italy"
+        },
+        {
+          "label": "\uD2B8\uB77C\uD30C\uB2C8\xB7\uC0B0\uBE44\uD1A0 \uC77C\uB300",
+          "url": "https://www.mountainproject.com/area/107611524/trapani-san-vito-area",
+          "countSourceUrl": "https://www.mountainproject.com/area/107611512/sicily"
+        }
+      ]
+    },
+    {
+      "label": "\uB3C5\uC77C",
+      "url": "https://www.mountainproject.com/area/105994182/germany",
+      "countSourceUrl": "https://www.mountainproject.com/area/106660030/europe",
+      "regions": [
+        {
+          "label": "\uD504\uB791\uCF04\uC8FC\uB77C",
+          "url": "https://www.mountainproject.com/area/106172652/frankenjura",
+          "countSourceUrl": "https://www.mountainproject.com/area/105994182/germany"
+        },
+        {
+          "label": "\uC288\uBC14\uBCA4 \uC54C\uD504",
+          "url": "https://www.mountainproject.com/area/106632729/schwabische-alb",
+          "countSourceUrl": "https://www.mountainproject.com/area/105994182/germany"
+        },
+        {
+          "label": "\uC5D8\uBCA0 \uC0AC\uC554\uC9C0\uB300",
+          "url": "https://www.mountainproject.com/area/106158326/elbsandstein",
+          "countSourceUrl": "https://www.mountainproject.com/area/105994182/germany"
+        }
+      ]
+    },
+    {
+      "label": "\uC2A4\uC704\uC2A4",
+      "url": "https://www.mountainproject.com/area/106264030/switzerland",
+      "countSourceUrl": "https://www.mountainproject.com/area/106660030/europe",
+      "regions": [
+        {
+          "label": "\uB9E4\uC9C1\uC6B0\uB4DC",
+          "url": "https://www.mountainproject.com/area/106855226/magic-wood",
+          "countSourceUrl": "https://www.mountainproject.com/area/202037591/graubunden"
+        },
+        {
+          "label": "\uD3F0\uD14C \uBE0C\uB864\uB77C",
+          "url": "https://www.mountainproject.com/area/107403727/ponte-brolla",
+          "countSourceUrl": "https://www.mountainproject.com/area/202037598/ticino"
+        }
+      ]
+    },
+    {
+      "label": "\uD06C\uB85C\uC544\uD2F0\uC544",
+      "url": "https://www.mountainproject.com/area/106782982/croatia",
+      "countSourceUrl": "https://www.mountainproject.com/area/106660030/europe",
+      "regions": [
+        {
+          "label": "\uD30C\uD074\uB808\uB2C8\uCC28",
+          "url": "https://www.mountainproject.com/area/106700370/national-park-of-paklenica",
+          "countSourceUrl": "https://www.mountainproject.com/area/106782982/croatia"
+        },
+        {
+          "label": "\uC624\uBBF8\uC2DC",
+          "url": "https://www.mountainproject.com/area/112301051/omis",
+          "countSourceUrl": "https://www.mountainproject.com/area/106782982/croatia"
+        },
+        {
+          "label": "\uD750\uBC14\uB974 \uC12C",
+          "url": "https://www.mountainproject.com/area/106883409/hvar-island",
+          "countSourceUrl": "https://www.mountainproject.com/area/106782982/croatia"
+        }
+      ]
+    }
+  ];
+
+  // src/sites/mountain-project/contract/directory.ts
+  var DIRECTORY_SELECTORS = { root: "#route-guide" };
+  var KOREA_DIRECTORY_LINKS = [
+    ["119456750", "\uC11C\uC6B8\xB7\uACBD\uAE30"],
+    ["119456790", "\uAC15\uC6D0"],
+    ["119456771", "\uCDA9\uCCAD"],
+    ["119456816", "\uACBD\uC0C1"],
+    ["119456784", "\uC804\uB77C"],
+    ["119631691", "\uC81C\uC8FC"]
+  ].map(([id, label]) => {
+    const area = SOUTH_KOREA_AREAS.find((candidate) => candidate.id === id);
+    return { label, url: buildMountainProjectUrl(buildAreaPath(area.id)) };
+  });
+
+  // src/ui/region-directory.ts
+  var CSS = `
+.mpkr-directory{color:inherit;font:inherit}
+.mpkr-directory-toolbar{display:flex;align-items:baseline;flex-wrap:wrap;gap:.5rem 1rem;margin-bottom:1rem}
+.mpkr-directory-tabs{display:flex;gap:1rem}
+.mpkr-directory-load{margin-left:auto;display:inline-flex;align-items:center;gap:.35rem;border:1px solid ${UI.color.buttonBorder};border-radius:${UI.radius.control};background:${UI.color.buttonSurface};padding:.3rem .65rem;color:${UI.color.link};font:inherit;font-size:.9em;font-weight:600;line-height:1.5;cursor:pointer}
+.mpkr-directory-load:hover:not(:disabled){background:${UI.color.buttonHover};border-color:${UI.color.buttonBorderHover}}
+.mpkr-directory-load:active:not(:disabled){background:${UI.color.buttonActive}}
+.mpkr-directory-load:disabled{cursor:default;opacity:.65;text-decoration:none}
+.mpkr-directory-status{font-size:.8em;color:inherit}
+.mpkr-directory-load:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+.mpkr-directory-tabs button{appearance:none;border:0;border-bottom:2px solid transparent;border-radius:0;background:none;padding:0 0 .2rem;font:inherit;color:inherit;cursor:pointer}
+.mpkr-directory-tabs button[aria-selected=true]{border-bottom-color:currentColor;font-weight:bold}
+.mpkr-directory-tabs button:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+.mpkr-directory-countries{column-count:4;column-gap:30px}
+.mpkr-directory-country{break-inside:avoid;page-break-inside:avoid}
+.mpkr-directory [hidden]{display:none!important}
+@media(max-width:991px){.mpkr-directory-countries{column-count:2}}
+@media(max-width:543px){.mpkr-directory-countries{column-count:1}}
+`;
+  function line(item) {
+    const row = document.createElement("div");
+    row.className = "clearfix";
+    const content = document.createElement("div");
+    const count = document.createElement("small");
+    count.className = "number float-xs-right";
+    count.dataset.areaUrl = item.url;
+    count.dataset.sourceUrl = item.countSourceUrl ?? item.url;
+    content.append(count);
+    const anchor = document.createElement("a");
+    anchor.className = "text-truncate float-xs-left";
+    anchor.style.maxWidth = "70%";
+    anchor.href = item.url;
+    anchor.textContent = item.label;
+    anchor.title = item.label;
+    content.append(anchor);
+    const dashes = document.createElement("div");
+    dashes.className = "dashes";
+    const hr = document.createElement("hr");
+    hr.className = "dashed-b";
+    dashes.append(hr);
+    row.append(content, dashes);
+    return row;
+  }
+  function country(item) {
+    const group = document.createElement("div");
+    group.className = "mb-half mpkr-directory-country";
+    const title = document.createElement("strong");
+    title.append(line(item));
+    group.append(title);
+    for (const region of item.regions) {
+      const child = document.createElement("div");
+      child.className = "ml-half";
+      child.append(line(region));
+      group.append(child);
+    }
+    return group;
+  }
+  var sequence = 0;
+  var RegionDirectory = class {
+    style;
+    counts;
+    async populate(panel) {
+      const loader = this.counts ??= new DirectoryCounts(location.origin);
+      const sources = /* @__PURE__ */ new Map();
+      for (const element of panel.querySelectorAll("[data-source-url]")) {
+        if (element.textContent) continue;
+        const url = element.dataset.sourceUrl;
+        sources.set(url, [...sources.get(url) ?? [], element]);
+      }
+      await Promise.all([...sources].map(async ([url, elements]) => {
+        const counts = await loader.read(url, panel.dataset.countState === "partial");
+        for (const element of elements) {
+          if (!element.isConnected) continue;
+          const id = areaId(element.dataset.areaUrl);
+          const value = id ? counts.get(id) : void 0;
+          if (value === void 0) continue;
+          element.textContent = value.toLocaleString("en-US");
+          element.title = `MP \uC870\uD68C \xB7 ${(/* @__PURE__ */ new Date()).toLocaleString("ko-KR")}`;
+        }
+      }));
+      return [...panel.querySelectorAll("[data-source-url]")].every((element) => !!element.textContent);
+    }
+    mounted = /* @__PURE__ */ new Map();
+    mount(root = document) {
+      for (const original of root.querySelectorAll(DIRECTORY_SELECTORS.root)) {
+        if (this.mounted.has(original)) continue;
+        if (!this.style) {
+          this.style = document.createElement("style");
+          this.style.textContent = CSS;
+          document.head.append(this.style);
+        }
+        const section = document.createElement("section");
+        section.className = "mpkr-directory";
+        const tabs = document.createElement("div");
+        tabs.className = "mpkr-directory-tabs";
+        tabs.setAttribute("role", "tablist");
+        tabs.setAttribute("aria-label", "\uC9C0\uC5ED \uAC00\uC774\uB4DC \uB300\uB959");
+        const id = `mpkr-directory-${++sequence}`;
+        const buttons = [];
+        const panels = [];
+        let selected = 0;
+        const toolbar = document.createElement("div");
+        toolbar.className = "mpkr-directory-toolbar";
+        const load = document.createElement("button");
+        load.type = "button";
+        load.className = "mpkr-directory-load";
+        load.title = "\uC120\uD0DD\uD55C \uB300\uB959\uC758 MP \uB4F1\uB85D \uC218\uB97C \uC870\uD68C\uD569\uB2C8\uB2E4";
+        const status = document.createElement("span");
+        status.className = "mpkr-directory-status";
+        status.setAttribute("role", "status");
+        const renderLoad = () => {
+          load.hidden = status.hidden = selected === 2;
+          const state = panels[selected]?.dataset.countState;
+          load.disabled = state === "loading" || state === "done";
+          setIconLabel(load, "prepare", state === "loading" ? "\uBD88\uB7EC\uC624\uB294 \uC911\u2026" : state === "done" ? "\uB4F1\uB85D \uC218 \uBD88\uB7EC\uC634" : state === "partial" ? "\uBBF8\uC870\uD68C \uC218 \uB2E4\uC2DC \uBD88\uB7EC\uC624\uAE30" : "\uB4F1\uB85D \uC218 \uBD88\uB7EC\uC624\uAE30");
+          status.textContent = state === "partial" ? "\uC77C\uBD80 \uB4F1\uB85D \uC218\uB97C \uD655\uC778\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4." : "";
+        };
+        load.addEventListener("click", () => {
+          const panel = panels[selected];
+          if (!panel || selected === 2 || load.disabled) return;
+          if (!isMountainProjectUrl(new URL(location.href))) {
+            status.textContent = "MP \uC0AC\uC774\uD2B8\uC5D0\uC11C \uC0AC\uC6A9\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.";
+            return;
+          }
+          const request = this.populate(panel);
+          panel.dataset.countState = "loading";
+          panel.setAttribute("aria-busy", "true");
+          renderLoad();
+          void request.then((complete) => {
+            if (!panel.isConnected) return;
+            panel.dataset.countState = complete ? "done" : "partial";
+            panel.removeAttribute("aria-busy");
+            renderLoad();
+          });
+        });
+        const groups = [
+          [{ label: "\uB300\uD55C\uBBFC\uAD6D", url: SOUTH_KOREA_AREA_URL, regions: KOREA_DIRECTORY_LINKS.map((item) => ({ ...item, countSourceUrl: SOUTH_KOREA_AREA_URL })) }, ...ASIA_DIRECTORY_COUNTRIES],
+          EUROPE_DIRECTORY_COUNTRIES
+        ];
+        const select = (index) => {
+          buttons.forEach((button, i) => {
+            button.setAttribute("aria-selected", String(i === index));
+            button.tabIndex = i === index ? 0 : -1;
+            panels[i].hidden = i !== index;
+          });
+          original.hidden = index !== 2;
+          selected = index;
+          renderLoad();
+        };
+        ["\uC544\uC2DC\uC544", "\uC720\uB7FD", "\uC544\uBA54\uB9AC\uCE74"].forEach((label, index) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.textContent = label;
+          button.id = `${id}-tab-${index}`;
+          button.setAttribute("role", "tab");
+          button.setAttribute("aria-controls", `${id}-panel-${index}`);
+          const panel = document.createElement("div");
+          panel.id = `${id}-panel-${index}`;
+          panel.setAttribute("role", "tabpanel");
+          panel.setAttribute("aria-labelledby", button.id);
+          if (index < 2) {
+            panel.className = "mpkr-directory-countries";
+            groups[index].forEach((entry) => panel.append(country(entry)));
+          } else {
+            panel.setAttribute("aria-owns", original.id);
+          }
+          button.addEventListener("click", () => select(index));
+          button.addEventListener("keydown", (event) => {
+            const next = event.key === "ArrowRight" ? (index + 1) % 3 : event.key === "ArrowLeft" ? (index + 2) % 3 : event.key === "Home" ? 0 : event.key === "End" ? 2 : -1;
+            if (next < 0) return;
+            event.preventDefault();
+            select(next);
+            buttons[next].focus();
+          });
+          buttons.push(button);
+          panels.push(panel);
+          tabs.append(button);
+        });
+        toolbar.append(tabs, load, status);
+        section.append(toolbar, ...panels);
+        original.before(section);
+        this.mounted.set(original, { section, hidden: original.hidden });
+        select(0);
+      }
+    }
+    destroy() {
+      for (const [original, { section, hidden }] of this.mounted) {
+        original.hidden = hidden;
+        section.remove();
+      }
+      this.counts?.destroy();
+      this.counts = void 0;
+      this.mounted.clear();
+      this.style?.remove();
+      this.style = void 0;
+    }
+  };
+
+  // src/sites/mountain-project/contract/selectors/main.ts
+  var MAIN_SELECTORS = {
+    gatewayHeadings: "h1, h2",
+    gatewayHost: ".text-center.pb-2.border-light"
+  };
+  var MAIN_GATEWAY_HOST_CONTRACT = {
+    component: "south-korea-gateway",
+    key: "gateway-host",
+    required: true,
+    candidates: [
+      { key: "guidebook-panel", selector: MAIN_SELECTORS.gatewayHost }
+    ]
+  };
+
+  // src/sites/mountain-project/contract/text/main.ts
+  var GUIDEBOOK_GATEWAY_HEADINGS = /* @__PURE__ */ new Set([
+    "Beyond the Guidebook",
+    "\uAC00\uC774\uB4DC\uBD81 \uADF8 \uC774\uC0C1"
+  ]);
+
+  // src/ui/south-korea-gateway.ts
+  var GATEWAY_CLASS = "mpkr-south-korea-gateway";
+  var STYLE_ATTRIBUTE = "data-mpkr-south-korea-gateway-style";
+  var HOST_ATTRIBUTE = "data-mpkr-south-korea-gateway";
+  var GATEWAY_SUBTITLE = "South Korea\uC758 \uC9C0\uC5ED\uACFC \uB8E8\uD2B8\uB97C \uD55C\uAD6D\uC5B4\uB85C \uC0B4\uD3B4\uBCF4\uC138\uC694.";
+  var GATEWAY_STYLES = `
+[${HOST_ATTRIBUTE}="true"] {
+  --mpkr-gateway-arrow-rail-width: 3.25rem;
+  --mpkr-gateway-dark: #27313b;
+  --mpkr-gateway-foreground: #111;
+  --mpkr-gateway-hover-foreground: ${UI.color.surface};
+  --mpkr-gateway-overlay: rgba(0, 0, 0, 0.80);
+  --mpkr-gateway-surface: ${UI.color.surfaceSubtle};
+  background: var(--mpkr-gateway-surface);
+  color: var(--mpkr-gateway-foreground);
+  cursor: pointer;
+  outline: 1px solid ${UI.color.link};
+  outline-offset: -1px;
+  position: relative;
+  transition: background-color ${UI.motion.fast}, color ${UI.motion.fast}, outline-color ${UI.motion.fast};
+}
+
+[${HOST_ATTRIBUTE}="true"] > :not(.${GATEWAY_CLASS}__link) {
+  visibility: hidden !important;
+}
+
+[${HOST_ATTRIBUTE}="true"]:focus-within {
+  background: var(--mpkr-gateway-dark);
+  color: var(--mpkr-gateway-hover-foreground);
+}
+
+[${HOST_ATTRIBUTE}="true"]:active {
+  background: #1d252d;
+}
+
+.${GATEWAY_CLASS}__link {
+  align-items: center;
+  box-sizing: border-box;
+  color: var(--mpkr-gateway-foreground);
+  cursor: pointer;
+  display: flex;
+  font: inherit;
+  inset: 0;
+  justify-content: center;
+  padding: 0;
+  position: absolute;
+  text-decoration: none;
+  touch-action: manipulation;
+  z-index: 1;
+}
+
+.${GATEWAY_CLASS}__link:hover,
+.${GATEWAY_CLASS}__link:focus,
+.${GATEWAY_CLASS}__link:active {
+  color: var(--mpkr-gateway-foreground);
+  text-decoration: none;
+}
+
+.${GATEWAY_CLASS}__link:focus-visible {
+  outline: 3px solid ${UI.color.link};
+  outline-offset: -3px;
+}
+
+.${GATEWAY_CLASS}__content {
+  box-sizing: border-box;
+  min-width: 0;
+  padding-right: var(--mpkr-gateway-arrow-rail-width);
+  position: relative;
+  width: 100%;
+  z-index: 0;
+}
+
+.${GATEWAY_CLASS}__title {
+  color: var(--mpkr-gateway-foreground);
+  display: block;
+  overflow-wrap: anywhere;
+  transition: color ${UI.motion.fast};
+}
+
+.${GATEWAY_CLASS}__copy {
+  color: var(--mpkr-gateway-foreground);
+  display: block;
+  overflow-wrap: anywhere;
+  transition: color ${UI.motion.fast};
+}
+
+.${GATEWAY_CLASS}__overlay {
+  background: var(--mpkr-gateway-overlay);
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  transition: opacity 120ms ease, visibility 120ms ease;
+  visibility: hidden;
+  z-index: 2;
+}
+
+.${GATEWAY_CLASS}__action {
+  align-items: center;
+  box-sizing: border-box;
+  color: var(--mpkr-gateway-hover-foreground);
+  display: flex;
+  font-size: 2rem;
+  font-weight: ${UI.font.controlWeight};
+  inset: 0;
+  justify-content: center;
+  line-height: 1.2;
+  opacity: 0;
+  padding: 0 var(--mpkr-gateway-arrow-rail-width) 0 0;
+  pointer-events: none;
+  position: absolute;
+  transition: opacity 100ms ease, visibility 100ms ease;
+  visibility: hidden;
+  z-index: 3;
+}
+
+.${GATEWAY_CLASS}__arrow-rail {
+  align-items: center;
+  border-left: 1px solid rgba(6, 69, 173, 0.32);
+  bottom: 0;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: background-color ${UI.motion.fast}, border-color ${UI.motion.fast};
+  width: var(--mpkr-gateway-arrow-rail-width);
+  z-index: 4;
+}
+
+.${GATEWAY_CLASS}__arrow {
+  border-right: 2px solid ${UI.color.link};
+  border-top: 2px solid ${UI.color.link};
+  box-sizing: border-box;
+  display: block;
+  height: 0.72rem;
+  transform: rotate(45deg);
+  transition: border-color ${UI.motion.fast}, transform ${UI.motion.fast};
+  width: 0.72rem;
+}
+
+[${HOST_ATTRIBUTE}="true"]:focus-within .${GATEWAY_CLASS}__overlay,
+[${HOST_ATTRIBUTE}="true"]:focus-within .${GATEWAY_CLASS}__action {
+  opacity: 1;
+  visibility: visible;
+}
+
+[${HOST_ATTRIBUTE}="true"]:focus-within .${GATEWAY_CLASS}__title,
+[${HOST_ATTRIBUTE}="true"]:focus-within .${GATEWAY_CLASS}__copy {
+  color: var(--mpkr-gateway-hover-foreground);
+}
+
+[${HOST_ATTRIBUTE}="true"]:focus-within .${GATEWAY_CLASS}__arrow-rail {
+  background: rgba(255, 255, 255, 0.08);
+  border-left-color: rgba(255, 255, 255, 0.32);
+}
+
+[${HOST_ATTRIBUTE}="true"]:focus-within .${GATEWAY_CLASS}__arrow {
+  border-color: ${UI.color.surface};
+  transform: translateX(2px) rotate(45deg);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  [${HOST_ATTRIBUTE}="true"]:hover {
+    background: var(--mpkr-gateway-dark);
+    color: var(--mpkr-gateway-hover-foreground);
+    outline-color: rgba(255, 255, 255, 0.28);
+  }
+
+  [${HOST_ATTRIBUTE}="true"]:hover .${GATEWAY_CLASS}__overlay,
+  [${HOST_ATTRIBUTE}="true"]:hover .${GATEWAY_CLASS}__action {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  [${HOST_ATTRIBUTE}="true"]:hover .${GATEWAY_CLASS}__title,
+  [${HOST_ATTRIBUTE}="true"]:hover .${GATEWAY_CLASS}__copy {
+    color: var(--mpkr-gateway-hover-foreground);
+  }
+
+  [${HOST_ATTRIBUTE}="true"]:hover .${GATEWAY_CLASS}__arrow-rail {
+    background: rgba(255, 255, 255, 0.08);
+    border-left-color: rgba(255, 255, 255, 0.32);
+  }
+
+  [${HOST_ATTRIBUTE}="true"]:hover .${GATEWAY_CLASS}__arrow {
+    border-color: ${UI.color.surface};
+    transform: translateX(2px) rotate(45deg);
+  }
+}
+
+[${HOST_ATTRIBUTE}="true"]:active .${GATEWAY_CLASS}__action {
+  transform: translateY(1px);
+}
+
+@media (max-width: 480px) {
+  [${HOST_ATTRIBUTE}="true"] {
+    --mpkr-gateway-arrow-rail-width: 2.75rem;
+  }
+
+  .${GATEWAY_CLASS}__action {
+    font-size: 1.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [${HOST_ATTRIBUTE}="true"],
+  .${GATEWAY_CLASS}__content,
+  .${GATEWAY_CLASS}__overlay,
+  .${GATEWAY_CLASS}__arrow-rail,
+  .${GATEWAY_CLASS}__arrow,
+  .${GATEWAY_CLASS}__action {
+    transition: none;
+  }
+}
+`;
+  function directText(element) {
+    return Array.from(element.childNodes).filter((node) => node.nodeType === Node.TEXT_NODE).map((node) => node.nodeValue ?? "").join(" ").replace(/\s+/g, " ").trim();
+  }
+  var SouthKoreaGateway = class {
+    constructor(navigate = (url) => window.location.assign(url)) {
+      this.navigate = navigate;
+    }
+    root;
+    link;
+    style;
+    removeListeners;
+    hostState;
+    mount(root = document) {
+      if (this.root?.isConnected && this.link?.isConnected) {
+        return;
+      }
+      if (this.root || this.link) {
+        this.destroy();
+      }
+      if (root.querySelector(`[${HOST_ATTRIBUTE}="true"]`)) {
+        return;
+      }
+      const heading = Array.from(
+        root.querySelectorAll(MAIN_SELECTORS.gatewayHeadings)
+      ).find((element) => GUIDEBOOK_GATEWAY_HEADINGS.has(directText(element)));
+      const host = heading?.closest(MAIN_SELECTORS.gatewayHost);
+      if (!heading || !host) {
+        return;
+      }
+      const ownerDocument = host.ownerDocument;
+      const link = ownerDocument.createElement("a");
+      link.className = `${GATEWAY_CLASS}__link`;
+      link.href = SOUTH_KOREA_AREA_URL;
+      const content = ownerDocument.createElement("div");
+      content.className = `${GATEWAY_CLASS}__content`;
+      const title = ownerDocument.createElement(heading.tagName.toLowerCase());
+      title.className = [heading.className, `${GATEWAY_CLASS}__title`].filter(Boolean).join(" ");
+      title.textContent = "\uB300\uD55C\uBBFC\uAD6D \uD074\uB77C\uC774\uBC0D";
+      const originalSubtitle = Array.from(host.children).find((element) => element instanceof HTMLElement && element !== heading && /^H[1-6]$/.test(element.tagName));
+      const subtitle = ownerDocument.createElement(originalSubtitle?.tagName.toLowerCase() ?? "h3");
+      subtitle.className = [originalSubtitle?.className, `${GATEWAY_CLASS}__copy`].filter(Boolean).join(" ");
+      subtitle.textContent = GATEWAY_SUBTITLE;
+      const overlay = ownerDocument.createElement("span");
+      overlay.className = `${GATEWAY_CLASS}__overlay`;
+      overlay.setAttribute("aria-hidden", "true");
+      const action = ownerDocument.createElement("span");
+      action.className = `${GATEWAY_CLASS}__action`;
+      action.textContent = "\uC9C0\uC5ED \uBCF4\uAE30";
+      action.setAttribute("aria-hidden", "true");
+      const arrowRail = ownerDocument.createElement("span");
+      arrowRail.className = `${GATEWAY_CLASS}__arrow-rail`;
+      arrowRail.setAttribute("aria-hidden", "true");
+      const arrow = ownerDocument.createElement("span");
+      arrow.className = `${GATEWAY_CLASS}__arrow`;
+      arrowRail.append(arrow);
+      link.setAttribute("aria-label", "\uB300\uD55C\uBBFC\uAD6D \uD074\uB77C\uC774\uBC0D \uC9C0\uC5ED \uBCF4\uAE30");
+      const activate = () => this.navigate(SOUTH_KOREA_AREA_URL);
+      const handleLinkKeydown = (event) => {
+        if (event.key !== " " && event.key !== "Spacebar" || event.repeat) {
+          return;
+        }
+        event.preventDefault();
+        activate();
+      };
+      const handleLinkClick = (event) => {
+        event.stopPropagation();
+        if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) {
+          return;
+        }
+        event.preventDefault();
+        activate();
+      };
+      link.addEventListener("keydown", handleLinkKeydown);
+      link.addEventListener("click", handleLinkClick);
+      this.removeListeners = () => {
+        link.removeEventListener("keydown", handleLinkKeydown);
+        link.removeEventListener("click", handleLinkClick);
+      };
+      content.append(title, subtitle);
+      link.append(content, overlay, action, arrowRail);
+      if (!ownerDocument.querySelector(`style[${STYLE_ATTRIBUTE}]`)) {
+        const style2 = ownerDocument.createElement("style");
+        style2.setAttribute(STYLE_ATTRIBUTE, "true");
+        style2.textContent = GATEWAY_STYLES;
+        (ownerDocument.head ?? ownerDocument.documentElement).append(style2);
+        this.style = style2;
+      }
+      this.hostState = {
+        element: host,
+        gatewayAttribute: host.getAttribute(HOST_ATTRIBUTE)
+      };
+      host.setAttribute(HOST_ATTRIBUTE, "true");
+      host.append(link);
+      this.root = host;
+      this.link = link;
+    }
+    destroy() {
+      this.removeListeners?.();
+      this.link?.remove();
+      this.style?.remove();
+      if (this.hostState) {
+        const { element, gatewayAttribute } = this.hostState;
+        if (gatewayAttribute === null) {
+          element.removeAttribute(HOST_ATTRIBUTE);
+        } else {
+          element.setAttribute(HOST_ATTRIBUTE, gatewayAttribute);
+        }
+      }
+      this.removeListeners = void 0;
+      this.root = void 0;
+      this.link = void 0;
+      this.style = void 0;
+      this.hostState = void 0;
+    }
+  };
+
+  // <stdin>
+  new SouthKoreaGateway(() => {
+  }).mount();
+  new RegionDirectory().mount();
+  for (const panel of document.querySelectorAll(".mpkr-directory-countries")) {
+    [...panel.children].slice(3).forEach((e) => e.remove());
+    [...panel.querySelectorAll("[data-source-url]")].forEach((e, i) => {
+      e.textContent = [1248, 326, 214, 98, 310, 205, 95, 980, 146, 77, 31, 160][i % 12].toLocaleString("en-US");
+    });
+  }
+  document.querySelector(".mpkr-directory-load").addEventListener("click", (e) => {
+    e.stopImmediatePropagation();
+    e.preventDefault();
+  }, true);
+  setIconLabel(document.querySelector("#loading"), "prepare", "\uBD88\uB7EC\uC624\uB294 \uC911\u2026");
+  setIconLabel(document.querySelector("#partial"), "prepare", "\uBBF8\uC870\uD68C \uC218 \uB2E4\uC2DC \uBD88\uB7EC\uC624\uAE30");
+  var style = document.createElement("style");
+  style.textContent = document.querySelector("#proposal-css").textContent;
+  document.head.append(style);
+})();
+</script></html>

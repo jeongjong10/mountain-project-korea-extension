@@ -1,0 +1,3547 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><style>@font-face{font-family:ReviewKorean;src:url('file:///mnt/c/Windows/Fonts/malgun.ttf')}body{margin:0;padding:26px 32px;background:#f7f8f8;color:#202124;font:13px/1.8 ReviewKorean,system-ui}h1{font-size:23px;margin:0 0 8px}h2{font-size:12px;font-weight:500;color:#59635d;margin:18px 0 8px}iframe{display:block;box-sizing:border-box;width:100%;height:240px;border:1px solid #c8ceca;border-radius:7px}.note{color:#59635d}@media(max-width:600px){body{padding:20px}iframe{height:300px}}</style><h1>기존 오류·상태 표시 · 적용 결과</h1><p>실제 상단 바와 본문 렌더러를 사용한 검토 화면입니다.</p><h2>설정 저장 실패</h2><iframe title="nav" srcdoc="&lt;!doctype html>&lt;html lang=&quot;ko&quot;>&lt;meta charset=&quot;utf-8&quot;>&lt;style>@font-face{font-family:ReviewKorean;src:url('file:///mnt/c/Windows/Fonts/malgun.ttf')}body{margin:0;padding:16px;font:13px/1.7 ReviewKorean,system-ui;background:white}.mpkr-status-message,.mpkr-translation-actions button,.mpkr-translation-feedback{font-family:ReviewKorean,system-ui!important}#source{font-family:Georgia,serif}#user{font-size:12px}#user a{color:#0060a9}&lt;/style>&lt;div id=&quot;header-container&quot;>&lt;div class=&quot;header-container__user&quot;>&lt;div id=&quot;user&quot;>&lt;a href=&quot;#&quot;>Sign In&lt;/a>&lt;/div>&lt;/div>&lt;/div>&lt;script>window.reviewCase=&quot;nav&quot;;(() => {
+  // src/sites/mountain-project/contract/origins.ts
+  var MOUNTAIN_PROJECT_CANONICAL_ORIGIN = &quot;https://www.mountainproject.com&quot;;
+  var MOUNTAIN_PROJECT_HOSTNAMES = [
+    &quot;mountainproject.com&quot;,
+    &quot;www.mountainproject.com&quot;
+  ];
+  var supportedHostnames = new Set(MOUNTAIN_PROJECT_HOSTNAMES);
+  function buildMountainProjectUrl(path) {
+    return new URL(path, MOUNTAIN_PROJECT_CANONICAL_ORIGIN).href;
+  }
+
+  // src/sites/mountain-project/contract/routes.ts
+  function buildEntityPath(prefix, id, slug) {
+    return `${prefix}/${encodeURIComponent(id)}${slug ? `/${encodeURIComponent(slug)}` : &quot;&quot;}`;
+  }
+  function buildAreaPath(id, slug) {
+    return buildEntityPath(&quot;/area&quot;, id, slug);
+  }
+  function buildMapPath(id, slug) {
+    return buildEntityPath(&quot;/map&quot;, id, slug);
+  }
+
+  // src/sites/mountain-project/contract/regions/south-korea.ts
+  var SOUTH_KOREA_AREA_ID = &quot;106225629&quot;;
+  var SOUTH_KOREA_AREA_SLUG = &quot;south-korea&quot;;
+  var SOUTH_KOREA_AREA_PATH = buildAreaPath(
+    SOUTH_KOREA_AREA_ID,
+    SOUTH_KOREA_AREA_SLUG
+  );
+  var SOUTH_KOREA_MAP_PATH = buildMapPath(
+    SOUTH_KOREA_AREA_ID,
+    SOUTH_KOREA_AREA_SLUG
+  );
+  var SOUTH_KOREA_AREA_URL = buildMountainProjectUrl(SOUTH_KOREA_AREA_PATH);
+  var SOUTH_KOREA_MAP_URL = buildMountainProjectUrl(SOUTH_KOREA_MAP_PATH);
+  var SOUTH_KOREA_AREAS = [
+    {
+      id: &quot;126256865&quot;,
+      sourceName: &quot;Gamaksan (Dawn Wall), Paju-si, Gyeonggi-do (Seolma 12 Bridge)&quot;,
+      koreanName: &quot;\uAC10\uC545\uC0B0(\uC0C8\uBCBD\uBCBD), \uD30C\uC8FC\uC2DC, \uACBD\uAE30\uB3C4(\uC124\uB9C812\uAD50)&quot;
+    },
+    {
+      id: &quot;119456790&quot;,
+      sourceName: &quot;Gangwon-do (Northeast Korea)&quot;,
+      koreanName: &quot;\uAC15\uC6D0\uB3C4(\uD55C\uAD6D \uBD81\uB3D9\uBD80)&quot;
+    },
+    {
+      id: &quot;119631691&quot;,
+      sourceName: &quot;Jeju Island&quot;,
+      koreanName: &quot;\uC81C\uC8FC\uB3C4&quot;
+    },
+    {
+      id: &quot;119456771&quot;,
+      sourceName: &quot;North/South Chungcheong-do (Midwest/West Korea)&quot;,
+      koreanName: &quot;\uCDA9\uCCAD\uBD81\uB3C4/\uCDA9\uCCAD\uB0A8\uB3C4(\uD55C\uAD6D \uC911\uC11C\uBD80/\uC11C\uBD80)&quot;
+    },
+    {
+      id: &quot;119456816&quot;,
+      sourceName: &quot;North/South Gyeongsang-do (East/Southeast Korea)&quot;,
+      koreanName: &quot;\uACBD\uC0C1\uBD81\uB3C4/\uACBD\uC0C1\uB0A8\uB3C4(\uD55C\uAD6D \uB3D9\uBD80/\uB0A8\uB3D9\uBD80)&quot;
+    },
+    {
+      id: &quot;119456784&quot;,
+      sourceName: &quot;North/South Jeolla-do (Southwest Korea)&quot;,
+      koreanName: &quot;\uC804\uB77C\uBD81\uB3C4/\uC804\uB77C\uB0A8\uB3C4(\uD55C\uAD6D \uB0A8\uC11C\uBD80)&quot;
+    },
+    {
+      id: &quot;119456750&quot;,
+      sourceName: &quot;Seoul/Gyeonggi-do (Northwest Korea)&quot;,
+      koreanName: &quot;\uC11C\uC6B8/\uACBD\uAE30\uB3C4(\uD55C\uAD6D \uBD81\uC11C\uBD80)&quot;
+    }
+  ];
+  var SOUTH_KOREA_AREA_IDS = /* @__PURE__ */ new Set([
+    SOUTH_KOREA_AREA_ID,
+    ...SOUTH_KOREA_AREAS.map(({ id }) => id)
+  ]);
+  var SOUTH_KOREA_NAME_ALIASES = /* @__PURE__ */ new Set([
+    &quot;South Korea&quot;,
+    &quot;S Korea&quot;,
+    &quot;\uB300\uD55C\uBBFC\uAD6D&quot;,
+    ...SOUTH_KOREA_AREAS.flatMap(({ sourceName, koreanName }) => [sourceName, koreanName])
+  ]);
+  var koreanAreaNames = new Map(
+    SOUTH_KOREA_AREAS.map(({ id, koreanName }) => [id, koreanName])
+  );
+
+  // src/sites/mountain-project/dom/navigation.ts
+  var NAVIGATION_HEADER = &quot;#header-container&quot;;
+  var NAVIGATION_USER = &quot;.header-container__user&quot;;
+  function navigationUserItems(root) {
+    const result = /* @__PURE__ */ new Set();
+    for (const userArea of root.querySelectorAll(`${NAVIGATION_HEADER} ${NAVIGATION_USER}`)) {
+      const avatar = userArea.querySelector(&quot;.user-img-avatar&quot;);
+      const action = avatar?.closest('#user, a, button, [role=&quot;button&quot;]') ?? userArea.querySelector(&quot;#user a, #user button, a.sign-in&quot;);
+      if (!(action instanceof HTMLElement)) continue;
+      const item = action.closest(&quot;#user, .nav-item, li&quot;);
+      const target = item &amp;&amp; userArea.contains(item) ? item : action;
+      result.add(target);
+    }
+    return [...result];
+  }
+
+  // src/ui/design-tokens.ts
+  var NAV = {
+    surface: &quot;#202124&quot;,
+    surfaceHover: &quot;#2c3036&quot;,
+    border: &quot;#5f6368&quot;,
+    divider: &quot;#5f6368&quot;,
+    text: &quot;#fff&quot;,
+    link: &quot;#91c3e8&quot;,
+    muted: &quot;#b8c6d4&quot;,
+    focus: &quot;#91c3e8&quot;,
+    switchOff: &quot;#5f6368&quot;,
+    switchBorder: &quot;#7a8791&quot;,
+    switchThumb: &quot;#fff&quot;,
+    switchOn: &quot;#5ba2d8&quot;,
+    switchOnThumb: &quot;#fff&quot;,
+    height: &quot;38px&quot;,
+    fontSize: &quot;12px&quot;
+  };
+  var UI = {
+    nav: NAV,
+    color: {
+      text: &quot;#202124&quot;,
+      muted: &quot;#59635d&quot;,
+      link: &quot;#0060a9&quot;,
+      linkHover: &quot;#004b84&quot;,
+      linkActive: &quot;#003e70&quot;,
+      surface: &quot;#fff&quot;,
+      surfaceSubtle: &quot;#f7f8f8&quot;,
+      surfaceHover: &quot;#edf5fa&quot;,
+      border: &quot;#c8ceca&quot;,
+      borderHover: &quot;#9eabb3&quot;,
+      warning: &quot;#6b5b35&quot;,
+      accentSurface: &quot;#e8f0eb&quot;,
+      accentText: &quot;#294c39&quot;,
+      buttonSurface: &quot;#f1f5f9&quot;,
+      buttonHover: &quot;#e4edf5&quot;,
+      buttonActive: &quot;#d8e5f0&quot;,
+      buttonBorder: &quot;#b8c6d4&quot;,
+      buttonBorderHover: &quot;#7f9bb5&quot;,
+      headingHover: &quot;rgba(0, 96, 169, 0.12)&quot;,
+      headingFocus: &quot;rgba(0, 96, 169, 0.14)&quot;
+    },
+    font: {
+      family: 'system-ui, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif',
+      caption: &quot;0.75rem&quot;,
+      small: &quot;0.85rem&quot;,
+      hint: &quot;0.9rem&quot;,
+      body: &quot;1rem&quot;,
+      controlWeight: &quot;600&quot;,
+      bodyLineHeight: &quot;1.65&quot;,
+      uiLineHeight: &quot;1.5&quot;
+    },
+    space: {
+      xs: &quot;0.25rem&quot;,
+      sm: &quot;0.5rem&quot;,
+      md: &quot;0.75rem&quot;,
+      lg: &quot;1rem&quot;,
+      xl: &quot;1.5rem&quot;
+    },
+    radius: {
+      small: &quot;2px&quot;,
+      control: &quot;4px&quot;,
+      nav: &quot;7px&quot;
+    },
+    motion: { fast: &quot;150ms ease&quot; }
+  };
+  var UI_TOKEN_CSS = `:root {${Object.entries(UI).flatMap(
+    ([group, values]) => Object.entries(values).map(
+      ([name, value]) => `--mpkr-${group}-${name.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)}:${value};`
+    )
+  ).join(&quot;&quot;)}}`;
+
+  // src/ui/message-style.ts
+  var STATUS_MESSAGE_CSS = `
+.mpkr-status-message { box-sizing:border-box;display:block;margin:12px 0;padding:10px 12px;border-left:3px solid ${UI.color.link};background:${UI.color.surfaceHover};color:${UI.color.text};font:12px/1.75 ${UI.font.family};white-space:normal;overflow-wrap:anywhere;text-align:left; }
+.mpkr-status-message[hidden] { display:none; }
+.mpkr-status-message strong { display:block;font-size:13px;font-weight:600; }
+.mpkr-status-message p,.mpkr-status-message__detail { display:block; margin:3px 0 0;font-size:12px;line-height:1.75;color:${UI.color.muted}; }
+`;
+  var TRANSLATION_ACTION_CSS = `${STATUS_MESSAGE_CSS}
+.mpkr-translation-actions { display:inline-flex;max-width:100%;flex-wrap:wrap;align-items:center;gap:8px;margin:8px 0 4px; }
+.mpkr-translation-actions button { box-sizing:border-box;margin:0;padding:6px 10px;border:1px solid ${UI.color.border};border-radius:${UI.radius.control};background:${UI.color.surface};color:${UI.color.link};font:600 12px/1.5 ${UI.font.family};cursor:pointer;text-decoration:none; }
+.mpkr-translation-actions button:hover { background:${UI.color.surfaceHover}; }
+.mpkr-translation-actions button:focus-visible { outline:2px solid ${UI.color.link};outline-offset:3px; }
+.mpkr-translation-actions button:disabled { cursor:wait;opacity:.65; }
+.mpkr-translation-actions [hidden] { display:none; }
+.mpkr-translation-feedback { color:${UI.color.muted};font:12px/1.5 ${UI.font.family}; }
+`;
+  function setStatusMessage(element, message) {
+    if (element.textContent === message) return;
+    const split = message.indexOf(&quot;. &quot;);
+    if (split &lt; 0) {
+      element.textContent = message;
+      return;
+    }
+    const title = element.ownerDocument.createElement(&quot;strong&quot;);
+    title.textContent = message.slice(0, split + 2);
+    const detail = element.ownerDocument.createElement(&quot;span&quot;);
+    detail.className = &quot;mpkr-status-message__detail&quot;;
+    detail.textContent = message.slice(split + 2);
+    element.replaceChildren(title, detail);
+  }
+
+  // src/ui/navigation-control-style.ts
+  var NAVIGATION_CONTROL_CSS = `
+${STATUS_MESSAGE_CSS}
+/* Keep the added controls inside MP's native 15px container gutter. The second
+   8px inset absorbs the hamburger's native -8px end margin on narrow screens. */
+${NAVIGATION_HEADER} .header-container:has(.mp-nav-control) { flex-wrap: wrap; column-gap: 12px; }
+${NAVIGATION_HEADER} ${NAVIGATION_USER}:has(.mp-nav-control) { --mp-nav-gap: .5rem; display: flex; flex: 1 1 auto; align-items: center; align-content: center; justify-content: flex-end; flex-wrap: wrap; min-width: 0; max-width: calc(100% - 1rem); margin: .5rem .5rem .5rem auto; padding: 0 .5rem 0 0; box-sizing: border-box; column-gap: var(--mp-nav-gap); row-gap: .5rem; }
+${NAVIGATION_HEADER} .mp-nav-control { display: inline-flex; align-items: center; justify-content: center; gap: 9px; flex: 0 0 auto; position: relative; box-sizing: border-box; height: ${NAV.height}; margin: 0; padding: 0 12px; border: 1px solid transparent; border-radius: 0; white-space: nowrap; font: ${UI.font.controlWeight} ${NAV.fontSize}/1.2 ${UI.font.family}; letter-spacing: -.15px; text-decoration: none; color: ${NAV.text}; background: transparent; cursor: pointer; vertical-align: middle; }
+${NAVIGATION_HEADER} a.mp-nav-control { color: ${NAV.link}; text-decoration: none; }
+${NAVIGATION_HEADER} .mp-nav-control:focus-visible, ${NAVIGATION_HEADER} .mp-nav-control:has(input:focus-visible) { outline: 2px solid ${NAV.focus}; outline-offset: 3px; z-index: 1; }
+.mp-nav-control .mp-nav-icon { display: block; width: 18px; height: 18px; flex: 0 0 18px; }
+.mp-nav-control .mp-nav-copy { display: block; }
+${NAVIGATION_HEADER} .mp-nav-control input { appearance: none; box-sizing: border-box; position: relative; flex: 0 0 26px; width: 26px; height: 16px; margin: 0; border: 1px solid ${NAV.switchBorder}; border-radius: 9px; color: ${NAV.switchThumb}; background: ${NAV.switchOff}; cursor: pointer; }
+.mp-nav-control input::before { content: ''; position: absolute; width: 10px; height: 10px; left: 2px; top: 2px; border-radius: 50%; background: currentColor; }
+${NAVIGATION_HEADER} .mp-nav-control input:checked { color: ${NAV.switchOnThumb}; background: ${NAV.switchOn}; border-color: ${NAV.switchOn}; }
+.mp-nav-control input:checked::before { left: 12px; }
+.mp-nav-control input:disabled { opacity: .5; cursor: wait; }
+${NAVIGATION_HEADER} label.mp-nav-control:has(input:not(:checked)) .mp-nav-copy { color: ${NAV.muted}; }
+/* Preserve native siblings while visually joining them into one control bar. */
+${NAVIGATION_HEADER} .mp-nav-control { background: ${NAV.surface}; border-color: ${NAV.border}; }
+${NAVIGATION_HEADER} label.mp-nav-control { border-radius: ${UI.radius.nav} 0 0 ${UI.radius.nav}; border-right: 0; padding-right: 14px; }
+${NAVIGATION_HEADER} a.mp-nav-control { margin-left: calc(-1 * var(--mp-nav-gap, 8px)); border-radius: 0 ${UI.radius.nav} ${UI.radius.nav} 0; border-left: 0; gap: 7px; padding-left: 14px; }
+${NAVIGATION_HEADER} a.mp-nav-control::before { content: ''; position: absolute; left: 0; top: 10px; bottom: 10px; width: 1px; background: ${NAV.divider}; }
+${NAVIGATION_HEADER} .mp-nav-control:hover { background: ${NAV.surfaceHover}; }
+${NAVIGATION_HEADER} .mp-nav-error { flex:1 0 100%;order:1;min-width:0;max-width:100%;margin:4px 0 0; }
+@media (max-width: 420px) { ${NAVIGATION_HEADER} .mp-nav-control { padding-left: 9px; padding-right: 9px; gap: 6px; } }
+@media (forced-colors: active) { ${NAVIGATION_HEADER} .mp-nav-control { border: 1px solid ButtonText; } ${NAVIGATION_HEADER} .mp-nav-control input { appearance: auto; } .mp-nav-control input::before { content: none; } }
+`;
+  function createKoreaIcon() {
+    const ns = &quot;http://www.w3.org/2000/svg&quot;;
+    const icon = document.createElementNS(ns, &quot;svg&quot;);
+    icon.setAttribute(&quot;viewBox&quot;, &quot;0 0 24 24&quot;);
+    icon.setAttribute(&quot;aria-hidden&quot;, &quot;true&quot;);
+    icon.setAttribute(&quot;focusable&quot;, &quot;false&quot;);
+    icon.classList.add(&quot;mp-nav-icon&quot;);
+    const rim = document.createElementNS(ns, &quot;circle&quot;);
+    rim.setAttribute(&quot;cx&quot;, &quot;12&quot;);
+    rim.setAttribute(&quot;cy&quot;, &quot;12&quot;);
+    rim.setAttribute(&quot;r&quot;, &quot;12&quot;);
+    rim.setAttribute(&quot;fill&quot;, &quot;#f5f3eb&quot;);
+    const blue = document.createElementNS(ns, &quot;circle&quot;);
+    blue.setAttribute(&quot;cx&quot;, &quot;12&quot;);
+    blue.setAttribute(&quot;cy&quot;, &quot;12&quot;);
+    blue.setAttribute(&quot;r&quot;, &quot;8&quot;);
+    blue.setAttribute(&quot;fill&quot;, &quot;#477b9d&quot;);
+    const red = document.createElementNS(ns, &quot;path&quot;);
+    red.setAttribute(&quot;d&quot;, &quot;M4 12a8 8 0 0 1 16 0 4 4 0 0 1-8 0 4 4 0 0 0-8 0&quot;);
+    red.setAttribute(&quot;fill&quot;, &quot;#cf655c&quot;);
+    icon.append(rim, blue, red);
+    return icon;
+  }
+
+  // src/ui/navigation-controls.ts
+  var NavigationControls = class {
+    observer;
+    style;
+    pairs = /* @__PURE__ */ new Map();
+    enabled;
+    pending = false;
+    saveError = false;
+    change;
+    mount(change) {
+      if (this.observer) return;
+      this.change = change;
+      this.style = document.createElement(&quot;style&quot;);
+      this.style.textContent = NAVIGATION_CONTROL_CSS;
+      document.head.append(this.style);
+      this.observer = new MutationObserver((records) => {
+        if (records.some((record) => record.target instanceof Element &amp;&amp; record.target.closest(NAVIGATION_HEADER) || [...record.addedNodes, ...record.removedNodes].some((node) => node instanceof Element &amp;&amp; (node.matches(NAVIGATION_HEADER) || node.querySelector(NAVIGATION_HEADER))))) {
+          this.reconcile();
+        }
+      });
+      this.reconcile();
+    }
+    reconcile() {
+      const observer = this.observer;
+      if (!observer) return;
+      observer.disconnect();
+      const targets = navigationUserItems(document);
+      for (const [target, pair] of this.pairs) {
+        if (!targets.includes(target)) {
+          pair.label.remove();
+          pair.link.remove();
+          pair.error.remove();
+          this.pairs.delete(target);
+        }
+      }
+      for (const target of targets) {
+        let pair = this.pairs.get(target);
+        if (!pair) {
+          const label = document.createElement(&quot;label&quot;);
+          label.className = &quot;mp-nav-control&quot;;
+          const input = document.createElement(&quot;input&quot;);
+          input.type = &quot;checkbox&quot;;
+          input.setAttribute(&quot;role&quot;, &quot;switch&quot;);
+          input.setAttribute(&quot;aria-label&quot;, &quot;\uD655\uC7A5 \uAE30\uB2A5&quot;);
+          const error = document.createElement(&quot;div&quot;);
+          error.className = &quot;mp-nav-error mpkr-status-message&quot;;
+          error.hidden = true;
+          const errorTitle = document.createElement(&quot;strong&quot;);
+          errorTitle.textContent = &quot;\uC124\uC815\uC744 \uC800\uC7A5\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4.&quot;;
+          const errorDetail = document.createElement(&quot;p&quot;);
+          errorDetail.textContent = &quot;\uAE30\uC874 \uC124\uC815\uC744 \uC720\uC9C0\uD588\uC2B5\uB2C8\uB2E4. \uC2A4\uC704\uCE58\uB97C \uB2E4\uC2DC \uB20C\uB7EC \uC8FC\uC138\uC694.&quot;;
+          error.append(errorTitle, errorDetail);
+          error.setAttribute(&quot;role&quot;, &quot;status&quot;);
+          error.setAttribute(&quot;aria-live&quot;, &quot;polite&quot;);
+          error.setAttribute(&quot;aria-atomic&quot;, &quot;true&quot;);
+          const labelText = document.createElement(&quot;span&quot;);
+          labelText.className = &quot;mp-nav-copy&quot;;
+          labelText.textContent = &quot;\uD655\uC7A5 \uAE30\uB2A5&quot;;
+          label.append(labelText, input);
+          input.addEventListener(&quot;change&quot;, async () => {
+            if (this.pending || !this.change) return;
+            const next = input.checked;
+            this.pending = true;
+            this.saveError = false;
+            this.updateInputs();
+            try {
+              await this.change(next);
+            } catch {
+              if (this.observer) this.saveError = true;
+            } finally {
+              this.pending = false;
+              this.updateInputs();
+            }
+          });
+          const link = document.createElement(&quot;a&quot;);
+          link.className = &quot;mp-nav-control&quot;;
+          const linkText = document.createElement(&quot;span&quot;);
+          linkText.className = &quot;mp-nav-copy&quot;;
+          linkText.textContent = &quot;\uB300\uD55C\uBBFC\uAD6D&quot;;
+          link.setAttribute(&quot;aria-label&quot;, &quot;\uB300\uD55C\uBBFC\uAD6D&quot;);
+          link.append(createKoreaIcon(), linkText);
+          link.href = SOUTH_KOREA_AREA_URL;
+          pair = { label, input, link, error };
+          this.pairs.set(target, pair);
+        }
+        if (pair.error.parentElement !== target.parentElement) target.parentElement?.append(pair.error);
+        if (target.previousElementSibling !== pair.link || pair.link.previousElementSibling !== pair.label) {
+          target.before(pair.label, pair.link);
+        }
+      }
+      this.updateInputs();
+      const headers = document.querySelectorAll(NAVIGATION_HEADER);
+      for (const header of headers) {
+        observer.observe(header, { childList: true, subtree: true });
+        for (let parent = header.parentElement; parent; parent = parent.parentElement) {
+          observer.observe(parent, { childList: true });
+        }
+      }
+      if (!headers.length) {
+        observer.observe(document.documentElement, { childList: true });
+        if (document.body) observer.observe(document.body, { childList: true });
+      }
+    }
+    render(enabled) {
+      this.enabled = enabled;
+      this.saveError = false;
+      this.updateInputs();
+    }
+    updateInputs() {
+      for (const { input, error } of this.pairs.values()) {
+        error.hidden = !this.saveError;
+        input.checked = this.enabled === true;
+        input.disabled = this.pending || this.enabled === void 0;
+      }
+    }
+    destroy() {
+      this.observer?.disconnect();
+      this.observer = void 0;
+      this.change = void 0;
+      for (const { label, link, error } of this.pairs.values()) {
+        label.remove();
+        link.remove();
+        error.remove();
+      }
+      this.saveError = false;
+      this.pairs.clear();
+      this.style?.remove();
+      this.style = void 0;
+    }
+  };
+
+  // src/sites/mountain-project/contract/selectors/shared.ts
+  var SHARED_SELECTORS = {
+    areaLinks: 'a[href*=&quot;/area/&quot;]',
+    routeLinks: 'a[href*=&quot;/route/&quot;]',
+    explicitBreadcrumb: [
+      &quot;.breadcrumbs&quot;,
+      &quot;.breadcrumb&quot;,
+      '[aria-label=&quot;breadcrumb&quot;]',
+      '[aria-label=&quot;Breadcrumb&quot;]'
+    ].join(&quot;, &quot;),
+    routeGuideLink: 'a[href$=&quot;/route-guide&quot;]',
+    leftNavigation: &quot;.left-nav&quot;,
+    sidebarContent: &quot;.mp-sidebar&quot;,
+    areaPage: &quot;#climb-area-page&quot;,
+    routePage: &quot;#route-page&quot;,
+    mainContentContainer: &quot;.main-content-container&quot;,
+    mainContent: &quot;.main-content&quot;,
+    authoredContent: &quot;.fr-view&quot;,
+    commentBody: &quot;.comment-body&quot;,
+    commentContainer: '.main-comment, [id^=&quot;Comment-&quot;], .comment-item, tr',
+    commentAuthor: [
+      &quot;.comment-author&quot;,
+      &quot;.author&quot;,
+      '[rel=&quot;author&quot;]',
+      '.user a[href*=&quot;/user/&quot;]',
+      'a[href*=&quot;/user/&quot;]'
+    ].join(&quot;, &quot;),
+    descriptionDetailsClass: &quot;.description-details&quot;,
+    descriptionDetails: &quot;table.description-details&quot;,
+    titleWithBorderBottomClass: &quot;title-with-border-bottom&quot;,
+    directUiText: [
+      &quot;.mp-sidebar .small.text-warm&quot;,
+      &quot;.comments .form-char-count&quot;,
+      &quot;.text-section > div&quot;,
+      &quot;#sort-dropdown > strong&quot;,
+      &quot;#sort-dropdown > .current-sort&quot;,
+      &quot;.dropdown-menu.dropdown-menu-right .dropdown-item.comments-sort&quot;
+    ].join(&quot;, &quot;),
+    frameHeader: &quot;#header-container&quot;,
+    framePrintHeader: &quot;#header-container-print&quot;,
+    frameFooter: &quot;#footer-container&quot;,
+    frameAdvertisement: &quot;#div-gpt-ad-1614709329076-0&quot;,
+    frameCookieConsent: &quot;#cookie-consent&quot;,
+    navigationAction: [
+      &quot;a[href]&quot;,
+      &quot;button[data-href]&quot;,
+      &quot;button[data-url]&quot;,
+      &quot;button[onclick]&quot;,
+      &quot;input[data-href]&quot;,
+      &quot;input[data-url]&quot;,
+      &quot;input[onclick]&quot;,
+      '[role=&quot;button&quot;][data-href]',
+      '[role=&quot;button&quot;][data-url]',
+      '[role=&quot;button&quot;][onclick]'
+    ].join(&quot;,&quot;)
+  };
+  var LOCATION_TRAIL_CONTRACT = {
+    component: &quot;location-trail&quot;,
+    key: &quot;breadcrumb&quot;,
+    required: false,
+    candidates: [
+      { key: &quot;explicit&quot;, selector: SHARED_SELECTORS.explicitBreadcrumb },
+      { key: &quot;legacy-route-guide&quot;, selector: SHARED_SELECTORS.routeGuideLink }
+    ]
+  };
+
+  // src/sites/mountain-project/contract/selectors/stats.ts
+  var STATS_SELECTORS = {
+    root: &quot;#route-stats&quot;,
+    tableRoot: &quot;#route-stats .onx-stats-table&quot;,
+    tableRootFallback: &quot;.onx-stats-table&quot;,
+    componentHeadings: &quot;.onx-stats-table h3&quot;,
+    ticksSectionId: &quot;#ticks-column&quot;,
+    ticksBodyId: 'tbody[id=&quot;ticks-body&quot;]',
+    tickRowLandmark: 'tr[id^=&quot;ticks.&quot;]',
+    tickRows: '#route-stats .onx-stats-table tr[id^=&quot;ticks.&quot;]',
+    tickAuthor: 'td:first-child [rel=&quot;author&quot;], td:first-child .author, td:first-child a[href*=&quot;/user/&quot;]',
+    frameBreadcrumb: &quot;.main-content-container #route-stats > .row.pt-main-content > .col-xs-12 > .mb-half.small.text-warm&quot;,
+    frameTitle: &quot;.main-content-container #route-stats > .row.pt-main-content > .col-xs-12 > h1&quot;,
+    frameMainContainer: &quot;.main-content-container&quot;,
+    frameContainerFluid: &quot;.main-content-container > .container-fluid&quot;,
+    frameLayoutRow: &quot;.main-content-container #route-stats > .row.pt-main-content&quot;,
+    maxHeightClass: &quot;max-height&quot;
+  };
+  var STATS_FRAME_CHROME_HIDE_SELECTORS = [
+    SHARED_SELECTORS.framePrintHeader,
+    SHARED_SELECTORS.frameHeader,
+    SHARED_SELECTORS.frameAdvertisement,
+    SHARED_SELECTORS.frameCookieConsent,
+    SHARED_SELECTORS.frameFooter,
+    STATS_SELECTORS.frameBreadcrumb,
+    STATS_SELECTORS.frameTitle
+  ];
+  var STATS_FRAME_CONTRACT = {
+    component: &quot;route-stats-frame&quot;,
+    key: &quot;frame-landmarks&quot;,
+    required: true,
+    candidates: [
+      { key: &quot;stats-root&quot;, selector: STATS_SELECTORS.root },
+      { key: &quot;stats-table-root&quot;, selector: STATS_SELECTORS.tableRootFallback }
+    ]
+  };
+  var STATS_TICKS_SECTION_CONTRACT = {
+    component: &quot;route-stats-presentation&quot;,
+    key: &quot;ticks-section&quot;,
+    required: false,
+    candidates: [
+      { key: &quot;section-id&quot;, selector: STATS_SELECTORS.ticksSectionId },
+      { key: &quot;tbody-id&quot;, selector: STATS_SELECTORS.ticksBodyId },
+      { key: &quot;tick-row-id&quot;, selector: STATS_SELECTORS.tickRowLandmark }
+    ]
+  };
+
+  // src/sites/mountain-project/contract/selectors/community.ts
+  var COMMUNITY_SELECTORS = {
+    topicBody: &quot;#forum-table .message-row .fr-view&quot;,
+    topicRow: &quot;#forum-table .message-row&quot;,
+    topicAuthor: '.bio > a[href*=&quot;/user/&quot;]',
+    activityComment: &quot;#whats-new .comment-row td > .row > .col-md-12&quot;,
+    activityRow: &quot;#whats-new .comment-row&quot;,
+    activityAuthor: 'td > a[href*=&quot;/user/&quot;]',
+    protectedContent: '.fr-view, .mpkr-activity-comment-source, .signature, blockquote, pre, code, cite, [contenteditable=&quot;true&quot;], textarea',
+    gymDetailTitle: &quot;#climbing-gyms .pt-main-content h1&quot;,
+    protectedGymValue: '#climbing-gyms .gym-info > div, #climbing-gyms table td.text-xs-right, #climbing-gyms .gym-breadcrumbs a[href*=&quot;/gyms/&quot;]',
+    uiExtra: &quot;#partner-finder p, #partner-finder div, #whats-new div, #topic-guts div, #forum-table div, #climbing-gyms .gym-count, #climbing-gyms .add-gym-cta p, #climbing-gyms .improve-gym-cta p, #climbing-gyms .photos-cta p, #climbing-gyms .stars-avg&quot;
+  };
+
+  // src/core/translation-text-policy.ts
+  var PlaceholderIntegrityError = class extends Error {
+    constructor(failedKinds, message = &quot;\uBC88\uC5ED\uAE30\uAC00 \uBCF4\uD638 \uD1A0\uD070\uC744 \uBCC0\uACBD\uD574 \uC548\uC804\uD558\uAC8C \uC6D0\uBB38\uC744 \uBCF5\uC6D0\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.&quot;) {
+      super(message);
+      this.failedKinds = failedKinds;
+      this.name = &quot;PlaceholderIntegrityError&quot;;
+    }
+  };
+
+  // src/rendering/dom-translation-format.ts
+  var SAFE_TAGS = /* @__PURE__ */ new Set([
+    &quot;A&quot;,
+    &quot;ABBR&quot;,
+    &quot;B&quot;,
+    &quot;BLOCKQUOTE&quot;,
+    &quot;BR&quot;,
+    &quot;CODE&quot;,
+    &quot;DIV&quot;,
+    &quot;EM&quot;,
+    &quot;H3&quot;,
+    &quot;H4&quot;,
+    &quot;H5&quot;,
+    &quot;H6&quot;,
+    &quot;I&quot;,
+    &quot;IMG&quot;,
+    &quot;KBD&quot;,
+    &quot;LI&quot;,
+    &quot;MARK&quot;,
+    &quot;OL&quot;,
+    &quot;P&quot;,
+    &quot;PRE&quot;,
+    &quot;S&quot;,
+    &quot;SMALL&quot;,
+    &quot;SPAN&quot;,
+    &quot;STRONG&quot;,
+    &quot;SUB&quot;,
+    &quot;SUP&quot;,
+    &quot;U&quot;,
+    &quot;UL&quot;
+  ]);
+  var VOID_TAGS = /* @__PURE__ */ new Set([&quot;BR&quot;, &quot;IMG&quot;]);
+  var BLOCKED_TAGS = /* @__PURE__ */ new Set([
+    &quot;SCRIPT&quot;,
+    &quot;STYLE&quot;,
+    &quot;NOSCRIPT&quot;,
+    &quot;TEMPLATE&quot;,
+    &quot;FORM&quot;,
+    &quot;INPUT&quot;,
+    &quot;TEXTAREA&quot;,
+    &quot;SELECT&quot;,
+    &quot;OPTION&quot;,
+    &quot;BUTTON&quot;,
+    &quot;IFRAME&quot;,
+    &quot;OBJECT&quot;,
+    &quot;EMBED&quot;,
+    &quot;LINK&quot;,
+    &quot;META&quot;
+  ]);
+  var GLOBAL_ATTRIBUTES = /* @__PURE__ */ new Set([&quot;class&quot;, &quot;title&quot;, &quot;lang&quot;, &quot;dir&quot;, &quot;role&quot;]);
+  var TAG_ATTRIBUTES = {
+    A: /* @__PURE__ */ new Set([&quot;href&quot;, &quot;target&quot;, &quot;rel&quot;, &quot;download&quot;, &quot;hreflang&quot;]),
+    IMG: /* @__PURE__ */ new Set([&quot;src&quot;, &quot;alt&quot;, &quot;width&quot;, &quot;height&quot;, &quot;loading&quot;]),
+    OL: /* @__PURE__ */ new Set([&quot;start&quot;, &quot;reversed&quot;, &quot;type&quot;]),
+    LI: /* @__PURE__ */ new Set([&quot;value&quot;]),
+    ABBR: /* @__PURE__ */ new Set([&quot;title&quot;])
+  };
+  function safeUrl(value, attribute) {
+    const normalized = value.trim().toLocaleLowerCase(&quot;en-US&quot;);
+    if (attribute === &quot;src&quot; &amp;&amp; normalized.startsWith(&quot;data:image/&quot;)) return true;
+    return !/^(?:javascript|vbscript|data):/u.test(normalized);
+  }
+  function descriptor(element) {
+    const attributes = [];
+    for (const attribute of Array.from(element.attributes)) {
+      const name = attribute.name.toLocaleLowerCase(&quot;en-US&quot;);
+      if (name === &quot;id&quot; || name === &quot;style&quot; || name.startsWith(&quot;on&quot;) || name.startsWith(&quot;data-&quot;)) continue;
+      const allowed = GLOBAL_ATTRIBUTES.has(name) || name.startsWith(&quot;aria-&quot;) || TAG_ATTRIBUTES[element.tagName]?.has(name);
+      if (!allowed) continue;
+      if ((name === &quot;href&quot; || name === &quot;src&quot;) &amp;&amp; !safeUrl(attribute.value, name)) continue;
+      attributes.push([name, attribute.value]);
+    }
+    return { tagName: SAFE_TAGS.has(element.tagName) ? element.tagName : &quot;SPAN&quot;, attributes, source: element };
+  }
+  function applyClickMeaning(clone, source) {
+    if (clone.tagName === &quot;A&quot; &amp;&amp; clone.hasAttribute(&quot;href&quot;) &amp;&amp; !source.hasAttribute(&quot;onclick&quot;)) return;
+    if (!source.matches('a[href], [role=&quot;button&quot;], [onclick]')) return;
+    clone.addEventListener(&quot;click&quot;, (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (source instanceof HTMLElement) source.click();
+    });
+  }
+  function createShell(value, ownerDocument) {
+    const element = ownerDocument.createElement(value.tagName.toLocaleLowerCase(&quot;en-US&quot;));
+    value.attributes.forEach(([name, attributeValue]) => element.setAttribute(name, attributeValue));
+    applyClickMeaning(element, value.source);
+    return element;
+  }
+  function safeClone(source, ownerDocument) {
+    if (BLOCKED_TAGS.has(source.tagName)) return void 0;
+    if (!SAFE_TAGS.has(source.tagName)) {
+      const fragment = ownerDocument.createDocumentFragment();
+      source.childNodes.forEach((child) => {
+        if (child instanceof Text) fragment.append(ownerDocument.createTextNode(child.nodeValue ?? &quot;&quot;));
+        else if (child instanceof Element) {
+          const clone2 = safeClone(child, ownerDocument);
+          if (clone2) fragment.append(clone2);
+        }
+      });
+      return fragment;
+    }
+    const clone = createShell(descriptor(source), ownerDocument);
+    if (!VOID_TAGS.has(source.tagName)) {
+      source.childNodes.forEach((child) => {
+        if (child instanceof Text) clone.append(ownerDocument.createTextNode(child.nodeValue ?? &quot;&quot;));
+        else if (child instanceof Element) {
+          const childClone = safeClone(child, ownerDocument);
+          if (childClone) clone.append(childClone);
+        }
+      });
+    }
+    return clone;
+  }
+  function escaped(value) {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, &quot;\\$&amp;&quot;);
+  }
+  function renderStructuredTranslation(format, translated, ownerDocument) {
+    const root = createShell(format.root, ownerDocument);
+    if (format.tokens.length === 0) {
+      root.textContent = translated;
+      return root;
+    }
+    const byValue = new Map(format.tokens.map((token) => [token.value, token]));
+    const pattern = new RegExp(
+      format.tokens.map(({ value }) => value).sort((left, right) => right.length - left.length).map(escaped).join(&quot;|&quot;),
+      &quot;gu&quot;
+    );
+    const seen = /* @__PURE__ */ new Set();
+    const stack = [{ element: root }];
+    let cursor = 0;
+    for (const match of translated.matchAll(pattern)) {
+      const index = match.index;
+      const value = match[0];
+      const token = byValue.get(value);
+      if (index === void 0 || !token || seen.has(value)) {
+        throw new PlaceholderIntegrityError([&quot;protected&quot;], &quot;DOM \uAD6C\uC870 \uBCF4\uD638 \uD1A0\uD070\uC774 \uC911\uBCF5\uB418\uAC70\uB098 \uC190\uC0C1\uB418\uC5C8\uC2B5\uB2C8\uB2E4.&quot;);
+      }
+      seen.add(value);
+      if (index > cursor) stack.at(-1).element.append(ownerDocument.createTextNode(translated.slice(cursor, index)));
+      if (token.kind === &quot;open&quot;) {
+        const element = createShell(token.element, ownerDocument);
+        stack.at(-1).element.append(element);
+        stack.push({ id: token.id, element });
+      } else if (token.kind === &quot;close&quot;) {
+        if (stack.length === 1 || stack.at(-1).id !== token.id) {
+          throw new PlaceholderIntegrityError([&quot;protected&quot;], &quot;DOM \uAD6C\uC870 \uBCF4\uD638 \uD1A0\uD070\uC758 \uC911\uCCA9 \uC21C\uC11C\uAC00 \uC190\uC0C1\uB418\uC5C8\uC2B5\uB2C8\uB2E4.&quot;);
+        }
+        stack.pop();
+      } else if (token.kind === &quot;void&quot;) {
+        stack.at(-1).element.append(createShell(token.element, ownerDocument));
+      } else {
+        const clone = safeClone(token.element.source, ownerDocument);
+        if (clone) stack.at(-1).element.append(clone);
+      }
+      cursor = index + value.length;
+    }
+    if (seen.size !== format.tokens.length || stack.length !== 1) {
+      throw new PlaceholderIntegrityError([&quot;protected&quot;], &quot;DOM \uAD6C\uC870 \uBCF4\uD638 \uD1A0\uD070\uC758 \uAC1C\uC218 \uB610\uB294 \uC911\uCCA9\uC774 \uC190\uC0C1\uB418\uC5C8\uC2B5\uB2C8\uB2E4.&quot;);
+    }
+    if (cursor &lt; translated.length) root.append(ownerDocument.createTextNode(translated.slice(cursor)));
+    return root;
+  }
+  function cloneStructuredListShell(format, ownerDocument) {
+    return format.parentList ? createShell(format.parentList, ownerDocument) : void 0;
+  }
+
+  // src/rendering/original-preserving-renderer.ts
+  var SAFE_TRANSLATION_TAGS = /* @__PURE__ */ new Set([
+    &quot;BLOCKQUOTE&quot;,
+    &quot;DIV&quot;,
+    &quot;H3&quot;,
+    &quot;H4&quot;,
+    &quot;H5&quot;,
+    &quot;H6&quot;,
+    &quot;P&quot;,
+    &quot;PRE&quot;
+  ]);
+  var OriginalPreservingRenderer = class {
+    style;
+    bindings = /* @__PURE__ */ new Map();
+    presentations = /* @__PURE__ */ new Set();
+    sectionPresentations = /* @__PURE__ */ new WeakMap();
+    originalDisplays = /* @__PURE__ */ new WeakMap();
+    inlineBindings = /* @__PURE__ */ new Map();
+    retranslateHandler;
+    setRetranslateHandler(handler) {
+      this.retranslateHandler = handler;
+    }
+    track(target) {
+      if (target.renderMode === &quot;inline&quot;) {
+        const existing2 = this.inlineBindings.get(target.id);
+        const source = target.sourceElements[0];
+        if (!source) return;
+        if (existing2) {
+          existing2.target = target;
+          return;
+        }
+        this.inlineBindings.set(target.id, {
+          target,
+          original: source.textContent ?? target.source
+        });
+        return;
+      }
+      const existing = this.bindings.get(target.id);
+      if (existing) {
+        existing.target = target;
+        target.sourceElements.forEach((element) => {
+          if (!this.originalDisplays.has(element)) {
+            this.originalDisplays.set(element, element.style.display);
+          }
+        });
+        return;
+      }
+      target.sourceElements.forEach((element) => {
+        this.originalDisplays.set(element, element.style.display);
+      });
+      const sectionRoot = this.sectionRoot(target);
+      let presentation = sectionRoot ? this.sectionPresentations.get(sectionRoot) : void 0;
+      if (!presentation) {
+        presentation = {
+          bindings: [],
+          forceOriginal: false,
+          sectionRoot,
+          lists: /* @__PURE__ */ new Map(),
+          translatedCount: 0
+        };
+        this.presentations.add(presentation);
+        if (sectionRoot) {
+          this.sectionPresentations.set(sectionRoot, presentation);
+        }
+      }
+      const binding = { target, presentation };
+      presentation.bindings.push(binding);
+      this.bindings.set(target.id, binding);
+    }
+    reset(target) {
+      if (target.renderMode === &quot;inline&quot;) {
+        const binding2 = this.inlineBindings.get(target.id);
+        const source = target.sourceElements[0];
+        if (!source) return;
+        if (binding2) {
+          binding2.target = target;
+          binding2.original = source.textContent ?? target.source;
+        } else {
+          this.track(target);
+        }
+        return;
+      }
+      this.track(target);
+      const binding = this.bindings.get(target.id);
+      if (!binding) {
+        return;
+      }
+      const presentation = binding.presentation;
+      binding.failureMessage = void 0;
+      this.removeCopy(binding);
+      this.showOriginal(binding.target, presentation);
+      if (presentation.translatedCount > 0) {
+        return;
+      }
+      this.releaseEmptyPresentation(presentation);
+    }
+    render(target, translated) {
+      if (!translated.trim()) {
+        return;
+      }
+      this.track(target);
+      if (target.renderMode === &quot;inline&quot;) {
+        const binding2 = this.inlineBindings.get(target.id);
+        const source = binding2?.target.sourceElements[0];
+        if (!binding2 || !source) return;
+        const leading = binding2.original.match(/^\s*/)?.[0] ?? &quot;&quot;;
+        const trailing = binding2.original.match(/\s*$/)?.[0] ?? &quot;&quot;;
+        source.textContent = `${leading}${translated}${trailing}`;
+        return;
+      }
+      const binding = this.bindings.get(target.id);
+      if (!binding) {
+        return;
+      }
+      binding.failureMessage = void 0;
+      if (binding.translated === void 0) binding.presentation.translatedCount += 1;
+      binding.translated = translated;
+      this.ensurePresentation(binding.presentation);
+      this.renderBinding(binding);
+      this.refreshPresentationState(binding.presentation);
+      if (binding.presentation.forceOriginal) this.showOriginal(target, binding.presentation);
+      else this.hideOriginal(target, binding.presentation);
+    }
+    showFailure(target, message) {
+      if (target.renderMode === &quot;inline&quot;) return;
+      this.track(target);
+      const binding = this.bindings.get(target.id);
+      if (!binding) return;
+      binding.failureMessage = message;
+      this.ensurePresentation(binding.presentation);
+      this.showOriginal(target, binding.presentation);
+      this.refreshPresentationState(binding.presentation);
+    }
+    hasFailureNotice(target) {
+      const status = this.bindings.get(target.id)?.presentation.status;
+      return Boolean(status?.isConnected &amp;&amp; !status.closest(&quot;[hidden]&quot;));
+    }
+    remove(id) {
+      const inline = this.inlineBindings.get(id);
+      if (inline) {
+        const source = inline.target.sourceElements[0];
+        if (source) source.textContent = inline.original;
+        this.inlineBindings.delete(id);
+        return;
+      }
+      const binding = this.bindings.get(id);
+      if (!binding) return;
+      this.removeCopy(binding);
+      this.showOriginal(binding.target, binding.presentation);
+      this.bindings.delete(id);
+      const presentation = binding.presentation;
+      presentation.bindings = presentation.bindings.filter((entry) => entry !== binding);
+      if (presentation.translatedCount === 0) this.releaseEmptyPresentation(presentation);
+      if (presentation.bindings.length === 0) {
+        this.presentations.delete(presentation);
+        if (presentation.sectionRoot) this.sectionPresentations.delete(presentation.sectionRoot);
+      }
+    }
+    releaseEmptyPresentation(presentation) {
+      presentation.toggleHost?.remove();
+      presentation.block?.remove();
+      presentation.block = void 0;
+      presentation.body = void 0;
+      presentation.toggle = void 0;
+      presentation.retranslate = void 0;
+      presentation.status = void 0;
+      presentation.feedback = void 0;
+      presentation.toggleHost = void 0;
+      presentation.lists.clear();
+      presentation.bindings.forEach((binding) => this.showOriginal(binding.target, presentation));
+      this.unwrapOriginalContent(presentation);
+    }
+    destroy() {
+      this.style?.remove();
+      this.style = void 0;
+      this.inlineBindings.forEach((binding) => {
+        const source = binding.target.sourceElements[0];
+        if (source) source.textContent = binding.original;
+      });
+      this.inlineBindings.clear();
+      this.presentations.forEach((presentation) => {
+        presentation.toggleHost?.remove();
+        presentation.block?.remove();
+        presentation.bindings.forEach((binding) => this.showOriginal(binding.target, presentation));
+        this.unwrapOriginalContent(presentation);
+      });
+      this.bindings.clear();
+      this.presentations.clear();
+      this.sectionPresentations = /* @__PURE__ */ new WeakMap();
+      this.originalDisplays = /* @__PURE__ */ new WeakMap();
+    }
+    sectionRoot(target) {
+      if (target.category === &quot;comment&quot;) {
+        return void 0;
+      }
+      for (const element of target.sourceElements) {
+        if (element.matches(SHARED_SELECTORS.authoredContent)) {
+          return element;
+        }
+        const root = element.closest(SHARED_SELECTORS.authoredContent);
+        if (root) {
+          return root;
+        }
+      }
+      return void 0;
+    }
+    ensurePresentation(presentation) {
+      if (presentation.block) {
+        return;
+      }
+      const first = presentation.bindings[0];
+      if (!first) {
+        return;
+      }
+      const ownerDocument = first.target.parent.ownerDocument;
+      if (!this.style) {
+        this.style = ownerDocument.createElement(&quot;style&quot;);
+        this.style.dataset.mpkrTranslationActions = &quot;&quot;;
+        this.style.textContent = TRANSLATION_ACTION_CSS;
+        ownerDocument.head.append(this.style);
+      }
+      const inlineCopy = first.target.renderMode === &quot;inline-copy&quot;;
+      const block = ownerDocument.createElement(inlineCopy ? &quot;span&quot; : &quot;div&quot;);
+      block.className = presentation.sectionRoot ? &quot;mpkr-machine-translation mpkr-section-translation&quot; : &quot;mpkr-machine-translation&quot;;
+      block.dataset.mpkrTranslationId = first.target.id;
+      block.style.color = &quot;inherit&quot;;
+      block.style.fontSize = &quot;inherit&quot;;
+      block.style.lineHeight = inlineCopy ? &quot;inherit&quot; : UI.font.bodyLineHeight;
+      block.style.margin = inlineCopy || presentation.sectionRoot ? &quot;0&quot; : &quot;0.5rem 0&quot;;
+      const body = ownerDocument.createElement(inlineCopy ? &quot;span&quot; : &quot;div&quot;);
+      body.className = &quot;mpkr-translation-body&quot;;
+      const status = ownerDocument.createElement(inlineCopy ? &quot;span&quot; : &quot;div&quot;);
+      status.className = &quot;mpkr-translation-status mpkr-status-message&quot;;
+      status.setAttribute(&quot;role&quot;, &quot;status&quot;);
+      status.setAttribute(&quot;aria-live&quot;, &quot;polite&quot;);
+      status.setAttribute(&quot;aria-atomic&quot;, &quot;true&quot;);
+      const feedback = ownerDocument.createElement(&quot;span&quot;);
+      feedback.className = &quot;mpkr-translation-feedback&quot;;
+      feedback.setAttribute(&quot;role&quot;, &quot;status&quot;);
+      feedback.setAttribute(&quot;aria-live&quot;, &quot;polite&quot;);
+      feedback.hidden = true;
+      const toggle = ownerDocument.createElement(&quot;button&quot;);
+      toggle.type = &quot;button&quot;;
+      toggle.className = &quot;mpkr-original-toggle&quot;;
+      toggle.textContent = presentation.forceOriginal ? &quot;\uC6D0\uBB38 \uC228\uAE30\uAE30&quot; : &quot;\uC6D0\uBB38 \uBCF4\uAE30&quot;;
+      toggle.setAttribute(&quot;aria-expanded&quot;, String(presentation.forceOriginal));
+      toggle.setAttribute(&quot;aria-label&quot;, presentation.forceOriginal ? &quot;\uC774 \uC139\uC158\uC758 \uC6D0\uBB38 \uC228\uAE30\uAE30&quot; : &quot;\uC774 \uC139\uC158\uC758 \uC6D0\uBB38 \uBCF4\uAE30&quot;);
+      toggle.addEventListener(&quot;click&quot;, (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        presentation.forceOriginal = !presentation.forceOriginal;
+        this.applyPresentation(presentation);
+      });
+      const retranslate = ownerDocument.createElement(&quot;button&quot;);
+      retranslate.type = &quot;button&quot;;
+      retranslate.className = &quot;mpkr-retranslate&quot;;
+      retranslate.textContent = &quot;\uC7AC\uBC88\uC5ED&quot;;
+      retranslate.setAttribute(&quot;aria-label&quot;, &quot;\uC774 \uC139\uC158 \uB2E4\uC2DC \uBC88\uC5ED&quot;);
+      retranslate.addEventListener(&quot;click&quot;, async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const handler = this.retranslateHandler;
+        if (!handler || retranslate.disabled) return;
+        const targetIds = presentation.bindings.map((binding) => binding.target).filter((target) => target.renderMode !== &quot;inline&quot;).map((target) => target.id);
+        if (targetIds.length === 0) return;
+        retranslate.disabled = true;
+        retranslate.setAttribute(&quot;aria-busy&quot;, &quot;true&quot;);
+        feedback.hidden = false;
+        feedback.textContent = &quot;\uC7AC\uBC88\uC5ED \uC911\u2026&quot;;
+        try {
+          const result = await handler(targetIds);
+          feedback.textContent = result === &quot;unchanged&quot; ? &quot;\uAE30\uC874 \uBC88\uC5ED\uACFC \uAC19\uC2B5\uB2C8\uB2E4.&quot; : result === &quot;failed&quot; ? &quot;\uC7AC\uBC88\uC5ED\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uC2DC\uB3C4\uD574 \uC8FC\uC138\uC694.&quot; : &quot;\uBC88\uC5ED\uC744 \uAC31\uC2E0\uD588\uC2B5\uB2C8\uB2E4.&quot;;
+          feedback.hidden = result === &quot;failed&quot; &amp;&amp; !status.hidden;
+        } catch {
+          feedback.textContent = &quot;\uC7AC\uBC88\uC5ED\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uC2DC\uB3C4\uD574 \uC8FC\uC138\uC694.&quot;;
+          feedback.hidden = !status.hidden;
+        } finally {
+          retranslate.disabled = false;
+          retranslate.removeAttribute(&quot;aria-busy&quot;);
+        }
+      });
+      block.append(body, status);
+      presentation.block = block;
+      presentation.body = body;
+      presentation.toggle = toggle;
+      presentation.retranslate = retranslate;
+      presentation.status = status;
+      presentation.feedback = feedback;
+      if (presentation.sectionRoot) {
+        this.wrapWholeRootOriginal(presentation);
+        presentation.sectionRoot.insertBefore(block, presentation.sectionRoot.firstChild);
+      } else {
+        first.target.parent.insertBefore(block, first.target.insertBefore ?? null);
+      }
+      const author = this.authorFor(first.target);
+      if (first.target.category === &quot;comment&quot; &amp;&amp; author?.parentElement) {
+        const toggleHost = ownerDocument.createElement(&quot;div&quot;);
+        toggleHost.className = &quot;mpkr-original-toggle-host mpkr-translation-actions&quot;;
+        author.insertAdjacentElement(&quot;afterend&quot;, toggleHost);
+        toggleHost.append(toggle);
+        toggleHost.append(retranslate, feedback);
+        presentation.toggleHost = toggleHost;
+      } else {
+        const actions = ownerDocument.createElement(&quot;span&quot;);
+        actions.className = &quot;mpkr-translation-actions&quot;;
+        actions.append(toggle, retranslate, feedback);
+        block.append(actions);
+      }
+      this.refreshPresentationState(presentation);
+    }
+    refreshPresentationState(presentation) {
+      const hasTranslation = presentation.translatedCount > 0;
+      const failure = presentation.bindings.find((binding) => binding.failureMessage)?.failureMessage;
+      if (presentation.body) presentation.body.hidden = !hasTranslation;
+      if (presentation.toggle) presentation.toggle.hidden = !hasTranslation;
+      if (presentation.status) {
+        setStatusMessage(presentation.status, failure ?? &quot;&quot;);
+        presentation.status.hidden = !failure;
+      }
+    }
+    authorFor(target) {
+      const source = target.sourceElements[0];
+      if (!source) {
+        return void 0;
+      }
+      const forumAuthor = source.closest(COMMUNITY_SELECTORS.topicRow)?.querySelector(COMMUNITY_SELECTORS.topicAuthor);
+      if (forumAuthor) return forumAuthor;
+      const activityAuthor = source.closest(COMMUNITY_SELECTORS.activityRow)?.querySelector(COMMUNITY_SELECTORS.activityAuthor);
+      if (activityAuthor) return activityAuthor;
+      const tickRow = source.closest(STATS_SELECTORS.tickRowLandmark);
+      if (tickRow) {
+        return tickRow.querySelector(STATS_SELECTORS.tickAuthor) ?? void 0;
+      }
+      const commentBody = target.parent.matches(SHARED_SELECTORS.commentBody) ? target.parent : source.closest(SHARED_SELECTORS.commentBody);
+      const localAuthor = commentBody?.querySelector(SHARED_SELECTORS.commentAuthor);
+      if (localAuthor) {
+        return localAuthor;
+      }
+      const commentContainer = commentBody?.closest(SHARED_SELECTORS.commentContainer);
+      return commentContainer?.querySelector(SHARED_SELECTORS.commentAuthor) ?? void 0;
+    }
+    wrapWholeRootOriginal(presentation) {
+      const root = presentation.sectionRoot;
+      if (!root || !presentation.bindings.some((binding) => binding.target.sourceElements.includes(root))) {
+        return;
+      }
+      const wrapper = root.ownerDocument.createElement(&quot;div&quot;);
+      wrapper.className = &quot;mpkr-original-section-content&quot;;
+      while (root.firstChild) {
+        wrapper.append(root.firstChild);
+      }
+      root.append(wrapper);
+      presentation.originalWrapper = wrapper;
+    }
+    unwrapOriginalContent(presentation) {
+      const root = presentation.sectionRoot;
+      const wrapper = presentation.originalWrapper;
+      if (!root || !wrapper) {
+        return;
+      }
+      while (wrapper.firstChild) {
+        root.insertBefore(wrapper.firstChild, wrapper);
+      }
+      wrapper.remove();
+      presentation.originalWrapper = void 0;
+    }
+    sourceForCopy = /* @__PURE__ */ new WeakMap();
+    insertInSourceOrder(parent, copy, source) {
+      if (source) this.sourceForCopy.set(copy, source);
+      let next = null;
+      for (let sibling = parent.lastElementChild; sibling; sibling = sibling.previousElementSibling) {
+        const siblingSource = this.sourceForCopy.get(sibling);
+        if (!source || !siblingSource || !(source.compareDocumentPosition(siblingSource) &amp; Node.DOCUMENT_POSITION_FOLLOWING)) break;
+        next = sibling;
+      }
+      parent.insertBefore(copy, next);
+    }
+    renderBinding(binding) {
+      const { presentation } = binding;
+      const body = presentation.body;
+      const source = binding.target.sourceElements[0];
+      const previous = binding.copy;
+      const previousParent = previous?.parentElement;
+      const previousNext = previous?.nextSibling ?? null;
+      previous?.remove();
+      let parent = previousParent ?? body;
+      if (!previousParent &amp;&amp; source?.tagName === &quot;LI&quot; &amp;&amp; source.parentElement) {
+        const listSource = source.parentElement;
+        let list = presentation.lists.get(listSource);
+        if (!list) {
+          list = binding.target.format ? cloneStructuredListShell(binding.target.format, body.ownerDocument) : void 0;
+          list ??= body.ownerDocument.createElement(listSource.tagName === &quot;OL&quot; ? &quot;ol&quot; : &quot;ul&quot;);
+          list.style.margin = &quot;0.35rem 0&quot;;
+          list.style.paddingLeft = &quot;1.4rem&quot;;
+          presentation.lists.set(listSource, list);
+          this.insertInSourceOrder(body, list, listSource);
+        }
+        parent = list;
+      }
+      const copy = binding.target.format ? renderStructuredTranslation(binding.target.format, binding.translated ?? &quot;&quot;, body.ownerDocument) : body.ownerDocument.createElement(
+        source?.tagName === &quot;LI&quot; ? &quot;li&quot; : source &amp;&amp; SAFE_TRANSLATION_TAGS.has(source.tagName) ? source.tagName.toLowerCase() : &quot;div&quot;
+      );
+      if (!binding.target.format) copy.textContent = binding.translated ?? &quot;&quot;;
+      if (copy.tagName !== &quot;LI&quot; &amp;&amp; binding.target.renderMode !== &quot;inline-copy&quot;) {
+        copy.style.marginTop = &quot;0.65rem&quot;;
+        copy.style.marginBottom = &quot;0&quot;;
+      }
+      binding.copy = copy;
+      if (previousParent) previousParent.insertBefore(copy, previousNext);
+      else this.insertInSourceOrder(parent, copy, source);
+      if (parent === body &amp;&amp; copy === body.firstElementChild &amp;&amp; binding.target.renderMode !== &quot;inline-copy&quot;) {
+        copy.style.marginTop = &quot;0&quot;;
+        const next = copy.nextElementSibling;
+        if (next &amp;&amp; ![&quot;UL&quot;, &quot;OL&quot;].includes(next.tagName)) next.style.marginTop = &quot;0.65rem&quot;;
+      }
+    }
+    removeCopy(binding) {
+      if (binding.translated) binding.presentation.translatedCount -= 1;
+      binding.translated = void 0;
+      binding.copy?.remove();
+      binding.copy = void 0;
+      for (const [source, list] of binding.presentation.lists) {
+        if (!list.childElementCount) {
+          list.remove();
+          binding.presentation.lists.delete(source);
+        }
+      }
+      const first = binding.presentation.body?.firstElementChild;
+      if (first &amp;&amp; ![&quot;UL&quot;, &quot;OL&quot;].includes(first.tagName)) first.style.marginTop = &quot;0&quot;;
+    }
+    applyPresentation(presentation) {
+      const showOriginal = presentation.forceOriginal;
+      if (presentation.block) {
+        presentation.block.style.display = &quot;&quot;;
+      }
+      if (presentation.toggle) {
+        presentation.toggle.textContent = showOriginal ? &quot;\uC6D0\uBB38 \uC228\uAE30\uAE30&quot; : &quot;\uC6D0\uBB38 \uBCF4\uAE30&quot;;
+        presentation.toggle.setAttribute(&quot;aria-expanded&quot;, String(showOriginal));
+        presentation.toggle.setAttribute(
+          &quot;aria-label&quot;,
+          showOriginal ? &quot;\uC774 \uC139\uC158\uC758 \uC6D0\uBB38 \uC228\uAE30\uAE30&quot; : &quot;\uC774 \uC139\uC158\uC758 \uC6D0\uBB38 \uBCF4\uAE30&quot;
+        );
+      }
+      presentation.bindings.forEach((binding) => {
+        if (showOriginal || !binding.translated) {
+          this.showOriginal(binding.target, presentation);
+        } else {
+          this.hideOriginal(binding.target, presentation);
+        }
+      });
+    }
+    hideOriginal(target, presentation) {
+      if (presentation.originalWrapper &amp;&amp; target.sourceElements.includes(presentation.sectionRoot)) {
+        presentation.originalWrapper.style.display = &quot;none&quot;;
+        return;
+      }
+      target.sourceElements.forEach((element) => {
+        element.style.display = &quot;none&quot;;
+      });
+    }
+    showOriginal(target, presentation) {
+      if (presentation.originalWrapper &amp;&amp; target.sourceElements.includes(presentation.sectionRoot)) {
+        presentation.originalWrapper.style.display = &quot;&quot;;
+        return;
+      }
+      target.sourceElements.forEach((element) => {
+        element.style.display = this.originalDisplays.get(element) ?? &quot;&quot;;
+      });
+    }
+  };
+
+  // &lt;stdin>
+  if (window.reviewCase === &quot;nav&quot;) {
+    const controls = new NavigationControls();
+    controls.mount(async () => {
+      throw Error(&quot;simulated storage failure&quot;);
+    });
+    controls.render(true);
+    document.querySelector(&quot;input&quot;).click();
+  } else {
+    const renderer = new OriginalPreservingRenderer();
+    const source = document.querySelector(&quot;#source&quot;);
+    const target = { id: &quot;review-description&quot;, category: &quot;description&quot;, source: source.textContent, sourceElements: [source], parent: source.parentElement, insertBefore: source.nextSibling };
+    if (window.reviewCase === &quot;same&quot;) {
+      renderer.setRetranslateHandler(async () => &quot;unchanged&quot;);
+      renderer.render(target, &quot;\uC774 \uB8E8\uD2B8\uB294 \uD06C\uB799\uC744 \uB530\uB77C \uC791\uC740 \uC120\uBC18\uAE4C\uC9C0 \uC774\uC5B4\uC9D1\uB2C8\uB2E4.&quot;);
+      document.querySelector(&quot;.mpkr-retranslate&quot;).click();
+    } else renderer.showFailure(target, &quot;\uC6D0\uBB38 \uD615\uC2DD\uC744 \uBCF4\uD638\uD558\uAE30 \uC704\uD574 \uBC88\uC5ED\uC744 \uBCF4\uB958\uD588\uC2B5\uB2C8\uB2E4. \uC6D0\uBB38\uC740 \uADF8\uB300\uB85C \uC720\uC9C0\uB429\uB2C8\uB2E4. \uC7AC\uBC88\uC5ED\uC73C\uB85C \uB2E4\uC2DC \uC2DC\uB3C4\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.&quot;);
+  }
+})();
+&lt;/script>&lt;/html>"></iframe><h2>재번역 결과 동일</h2><iframe title="same" srcdoc="&lt;!doctype html>&lt;html lang=&quot;ko&quot;>&lt;meta charset=&quot;utf-8&quot;>&lt;style>@font-face{font-family:ReviewKorean;src:url('file:///mnt/c/Windows/Fonts/malgun.ttf')}body{margin:0;padding:16px;font:13px/1.7 ReviewKorean,system-ui;background:white}.mpkr-status-message,.mpkr-translation-actions button,.mpkr-translation-feedback{font-family:ReviewKorean,system-ui!important}#source{font-family:Georgia,serif}#user{font-size:12px}#user a{color:#0060a9}&lt;/style>&lt;div class=&quot;fr-view&quot;>&lt;p id=&quot;source&quot;>The route follows the crack to a small ledge.&lt;/p>&lt;/div>&lt;script>window.reviewCase=&quot;same&quot;;(() => {
+  // src/sites/mountain-project/contract/origins.ts
+  var MOUNTAIN_PROJECT_CANONICAL_ORIGIN = &quot;https://www.mountainproject.com&quot;;
+  var MOUNTAIN_PROJECT_HOSTNAMES = [
+    &quot;mountainproject.com&quot;,
+    &quot;www.mountainproject.com&quot;
+  ];
+  var supportedHostnames = new Set(MOUNTAIN_PROJECT_HOSTNAMES);
+  function buildMountainProjectUrl(path) {
+    return new URL(path, MOUNTAIN_PROJECT_CANONICAL_ORIGIN).href;
+  }
+
+  // src/sites/mountain-project/contract/routes.ts
+  function buildEntityPath(prefix, id, slug) {
+    return `${prefix}/${encodeURIComponent(id)}${slug ? `/${encodeURIComponent(slug)}` : &quot;&quot;}`;
+  }
+  function buildAreaPath(id, slug) {
+    return buildEntityPath(&quot;/area&quot;, id, slug);
+  }
+  function buildMapPath(id, slug) {
+    return buildEntityPath(&quot;/map&quot;, id, slug);
+  }
+
+  // src/sites/mountain-project/contract/regions/south-korea.ts
+  var SOUTH_KOREA_AREA_ID = &quot;106225629&quot;;
+  var SOUTH_KOREA_AREA_SLUG = &quot;south-korea&quot;;
+  var SOUTH_KOREA_AREA_PATH = buildAreaPath(
+    SOUTH_KOREA_AREA_ID,
+    SOUTH_KOREA_AREA_SLUG
+  );
+  var SOUTH_KOREA_MAP_PATH = buildMapPath(
+    SOUTH_KOREA_AREA_ID,
+    SOUTH_KOREA_AREA_SLUG
+  );
+  var SOUTH_KOREA_AREA_URL = buildMountainProjectUrl(SOUTH_KOREA_AREA_PATH);
+  var SOUTH_KOREA_MAP_URL = buildMountainProjectUrl(SOUTH_KOREA_MAP_PATH);
+  var SOUTH_KOREA_AREAS = [
+    {
+      id: &quot;126256865&quot;,
+      sourceName: &quot;Gamaksan (Dawn Wall), Paju-si, Gyeonggi-do (Seolma 12 Bridge)&quot;,
+      koreanName: &quot;\uAC10\uC545\uC0B0(\uC0C8\uBCBD\uBCBD), \uD30C\uC8FC\uC2DC, \uACBD\uAE30\uB3C4(\uC124\uB9C812\uAD50)&quot;
+    },
+    {
+      id: &quot;119456790&quot;,
+      sourceName: &quot;Gangwon-do (Northeast Korea)&quot;,
+      koreanName: &quot;\uAC15\uC6D0\uB3C4(\uD55C\uAD6D \uBD81\uB3D9\uBD80)&quot;
+    },
+    {
+      id: &quot;119631691&quot;,
+      sourceName: &quot;Jeju Island&quot;,
+      koreanName: &quot;\uC81C\uC8FC\uB3C4&quot;
+    },
+    {
+      id: &quot;119456771&quot;,
+      sourceName: &quot;North/South Chungcheong-do (Midwest/West Korea)&quot;,
+      koreanName: &quot;\uCDA9\uCCAD\uBD81\uB3C4/\uCDA9\uCCAD\uB0A8\uB3C4(\uD55C\uAD6D \uC911\uC11C\uBD80/\uC11C\uBD80)&quot;
+    },
+    {
+      id: &quot;119456816&quot;,
+      sourceName: &quot;North/South Gyeongsang-do (East/Southeast Korea)&quot;,
+      koreanName: &quot;\uACBD\uC0C1\uBD81\uB3C4/\uACBD\uC0C1\uB0A8\uB3C4(\uD55C\uAD6D \uB3D9\uBD80/\uB0A8\uB3D9\uBD80)&quot;
+    },
+    {
+      id: &quot;119456784&quot;,
+      sourceName: &quot;North/South Jeolla-do (Southwest Korea)&quot;,
+      koreanName: &quot;\uC804\uB77C\uBD81\uB3C4/\uC804\uB77C\uB0A8\uB3C4(\uD55C\uAD6D \uB0A8\uC11C\uBD80)&quot;
+    },
+    {
+      id: &quot;119456750&quot;,
+      sourceName: &quot;Seoul/Gyeonggi-do (Northwest Korea)&quot;,
+      koreanName: &quot;\uC11C\uC6B8/\uACBD\uAE30\uB3C4(\uD55C\uAD6D \uBD81\uC11C\uBD80)&quot;
+    }
+  ];
+  var SOUTH_KOREA_AREA_IDS = /* @__PURE__ */ new Set([
+    SOUTH_KOREA_AREA_ID,
+    ...SOUTH_KOREA_AREAS.map(({ id }) => id)
+  ]);
+  var SOUTH_KOREA_NAME_ALIASES = /* @__PURE__ */ new Set([
+    &quot;South Korea&quot;,
+    &quot;S Korea&quot;,
+    &quot;\uB300\uD55C\uBBFC\uAD6D&quot;,
+    ...SOUTH_KOREA_AREAS.flatMap(({ sourceName, koreanName }) => [sourceName, koreanName])
+  ]);
+  var koreanAreaNames = new Map(
+    SOUTH_KOREA_AREAS.map(({ id, koreanName }) => [id, koreanName])
+  );
+
+  // src/sites/mountain-project/dom/navigation.ts
+  var NAVIGATION_HEADER = &quot;#header-container&quot;;
+  var NAVIGATION_USER = &quot;.header-container__user&quot;;
+  function navigationUserItems(root) {
+    const result = /* @__PURE__ */ new Set();
+    for (const userArea of root.querySelectorAll(`${NAVIGATION_HEADER} ${NAVIGATION_USER}`)) {
+      const avatar = userArea.querySelector(&quot;.user-img-avatar&quot;);
+      const action = avatar?.closest('#user, a, button, [role=&quot;button&quot;]') ?? userArea.querySelector(&quot;#user a, #user button, a.sign-in&quot;);
+      if (!(action instanceof HTMLElement)) continue;
+      const item = action.closest(&quot;#user, .nav-item, li&quot;);
+      const target = item &amp;&amp; userArea.contains(item) ? item : action;
+      result.add(target);
+    }
+    return [...result];
+  }
+
+  // src/ui/design-tokens.ts
+  var NAV = {
+    surface: &quot;#202124&quot;,
+    surfaceHover: &quot;#2c3036&quot;,
+    border: &quot;#5f6368&quot;,
+    divider: &quot;#5f6368&quot;,
+    text: &quot;#fff&quot;,
+    link: &quot;#91c3e8&quot;,
+    muted: &quot;#b8c6d4&quot;,
+    focus: &quot;#91c3e8&quot;,
+    switchOff: &quot;#5f6368&quot;,
+    switchBorder: &quot;#7a8791&quot;,
+    switchThumb: &quot;#fff&quot;,
+    switchOn: &quot;#5ba2d8&quot;,
+    switchOnThumb: &quot;#fff&quot;,
+    height: &quot;38px&quot;,
+    fontSize: &quot;12px&quot;
+  };
+  var UI = {
+    nav: NAV,
+    color: {
+      text: &quot;#202124&quot;,
+      muted: &quot;#59635d&quot;,
+      link: &quot;#0060a9&quot;,
+      linkHover: &quot;#004b84&quot;,
+      linkActive: &quot;#003e70&quot;,
+      surface: &quot;#fff&quot;,
+      surfaceSubtle: &quot;#f7f8f8&quot;,
+      surfaceHover: &quot;#edf5fa&quot;,
+      border: &quot;#c8ceca&quot;,
+      borderHover: &quot;#9eabb3&quot;,
+      warning: &quot;#6b5b35&quot;,
+      accentSurface: &quot;#e8f0eb&quot;,
+      accentText: &quot;#294c39&quot;,
+      buttonSurface: &quot;#f1f5f9&quot;,
+      buttonHover: &quot;#e4edf5&quot;,
+      buttonActive: &quot;#d8e5f0&quot;,
+      buttonBorder: &quot;#b8c6d4&quot;,
+      buttonBorderHover: &quot;#7f9bb5&quot;,
+      headingHover: &quot;rgba(0, 96, 169, 0.12)&quot;,
+      headingFocus: &quot;rgba(0, 96, 169, 0.14)&quot;
+    },
+    font: {
+      family: 'system-ui, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif',
+      caption: &quot;0.75rem&quot;,
+      small: &quot;0.85rem&quot;,
+      hint: &quot;0.9rem&quot;,
+      body: &quot;1rem&quot;,
+      controlWeight: &quot;600&quot;,
+      bodyLineHeight: &quot;1.65&quot;,
+      uiLineHeight: &quot;1.5&quot;
+    },
+    space: {
+      xs: &quot;0.25rem&quot;,
+      sm: &quot;0.5rem&quot;,
+      md: &quot;0.75rem&quot;,
+      lg: &quot;1rem&quot;,
+      xl: &quot;1.5rem&quot;
+    },
+    radius: {
+      small: &quot;2px&quot;,
+      control: &quot;4px&quot;,
+      nav: &quot;7px&quot;
+    },
+    motion: { fast: &quot;150ms ease&quot; }
+  };
+  var UI_TOKEN_CSS = `:root {${Object.entries(UI).flatMap(
+    ([group, values]) => Object.entries(values).map(
+      ([name, value]) => `--mpkr-${group}-${name.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)}:${value};`
+    )
+  ).join(&quot;&quot;)}}`;
+
+  // src/ui/message-style.ts
+  var STATUS_MESSAGE_CSS = `
+.mpkr-status-message { box-sizing:border-box;display:block;margin:12px 0;padding:10px 12px;border-left:3px solid ${UI.color.link};background:${UI.color.surfaceHover};color:${UI.color.text};font:12px/1.75 ${UI.font.family};white-space:normal;overflow-wrap:anywhere;text-align:left; }
+.mpkr-status-message[hidden] { display:none; }
+.mpkr-status-message strong { display:block;font-size:13px;font-weight:600; }
+.mpkr-status-message p,.mpkr-status-message__detail { display:block; margin:3px 0 0;font-size:12px;line-height:1.75;color:${UI.color.muted}; }
+`;
+  var TRANSLATION_ACTION_CSS = `${STATUS_MESSAGE_CSS}
+.mpkr-translation-actions { display:inline-flex;max-width:100%;flex-wrap:wrap;align-items:center;gap:8px;margin:8px 0 4px; }
+.mpkr-translation-actions button { box-sizing:border-box;margin:0;padding:6px 10px;border:1px solid ${UI.color.border};border-radius:${UI.radius.control};background:${UI.color.surface};color:${UI.color.link};font:600 12px/1.5 ${UI.font.family};cursor:pointer;text-decoration:none; }
+.mpkr-translation-actions button:hover { background:${UI.color.surfaceHover}; }
+.mpkr-translation-actions button:focus-visible { outline:2px solid ${UI.color.link};outline-offset:3px; }
+.mpkr-translation-actions button:disabled { cursor:wait;opacity:.65; }
+.mpkr-translation-actions [hidden] { display:none; }
+.mpkr-translation-feedback { color:${UI.color.muted};font:12px/1.5 ${UI.font.family}; }
+`;
+  function setStatusMessage(element, message) {
+    if (element.textContent === message) return;
+    const split = message.indexOf(&quot;. &quot;);
+    if (split &lt; 0) {
+      element.textContent = message;
+      return;
+    }
+    const title = element.ownerDocument.createElement(&quot;strong&quot;);
+    title.textContent = message.slice(0, split + 2);
+    const detail = element.ownerDocument.createElement(&quot;span&quot;);
+    detail.className = &quot;mpkr-status-message__detail&quot;;
+    detail.textContent = message.slice(split + 2);
+    element.replaceChildren(title, detail);
+  }
+
+  // src/ui/navigation-control-style.ts
+  var NAVIGATION_CONTROL_CSS = `
+${STATUS_MESSAGE_CSS}
+/* Keep the added controls inside MP's native 15px container gutter. The second
+   8px inset absorbs the hamburger's native -8px end margin on narrow screens. */
+${NAVIGATION_HEADER} .header-container:has(.mp-nav-control) { flex-wrap: wrap; column-gap: 12px; }
+${NAVIGATION_HEADER} ${NAVIGATION_USER}:has(.mp-nav-control) { --mp-nav-gap: .5rem; display: flex; flex: 1 1 auto; align-items: center; align-content: center; justify-content: flex-end; flex-wrap: wrap; min-width: 0; max-width: calc(100% - 1rem); margin: .5rem .5rem .5rem auto; padding: 0 .5rem 0 0; box-sizing: border-box; column-gap: var(--mp-nav-gap); row-gap: .5rem; }
+${NAVIGATION_HEADER} .mp-nav-control { display: inline-flex; align-items: center; justify-content: center; gap: 9px; flex: 0 0 auto; position: relative; box-sizing: border-box; height: ${NAV.height}; margin: 0; padding: 0 12px; border: 1px solid transparent; border-radius: 0; white-space: nowrap; font: ${UI.font.controlWeight} ${NAV.fontSize}/1.2 ${UI.font.family}; letter-spacing: -.15px; text-decoration: none; color: ${NAV.text}; background: transparent; cursor: pointer; vertical-align: middle; }
+${NAVIGATION_HEADER} a.mp-nav-control { color: ${NAV.link}; text-decoration: none; }
+${NAVIGATION_HEADER} .mp-nav-control:focus-visible, ${NAVIGATION_HEADER} .mp-nav-control:has(input:focus-visible) { outline: 2px solid ${NAV.focus}; outline-offset: 3px; z-index: 1; }
+.mp-nav-control .mp-nav-icon { display: block; width: 18px; height: 18px; flex: 0 0 18px; }
+.mp-nav-control .mp-nav-copy { display: block; }
+${NAVIGATION_HEADER} .mp-nav-control input { appearance: none; box-sizing: border-box; position: relative; flex: 0 0 26px; width: 26px; height: 16px; margin: 0; border: 1px solid ${NAV.switchBorder}; border-radius: 9px; color: ${NAV.switchThumb}; background: ${NAV.switchOff}; cursor: pointer; }
+.mp-nav-control input::before { content: ''; position: absolute; width: 10px; height: 10px; left: 2px; top: 2px; border-radius: 50%; background: currentColor; }
+${NAVIGATION_HEADER} .mp-nav-control input:checked { color: ${NAV.switchOnThumb}; background: ${NAV.switchOn}; border-color: ${NAV.switchOn}; }
+.mp-nav-control input:checked::before { left: 12px; }
+.mp-nav-control input:disabled { opacity: .5; cursor: wait; }
+${NAVIGATION_HEADER} label.mp-nav-control:has(input:not(:checked)) .mp-nav-copy { color: ${NAV.muted}; }
+/* Preserve native siblings while visually joining them into one control bar. */
+${NAVIGATION_HEADER} .mp-nav-control { background: ${NAV.surface}; border-color: ${NAV.border}; }
+${NAVIGATION_HEADER} label.mp-nav-control { border-radius: ${UI.radius.nav} 0 0 ${UI.radius.nav}; border-right: 0; padding-right: 14px; }
+${NAVIGATION_HEADER} a.mp-nav-control { margin-left: calc(-1 * var(--mp-nav-gap, 8px)); border-radius: 0 ${UI.radius.nav} ${UI.radius.nav} 0; border-left: 0; gap: 7px; padding-left: 14px; }
+${NAVIGATION_HEADER} a.mp-nav-control::before { content: ''; position: absolute; left: 0; top: 10px; bottom: 10px; width: 1px; background: ${NAV.divider}; }
+${NAVIGATION_HEADER} .mp-nav-control:hover { background: ${NAV.surfaceHover}; }
+${NAVIGATION_HEADER} .mp-nav-error { flex:1 0 100%;order:1;min-width:0;max-width:100%;margin:4px 0 0; }
+@media (max-width: 420px) { ${NAVIGATION_HEADER} .mp-nav-control { padding-left: 9px; padding-right: 9px; gap: 6px; } }
+@media (forced-colors: active) { ${NAVIGATION_HEADER} .mp-nav-control { border: 1px solid ButtonText; } ${NAVIGATION_HEADER} .mp-nav-control input { appearance: auto; } .mp-nav-control input::before { content: none; } }
+`;
+  function createKoreaIcon() {
+    const ns = &quot;http://www.w3.org/2000/svg&quot;;
+    const icon = document.createElementNS(ns, &quot;svg&quot;);
+    icon.setAttribute(&quot;viewBox&quot;, &quot;0 0 24 24&quot;);
+    icon.setAttribute(&quot;aria-hidden&quot;, &quot;true&quot;);
+    icon.setAttribute(&quot;focusable&quot;, &quot;false&quot;);
+    icon.classList.add(&quot;mp-nav-icon&quot;);
+    const rim = document.createElementNS(ns, &quot;circle&quot;);
+    rim.setAttribute(&quot;cx&quot;, &quot;12&quot;);
+    rim.setAttribute(&quot;cy&quot;, &quot;12&quot;);
+    rim.setAttribute(&quot;r&quot;, &quot;12&quot;);
+    rim.setAttribute(&quot;fill&quot;, &quot;#f5f3eb&quot;);
+    const blue = document.createElementNS(ns, &quot;circle&quot;);
+    blue.setAttribute(&quot;cx&quot;, &quot;12&quot;);
+    blue.setAttribute(&quot;cy&quot;, &quot;12&quot;);
+    blue.setAttribute(&quot;r&quot;, &quot;8&quot;);
+    blue.setAttribute(&quot;fill&quot;, &quot;#477b9d&quot;);
+    const red = document.createElementNS(ns, &quot;path&quot;);
+    red.setAttribute(&quot;d&quot;, &quot;M4 12a8 8 0 0 1 16 0 4 4 0 0 1-8 0 4 4 0 0 0-8 0&quot;);
+    red.setAttribute(&quot;fill&quot;, &quot;#cf655c&quot;);
+    icon.append(rim, blue, red);
+    return icon;
+  }
+
+  // src/ui/navigation-controls.ts
+  var NavigationControls = class {
+    observer;
+    style;
+    pairs = /* @__PURE__ */ new Map();
+    enabled;
+    pending = false;
+    saveError = false;
+    change;
+    mount(change) {
+      if (this.observer) return;
+      this.change = change;
+      this.style = document.createElement(&quot;style&quot;);
+      this.style.textContent = NAVIGATION_CONTROL_CSS;
+      document.head.append(this.style);
+      this.observer = new MutationObserver((records) => {
+        if (records.some((record) => record.target instanceof Element &amp;&amp; record.target.closest(NAVIGATION_HEADER) || [...record.addedNodes, ...record.removedNodes].some((node) => node instanceof Element &amp;&amp; (node.matches(NAVIGATION_HEADER) || node.querySelector(NAVIGATION_HEADER))))) {
+          this.reconcile();
+        }
+      });
+      this.reconcile();
+    }
+    reconcile() {
+      const observer = this.observer;
+      if (!observer) return;
+      observer.disconnect();
+      const targets = navigationUserItems(document);
+      for (const [target, pair] of this.pairs) {
+        if (!targets.includes(target)) {
+          pair.label.remove();
+          pair.link.remove();
+          pair.error.remove();
+          this.pairs.delete(target);
+        }
+      }
+      for (const target of targets) {
+        let pair = this.pairs.get(target);
+        if (!pair) {
+          const label = document.createElement(&quot;label&quot;);
+          label.className = &quot;mp-nav-control&quot;;
+          const input = document.createElement(&quot;input&quot;);
+          input.type = &quot;checkbox&quot;;
+          input.setAttribute(&quot;role&quot;, &quot;switch&quot;);
+          input.setAttribute(&quot;aria-label&quot;, &quot;\uD655\uC7A5 \uAE30\uB2A5&quot;);
+          const error = document.createElement(&quot;div&quot;);
+          error.className = &quot;mp-nav-error mpkr-status-message&quot;;
+          error.hidden = true;
+          const errorTitle = document.createElement(&quot;strong&quot;);
+          errorTitle.textContent = &quot;\uC124\uC815\uC744 \uC800\uC7A5\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4.&quot;;
+          const errorDetail = document.createElement(&quot;p&quot;);
+          errorDetail.textContent = &quot;\uAE30\uC874 \uC124\uC815\uC744 \uC720\uC9C0\uD588\uC2B5\uB2C8\uB2E4. \uC2A4\uC704\uCE58\uB97C \uB2E4\uC2DC \uB20C\uB7EC \uC8FC\uC138\uC694.&quot;;
+          error.append(errorTitle, errorDetail);
+          error.setAttribute(&quot;role&quot;, &quot;status&quot;);
+          error.setAttribute(&quot;aria-live&quot;, &quot;polite&quot;);
+          error.setAttribute(&quot;aria-atomic&quot;, &quot;true&quot;);
+          const labelText = document.createElement(&quot;span&quot;);
+          labelText.className = &quot;mp-nav-copy&quot;;
+          labelText.textContent = &quot;\uD655\uC7A5 \uAE30\uB2A5&quot;;
+          label.append(labelText, input);
+          input.addEventListener(&quot;change&quot;, async () => {
+            if (this.pending || !this.change) return;
+            const next = input.checked;
+            this.pending = true;
+            this.saveError = false;
+            this.updateInputs();
+            try {
+              await this.change(next);
+            } catch {
+              if (this.observer) this.saveError = true;
+            } finally {
+              this.pending = false;
+              this.updateInputs();
+            }
+          });
+          const link = document.createElement(&quot;a&quot;);
+          link.className = &quot;mp-nav-control&quot;;
+          const linkText = document.createElement(&quot;span&quot;);
+          linkText.className = &quot;mp-nav-copy&quot;;
+          linkText.textContent = &quot;\uB300\uD55C\uBBFC\uAD6D&quot;;
+          link.setAttribute(&quot;aria-label&quot;, &quot;\uB300\uD55C\uBBFC\uAD6D&quot;);
+          link.append(createKoreaIcon(), linkText);
+          link.href = SOUTH_KOREA_AREA_URL;
+          pair = { label, input, link, error };
+          this.pairs.set(target, pair);
+        }
+        if (pair.error.parentElement !== target.parentElement) target.parentElement?.append(pair.error);
+        if (target.previousElementSibling !== pair.link || pair.link.previousElementSibling !== pair.label) {
+          target.before(pair.label, pair.link);
+        }
+      }
+      this.updateInputs();
+      const headers = document.querySelectorAll(NAVIGATION_HEADER);
+      for (const header of headers) {
+        observer.observe(header, { childList: true, subtree: true });
+        for (let parent = header.parentElement; parent; parent = parent.parentElement) {
+          observer.observe(parent, { childList: true });
+        }
+      }
+      if (!headers.length) {
+        observer.observe(document.documentElement, { childList: true });
+        if (document.body) observer.observe(document.body, { childList: true });
+      }
+    }
+    render(enabled) {
+      this.enabled = enabled;
+      this.saveError = false;
+      this.updateInputs();
+    }
+    updateInputs() {
+      for (const { input, error } of this.pairs.values()) {
+        error.hidden = !this.saveError;
+        input.checked = this.enabled === true;
+        input.disabled = this.pending || this.enabled === void 0;
+      }
+    }
+    destroy() {
+      this.observer?.disconnect();
+      this.observer = void 0;
+      this.change = void 0;
+      for (const { label, link, error } of this.pairs.values()) {
+        label.remove();
+        link.remove();
+        error.remove();
+      }
+      this.saveError = false;
+      this.pairs.clear();
+      this.style?.remove();
+      this.style = void 0;
+    }
+  };
+
+  // src/sites/mountain-project/contract/selectors/shared.ts
+  var SHARED_SELECTORS = {
+    areaLinks: 'a[href*=&quot;/area/&quot;]',
+    routeLinks: 'a[href*=&quot;/route/&quot;]',
+    explicitBreadcrumb: [
+      &quot;.breadcrumbs&quot;,
+      &quot;.breadcrumb&quot;,
+      '[aria-label=&quot;breadcrumb&quot;]',
+      '[aria-label=&quot;Breadcrumb&quot;]'
+    ].join(&quot;, &quot;),
+    routeGuideLink: 'a[href$=&quot;/route-guide&quot;]',
+    leftNavigation: &quot;.left-nav&quot;,
+    sidebarContent: &quot;.mp-sidebar&quot;,
+    areaPage: &quot;#climb-area-page&quot;,
+    routePage: &quot;#route-page&quot;,
+    mainContentContainer: &quot;.main-content-container&quot;,
+    mainContent: &quot;.main-content&quot;,
+    authoredContent: &quot;.fr-view&quot;,
+    commentBody: &quot;.comment-body&quot;,
+    commentContainer: '.main-comment, [id^=&quot;Comment-&quot;], .comment-item, tr',
+    commentAuthor: [
+      &quot;.comment-author&quot;,
+      &quot;.author&quot;,
+      '[rel=&quot;author&quot;]',
+      '.user a[href*=&quot;/user/&quot;]',
+      'a[href*=&quot;/user/&quot;]'
+    ].join(&quot;, &quot;),
+    descriptionDetailsClass: &quot;.description-details&quot;,
+    descriptionDetails: &quot;table.description-details&quot;,
+    titleWithBorderBottomClass: &quot;title-with-border-bottom&quot;,
+    directUiText: [
+      &quot;.mp-sidebar .small.text-warm&quot;,
+      &quot;.comments .form-char-count&quot;,
+      &quot;.text-section > div&quot;,
+      &quot;#sort-dropdown > strong&quot;,
+      &quot;#sort-dropdown > .current-sort&quot;,
+      &quot;.dropdown-menu.dropdown-menu-right .dropdown-item.comments-sort&quot;
+    ].join(&quot;, &quot;),
+    frameHeader: &quot;#header-container&quot;,
+    framePrintHeader: &quot;#header-container-print&quot;,
+    frameFooter: &quot;#footer-container&quot;,
+    frameAdvertisement: &quot;#div-gpt-ad-1614709329076-0&quot;,
+    frameCookieConsent: &quot;#cookie-consent&quot;,
+    navigationAction: [
+      &quot;a[href]&quot;,
+      &quot;button[data-href]&quot;,
+      &quot;button[data-url]&quot;,
+      &quot;button[onclick]&quot;,
+      &quot;input[data-href]&quot;,
+      &quot;input[data-url]&quot;,
+      &quot;input[onclick]&quot;,
+      '[role=&quot;button&quot;][data-href]',
+      '[role=&quot;button&quot;][data-url]',
+      '[role=&quot;button&quot;][onclick]'
+    ].join(&quot;,&quot;)
+  };
+  var LOCATION_TRAIL_CONTRACT = {
+    component: &quot;location-trail&quot;,
+    key: &quot;breadcrumb&quot;,
+    required: false,
+    candidates: [
+      { key: &quot;explicit&quot;, selector: SHARED_SELECTORS.explicitBreadcrumb },
+      { key: &quot;legacy-route-guide&quot;, selector: SHARED_SELECTORS.routeGuideLink }
+    ]
+  };
+
+  // src/sites/mountain-project/contract/selectors/stats.ts
+  var STATS_SELECTORS = {
+    root: &quot;#route-stats&quot;,
+    tableRoot: &quot;#route-stats .onx-stats-table&quot;,
+    tableRootFallback: &quot;.onx-stats-table&quot;,
+    componentHeadings: &quot;.onx-stats-table h3&quot;,
+    ticksSectionId: &quot;#ticks-column&quot;,
+    ticksBodyId: 'tbody[id=&quot;ticks-body&quot;]',
+    tickRowLandmark: 'tr[id^=&quot;ticks.&quot;]',
+    tickRows: '#route-stats .onx-stats-table tr[id^=&quot;ticks.&quot;]',
+    tickAuthor: 'td:first-child [rel=&quot;author&quot;], td:first-child .author, td:first-child a[href*=&quot;/user/&quot;]',
+    frameBreadcrumb: &quot;.main-content-container #route-stats > .row.pt-main-content > .col-xs-12 > .mb-half.small.text-warm&quot;,
+    frameTitle: &quot;.main-content-container #route-stats > .row.pt-main-content > .col-xs-12 > h1&quot;,
+    frameMainContainer: &quot;.main-content-container&quot;,
+    frameContainerFluid: &quot;.main-content-container > .container-fluid&quot;,
+    frameLayoutRow: &quot;.main-content-container #route-stats > .row.pt-main-content&quot;,
+    maxHeightClass: &quot;max-height&quot;
+  };
+  var STATS_FRAME_CHROME_HIDE_SELECTORS = [
+    SHARED_SELECTORS.framePrintHeader,
+    SHARED_SELECTORS.frameHeader,
+    SHARED_SELECTORS.frameAdvertisement,
+    SHARED_SELECTORS.frameCookieConsent,
+    SHARED_SELECTORS.frameFooter,
+    STATS_SELECTORS.frameBreadcrumb,
+    STATS_SELECTORS.frameTitle
+  ];
+  var STATS_FRAME_CONTRACT = {
+    component: &quot;route-stats-frame&quot;,
+    key: &quot;frame-landmarks&quot;,
+    required: true,
+    candidates: [
+      { key: &quot;stats-root&quot;, selector: STATS_SELECTORS.root },
+      { key: &quot;stats-table-root&quot;, selector: STATS_SELECTORS.tableRootFallback }
+    ]
+  };
+  var STATS_TICKS_SECTION_CONTRACT = {
+    component: &quot;route-stats-presentation&quot;,
+    key: &quot;ticks-section&quot;,
+    required: false,
+    candidates: [
+      { key: &quot;section-id&quot;, selector: STATS_SELECTORS.ticksSectionId },
+      { key: &quot;tbody-id&quot;, selector: STATS_SELECTORS.ticksBodyId },
+      { key: &quot;tick-row-id&quot;, selector: STATS_SELECTORS.tickRowLandmark }
+    ]
+  };
+
+  // src/sites/mountain-project/contract/selectors/community.ts
+  var COMMUNITY_SELECTORS = {
+    topicBody: &quot;#forum-table .message-row .fr-view&quot;,
+    topicRow: &quot;#forum-table .message-row&quot;,
+    topicAuthor: '.bio > a[href*=&quot;/user/&quot;]',
+    activityComment: &quot;#whats-new .comment-row td > .row > .col-md-12&quot;,
+    activityRow: &quot;#whats-new .comment-row&quot;,
+    activityAuthor: 'td > a[href*=&quot;/user/&quot;]',
+    protectedContent: '.fr-view, .mpkr-activity-comment-source, .signature, blockquote, pre, code, cite, [contenteditable=&quot;true&quot;], textarea',
+    gymDetailTitle: &quot;#climbing-gyms .pt-main-content h1&quot;,
+    protectedGymValue: '#climbing-gyms .gym-info > div, #climbing-gyms table td.text-xs-right, #climbing-gyms .gym-breadcrumbs a[href*=&quot;/gyms/&quot;]',
+    uiExtra: &quot;#partner-finder p, #partner-finder div, #whats-new div, #topic-guts div, #forum-table div, #climbing-gyms .gym-count, #climbing-gyms .add-gym-cta p, #climbing-gyms .improve-gym-cta p, #climbing-gyms .photos-cta p, #climbing-gyms .stars-avg&quot;
+  };
+
+  // src/core/translation-text-policy.ts
+  var PlaceholderIntegrityError = class extends Error {
+    constructor(failedKinds, message = &quot;\uBC88\uC5ED\uAE30\uAC00 \uBCF4\uD638 \uD1A0\uD070\uC744 \uBCC0\uACBD\uD574 \uC548\uC804\uD558\uAC8C \uC6D0\uBB38\uC744 \uBCF5\uC6D0\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.&quot;) {
+      super(message);
+      this.failedKinds = failedKinds;
+      this.name = &quot;PlaceholderIntegrityError&quot;;
+    }
+  };
+
+  // src/rendering/dom-translation-format.ts
+  var SAFE_TAGS = /* @__PURE__ */ new Set([
+    &quot;A&quot;,
+    &quot;ABBR&quot;,
+    &quot;B&quot;,
+    &quot;BLOCKQUOTE&quot;,
+    &quot;BR&quot;,
+    &quot;CODE&quot;,
+    &quot;DIV&quot;,
+    &quot;EM&quot;,
+    &quot;H3&quot;,
+    &quot;H4&quot;,
+    &quot;H5&quot;,
+    &quot;H6&quot;,
+    &quot;I&quot;,
+    &quot;IMG&quot;,
+    &quot;KBD&quot;,
+    &quot;LI&quot;,
+    &quot;MARK&quot;,
+    &quot;OL&quot;,
+    &quot;P&quot;,
+    &quot;PRE&quot;,
+    &quot;S&quot;,
+    &quot;SMALL&quot;,
+    &quot;SPAN&quot;,
+    &quot;STRONG&quot;,
+    &quot;SUB&quot;,
+    &quot;SUP&quot;,
+    &quot;U&quot;,
+    &quot;UL&quot;
+  ]);
+  var VOID_TAGS = /* @__PURE__ */ new Set([&quot;BR&quot;, &quot;IMG&quot;]);
+  var BLOCKED_TAGS = /* @__PURE__ */ new Set([
+    &quot;SCRIPT&quot;,
+    &quot;STYLE&quot;,
+    &quot;NOSCRIPT&quot;,
+    &quot;TEMPLATE&quot;,
+    &quot;FORM&quot;,
+    &quot;INPUT&quot;,
+    &quot;TEXTAREA&quot;,
+    &quot;SELECT&quot;,
+    &quot;OPTION&quot;,
+    &quot;BUTTON&quot;,
+    &quot;IFRAME&quot;,
+    &quot;OBJECT&quot;,
+    &quot;EMBED&quot;,
+    &quot;LINK&quot;,
+    &quot;META&quot;
+  ]);
+  var GLOBAL_ATTRIBUTES = /* @__PURE__ */ new Set([&quot;class&quot;, &quot;title&quot;, &quot;lang&quot;, &quot;dir&quot;, &quot;role&quot;]);
+  var TAG_ATTRIBUTES = {
+    A: /* @__PURE__ */ new Set([&quot;href&quot;, &quot;target&quot;, &quot;rel&quot;, &quot;download&quot;, &quot;hreflang&quot;]),
+    IMG: /* @__PURE__ */ new Set([&quot;src&quot;, &quot;alt&quot;, &quot;width&quot;, &quot;height&quot;, &quot;loading&quot;]),
+    OL: /* @__PURE__ */ new Set([&quot;start&quot;, &quot;reversed&quot;, &quot;type&quot;]),
+    LI: /* @__PURE__ */ new Set([&quot;value&quot;]),
+    ABBR: /* @__PURE__ */ new Set([&quot;title&quot;])
+  };
+  function safeUrl(value, attribute) {
+    const normalized = value.trim().toLocaleLowerCase(&quot;en-US&quot;);
+    if (attribute === &quot;src&quot; &amp;&amp; normalized.startsWith(&quot;data:image/&quot;)) return true;
+    return !/^(?:javascript|vbscript|data):/u.test(normalized);
+  }
+  function descriptor(element) {
+    const attributes = [];
+    for (const attribute of Array.from(element.attributes)) {
+      const name = attribute.name.toLocaleLowerCase(&quot;en-US&quot;);
+      if (name === &quot;id&quot; || name === &quot;style&quot; || name.startsWith(&quot;on&quot;) || name.startsWith(&quot;data-&quot;)) continue;
+      const allowed = GLOBAL_ATTRIBUTES.has(name) || name.startsWith(&quot;aria-&quot;) || TAG_ATTRIBUTES[element.tagName]?.has(name);
+      if (!allowed) continue;
+      if ((name === &quot;href&quot; || name === &quot;src&quot;) &amp;&amp; !safeUrl(attribute.value, name)) continue;
+      attributes.push([name, attribute.value]);
+    }
+    return { tagName: SAFE_TAGS.has(element.tagName) ? element.tagName : &quot;SPAN&quot;, attributes, source: element };
+  }
+  function applyClickMeaning(clone, source) {
+    if (clone.tagName === &quot;A&quot; &amp;&amp; clone.hasAttribute(&quot;href&quot;) &amp;&amp; !source.hasAttribute(&quot;onclick&quot;)) return;
+    if (!source.matches('a[href], [role=&quot;button&quot;], [onclick]')) return;
+    clone.addEventListener(&quot;click&quot;, (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (source instanceof HTMLElement) source.click();
+    });
+  }
+  function createShell(value, ownerDocument) {
+    const element = ownerDocument.createElement(value.tagName.toLocaleLowerCase(&quot;en-US&quot;));
+    value.attributes.forEach(([name, attributeValue]) => element.setAttribute(name, attributeValue));
+    applyClickMeaning(element, value.source);
+    return element;
+  }
+  function safeClone(source, ownerDocument) {
+    if (BLOCKED_TAGS.has(source.tagName)) return void 0;
+    if (!SAFE_TAGS.has(source.tagName)) {
+      const fragment = ownerDocument.createDocumentFragment();
+      source.childNodes.forEach((child) => {
+        if (child instanceof Text) fragment.append(ownerDocument.createTextNode(child.nodeValue ?? &quot;&quot;));
+        else if (child instanceof Element) {
+          const clone2 = safeClone(child, ownerDocument);
+          if (clone2) fragment.append(clone2);
+        }
+      });
+      return fragment;
+    }
+    const clone = createShell(descriptor(source), ownerDocument);
+    if (!VOID_TAGS.has(source.tagName)) {
+      source.childNodes.forEach((child) => {
+        if (child instanceof Text) clone.append(ownerDocument.createTextNode(child.nodeValue ?? &quot;&quot;));
+        else if (child instanceof Element) {
+          const childClone = safeClone(child, ownerDocument);
+          if (childClone) clone.append(childClone);
+        }
+      });
+    }
+    return clone;
+  }
+  function escaped(value) {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, &quot;\\$&amp;&quot;);
+  }
+  function renderStructuredTranslation(format, translated, ownerDocument) {
+    const root = createShell(format.root, ownerDocument);
+    if (format.tokens.length === 0) {
+      root.textContent = translated;
+      return root;
+    }
+    const byValue = new Map(format.tokens.map((token) => [token.value, token]));
+    const pattern = new RegExp(
+      format.tokens.map(({ value }) => value).sort((left, right) => right.length - left.length).map(escaped).join(&quot;|&quot;),
+      &quot;gu&quot;
+    );
+    const seen = /* @__PURE__ */ new Set();
+    const stack = [{ element: root }];
+    let cursor = 0;
+    for (const match of translated.matchAll(pattern)) {
+      const index = match.index;
+      const value = match[0];
+      const token = byValue.get(value);
+      if (index === void 0 || !token || seen.has(value)) {
+        throw new PlaceholderIntegrityError([&quot;protected&quot;], &quot;DOM \uAD6C\uC870 \uBCF4\uD638 \uD1A0\uD070\uC774 \uC911\uBCF5\uB418\uAC70\uB098 \uC190\uC0C1\uB418\uC5C8\uC2B5\uB2C8\uB2E4.&quot;);
+      }
+      seen.add(value);
+      if (index > cursor) stack.at(-1).element.append(ownerDocument.createTextNode(translated.slice(cursor, index)));
+      if (token.kind === &quot;open&quot;) {
+        const element = createShell(token.element, ownerDocument);
+        stack.at(-1).element.append(element);
+        stack.push({ id: token.id, element });
+      } else if (token.kind === &quot;close&quot;) {
+        if (stack.length === 1 || stack.at(-1).id !== token.id) {
+          throw new PlaceholderIntegrityError([&quot;protected&quot;], &quot;DOM \uAD6C\uC870 \uBCF4\uD638 \uD1A0\uD070\uC758 \uC911\uCCA9 \uC21C\uC11C\uAC00 \uC190\uC0C1\uB418\uC5C8\uC2B5\uB2C8\uB2E4.&quot;);
+        }
+        stack.pop();
+      } else if (token.kind === &quot;void&quot;) {
+        stack.at(-1).element.append(createShell(token.element, ownerDocument));
+      } else {
+        const clone = safeClone(token.element.source, ownerDocument);
+        if (clone) stack.at(-1).element.append(clone);
+      }
+      cursor = index + value.length;
+    }
+    if (seen.size !== format.tokens.length || stack.length !== 1) {
+      throw new PlaceholderIntegrityError([&quot;protected&quot;], &quot;DOM \uAD6C\uC870 \uBCF4\uD638 \uD1A0\uD070\uC758 \uAC1C\uC218 \uB610\uB294 \uC911\uCCA9\uC774 \uC190\uC0C1\uB418\uC5C8\uC2B5\uB2C8\uB2E4.&quot;);
+    }
+    if (cursor &lt; translated.length) root.append(ownerDocument.createTextNode(translated.slice(cursor)));
+    return root;
+  }
+  function cloneStructuredListShell(format, ownerDocument) {
+    return format.parentList ? createShell(format.parentList, ownerDocument) : void 0;
+  }
+
+  // src/rendering/original-preserving-renderer.ts
+  var SAFE_TRANSLATION_TAGS = /* @__PURE__ */ new Set([
+    &quot;BLOCKQUOTE&quot;,
+    &quot;DIV&quot;,
+    &quot;H3&quot;,
+    &quot;H4&quot;,
+    &quot;H5&quot;,
+    &quot;H6&quot;,
+    &quot;P&quot;,
+    &quot;PRE&quot;
+  ]);
+  var OriginalPreservingRenderer = class {
+    style;
+    bindings = /* @__PURE__ */ new Map();
+    presentations = /* @__PURE__ */ new Set();
+    sectionPresentations = /* @__PURE__ */ new WeakMap();
+    originalDisplays = /* @__PURE__ */ new WeakMap();
+    inlineBindings = /* @__PURE__ */ new Map();
+    retranslateHandler;
+    setRetranslateHandler(handler) {
+      this.retranslateHandler = handler;
+    }
+    track(target) {
+      if (target.renderMode === &quot;inline&quot;) {
+        const existing2 = this.inlineBindings.get(target.id);
+        const source = target.sourceElements[0];
+        if (!source) return;
+        if (existing2) {
+          existing2.target = target;
+          return;
+        }
+        this.inlineBindings.set(target.id, {
+          target,
+          original: source.textContent ?? target.source
+        });
+        return;
+      }
+      const existing = this.bindings.get(target.id);
+      if (existing) {
+        existing.target = target;
+        target.sourceElements.forEach((element) => {
+          if (!this.originalDisplays.has(element)) {
+            this.originalDisplays.set(element, element.style.display);
+          }
+        });
+        return;
+      }
+      target.sourceElements.forEach((element) => {
+        this.originalDisplays.set(element, element.style.display);
+      });
+      const sectionRoot = this.sectionRoot(target);
+      let presentation = sectionRoot ? this.sectionPresentations.get(sectionRoot) : void 0;
+      if (!presentation) {
+        presentation = {
+          bindings: [],
+          forceOriginal: false,
+          sectionRoot,
+          lists: /* @__PURE__ */ new Map(),
+          translatedCount: 0
+        };
+        this.presentations.add(presentation);
+        if (sectionRoot) {
+          this.sectionPresentations.set(sectionRoot, presentation);
+        }
+      }
+      const binding = { target, presentation };
+      presentation.bindings.push(binding);
+      this.bindings.set(target.id, binding);
+    }
+    reset(target) {
+      if (target.renderMode === &quot;inline&quot;) {
+        const binding2 = this.inlineBindings.get(target.id);
+        const source = target.sourceElements[0];
+        if (!source) return;
+        if (binding2) {
+          binding2.target = target;
+          binding2.original = source.textContent ?? target.source;
+        } else {
+          this.track(target);
+        }
+        return;
+      }
+      this.track(target);
+      const binding = this.bindings.get(target.id);
+      if (!binding) {
+        return;
+      }
+      const presentation = binding.presentation;
+      binding.failureMessage = void 0;
+      this.removeCopy(binding);
+      this.showOriginal(binding.target, presentation);
+      if (presentation.translatedCount > 0) {
+        return;
+      }
+      this.releaseEmptyPresentation(presentation);
+    }
+    render(target, translated) {
+      if (!translated.trim()) {
+        return;
+      }
+      this.track(target);
+      if (target.renderMode === &quot;inline&quot;) {
+        const binding2 = this.inlineBindings.get(target.id);
+        const source = binding2?.target.sourceElements[0];
+        if (!binding2 || !source) return;
+        const leading = binding2.original.match(/^\s*/)?.[0] ?? &quot;&quot;;
+        const trailing = binding2.original.match(/\s*$/)?.[0] ?? &quot;&quot;;
+        source.textContent = `${leading}${translated}${trailing}`;
+        return;
+      }
+      const binding = this.bindings.get(target.id);
+      if (!binding) {
+        return;
+      }
+      binding.failureMessage = void 0;
+      if (binding.translated === void 0) binding.presentation.translatedCount += 1;
+      binding.translated = translated;
+      this.ensurePresentation(binding.presentation);
+      this.renderBinding(binding);
+      this.refreshPresentationState(binding.presentation);
+      if (binding.presentation.forceOriginal) this.showOriginal(target, binding.presentation);
+      else this.hideOriginal(target, binding.presentation);
+    }
+    showFailure(target, message) {
+      if (target.renderMode === &quot;inline&quot;) return;
+      this.track(target);
+      const binding = this.bindings.get(target.id);
+      if (!binding) return;
+      binding.failureMessage = message;
+      this.ensurePresentation(binding.presentation);
+      this.showOriginal(target, binding.presentation);
+      this.refreshPresentationState(binding.presentation);
+    }
+    hasFailureNotice(target) {
+      const status = this.bindings.get(target.id)?.presentation.status;
+      return Boolean(status?.isConnected &amp;&amp; !status.closest(&quot;[hidden]&quot;));
+    }
+    remove(id) {
+      const inline = this.inlineBindings.get(id);
+      if (inline) {
+        const source = inline.target.sourceElements[0];
+        if (source) source.textContent = inline.original;
+        this.inlineBindings.delete(id);
+        return;
+      }
+      const binding = this.bindings.get(id);
+      if (!binding) return;
+      this.removeCopy(binding);
+      this.showOriginal(binding.target, binding.presentation);
+      this.bindings.delete(id);
+      const presentation = binding.presentation;
+      presentation.bindings = presentation.bindings.filter((entry) => entry !== binding);
+      if (presentation.translatedCount === 0) this.releaseEmptyPresentation(presentation);
+      if (presentation.bindings.length === 0) {
+        this.presentations.delete(presentation);
+        if (presentation.sectionRoot) this.sectionPresentations.delete(presentation.sectionRoot);
+      }
+    }
+    releaseEmptyPresentation(presentation) {
+      presentation.toggleHost?.remove();
+      presentation.block?.remove();
+      presentation.block = void 0;
+      presentation.body = void 0;
+      presentation.toggle = void 0;
+      presentation.retranslate = void 0;
+      presentation.status = void 0;
+      presentation.feedback = void 0;
+      presentation.toggleHost = void 0;
+      presentation.lists.clear();
+      presentation.bindings.forEach((binding) => this.showOriginal(binding.target, presentation));
+      this.unwrapOriginalContent(presentation);
+    }
+    destroy() {
+      this.style?.remove();
+      this.style = void 0;
+      this.inlineBindings.forEach((binding) => {
+        const source = binding.target.sourceElements[0];
+        if (source) source.textContent = binding.original;
+      });
+      this.inlineBindings.clear();
+      this.presentations.forEach((presentation) => {
+        presentation.toggleHost?.remove();
+        presentation.block?.remove();
+        presentation.bindings.forEach((binding) => this.showOriginal(binding.target, presentation));
+        this.unwrapOriginalContent(presentation);
+      });
+      this.bindings.clear();
+      this.presentations.clear();
+      this.sectionPresentations = /* @__PURE__ */ new WeakMap();
+      this.originalDisplays = /* @__PURE__ */ new WeakMap();
+    }
+    sectionRoot(target) {
+      if (target.category === &quot;comment&quot;) {
+        return void 0;
+      }
+      for (const element of target.sourceElements) {
+        if (element.matches(SHARED_SELECTORS.authoredContent)) {
+          return element;
+        }
+        const root = element.closest(SHARED_SELECTORS.authoredContent);
+        if (root) {
+          return root;
+        }
+      }
+      return void 0;
+    }
+    ensurePresentation(presentation) {
+      if (presentation.block) {
+        return;
+      }
+      const first = presentation.bindings[0];
+      if (!first) {
+        return;
+      }
+      const ownerDocument = first.target.parent.ownerDocument;
+      if (!this.style) {
+        this.style = ownerDocument.createElement(&quot;style&quot;);
+        this.style.dataset.mpkrTranslationActions = &quot;&quot;;
+        this.style.textContent = TRANSLATION_ACTION_CSS;
+        ownerDocument.head.append(this.style);
+      }
+      const inlineCopy = first.target.renderMode === &quot;inline-copy&quot;;
+      const block = ownerDocument.createElement(inlineCopy ? &quot;span&quot; : &quot;div&quot;);
+      block.className = presentation.sectionRoot ? &quot;mpkr-machine-translation mpkr-section-translation&quot; : &quot;mpkr-machine-translation&quot;;
+      block.dataset.mpkrTranslationId = first.target.id;
+      block.style.color = &quot;inherit&quot;;
+      block.style.fontSize = &quot;inherit&quot;;
+      block.style.lineHeight = inlineCopy ? &quot;inherit&quot; : UI.font.bodyLineHeight;
+      block.style.margin = inlineCopy || presentation.sectionRoot ? &quot;0&quot; : &quot;0.5rem 0&quot;;
+      const body = ownerDocument.createElement(inlineCopy ? &quot;span&quot; : &quot;div&quot;);
+      body.className = &quot;mpkr-translation-body&quot;;
+      const status = ownerDocument.createElement(inlineCopy ? &quot;span&quot; : &quot;div&quot;);
+      status.className = &quot;mpkr-translation-status mpkr-status-message&quot;;
+      status.setAttribute(&quot;role&quot;, &quot;status&quot;);
+      status.setAttribute(&quot;aria-live&quot;, &quot;polite&quot;);
+      status.setAttribute(&quot;aria-atomic&quot;, &quot;true&quot;);
+      const feedback = ownerDocument.createElement(&quot;span&quot;);
+      feedback.className = &quot;mpkr-translation-feedback&quot;;
+      feedback.setAttribute(&quot;role&quot;, &quot;status&quot;);
+      feedback.setAttribute(&quot;aria-live&quot;, &quot;polite&quot;);
+      feedback.hidden = true;
+      const toggle = ownerDocument.createElement(&quot;button&quot;);
+      toggle.type = &quot;button&quot;;
+      toggle.className = &quot;mpkr-original-toggle&quot;;
+      toggle.textContent = presentation.forceOriginal ? &quot;\uC6D0\uBB38 \uC228\uAE30\uAE30&quot; : &quot;\uC6D0\uBB38 \uBCF4\uAE30&quot;;
+      toggle.setAttribute(&quot;aria-expanded&quot;, String(presentation.forceOriginal));
+      toggle.setAttribute(&quot;aria-label&quot;, presentation.forceOriginal ? &quot;\uC774 \uC139\uC158\uC758 \uC6D0\uBB38 \uC228\uAE30\uAE30&quot; : &quot;\uC774 \uC139\uC158\uC758 \uC6D0\uBB38 \uBCF4\uAE30&quot;);
+      toggle.addEventListener(&quot;click&quot;, (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        presentation.forceOriginal = !presentation.forceOriginal;
+        this.applyPresentation(presentation);
+      });
+      const retranslate = ownerDocument.createElement(&quot;button&quot;);
+      retranslate.type = &quot;button&quot;;
+      retranslate.className = &quot;mpkr-retranslate&quot;;
+      retranslate.textContent = &quot;\uC7AC\uBC88\uC5ED&quot;;
+      retranslate.setAttribute(&quot;aria-label&quot;, &quot;\uC774 \uC139\uC158 \uB2E4\uC2DC \uBC88\uC5ED&quot;);
+      retranslate.addEventListener(&quot;click&quot;, async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const handler = this.retranslateHandler;
+        if (!handler || retranslate.disabled) return;
+        const targetIds = presentation.bindings.map((binding) => binding.target).filter((target) => target.renderMode !== &quot;inline&quot;).map((target) => target.id);
+        if (targetIds.length === 0) return;
+        retranslate.disabled = true;
+        retranslate.setAttribute(&quot;aria-busy&quot;, &quot;true&quot;);
+        feedback.hidden = false;
+        feedback.textContent = &quot;\uC7AC\uBC88\uC5ED \uC911\u2026&quot;;
+        try {
+          const result = await handler(targetIds);
+          feedback.textContent = result === &quot;unchanged&quot; ? &quot;\uAE30\uC874 \uBC88\uC5ED\uACFC \uAC19\uC2B5\uB2C8\uB2E4.&quot; : result === &quot;failed&quot; ? &quot;\uC7AC\uBC88\uC5ED\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uC2DC\uB3C4\uD574 \uC8FC\uC138\uC694.&quot; : &quot;\uBC88\uC5ED\uC744 \uAC31\uC2E0\uD588\uC2B5\uB2C8\uB2E4.&quot;;
+          feedback.hidden = result === &quot;failed&quot; &amp;&amp; !status.hidden;
+        } catch {
+          feedback.textContent = &quot;\uC7AC\uBC88\uC5ED\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uC2DC\uB3C4\uD574 \uC8FC\uC138\uC694.&quot;;
+          feedback.hidden = !status.hidden;
+        } finally {
+          retranslate.disabled = false;
+          retranslate.removeAttribute(&quot;aria-busy&quot;);
+        }
+      });
+      block.append(body, status);
+      presentation.block = block;
+      presentation.body = body;
+      presentation.toggle = toggle;
+      presentation.retranslate = retranslate;
+      presentation.status = status;
+      presentation.feedback = feedback;
+      if (presentation.sectionRoot) {
+        this.wrapWholeRootOriginal(presentation);
+        presentation.sectionRoot.insertBefore(block, presentation.sectionRoot.firstChild);
+      } else {
+        first.target.parent.insertBefore(block, first.target.insertBefore ?? null);
+      }
+      const author = this.authorFor(first.target);
+      if (first.target.category === &quot;comment&quot; &amp;&amp; author?.parentElement) {
+        const toggleHost = ownerDocument.createElement(&quot;div&quot;);
+        toggleHost.className = &quot;mpkr-original-toggle-host mpkr-translation-actions&quot;;
+        author.insertAdjacentElement(&quot;afterend&quot;, toggleHost);
+        toggleHost.append(toggle);
+        toggleHost.append(retranslate, feedback);
+        presentation.toggleHost = toggleHost;
+      } else {
+        const actions = ownerDocument.createElement(&quot;span&quot;);
+        actions.className = &quot;mpkr-translation-actions&quot;;
+        actions.append(toggle, retranslate, feedback);
+        block.append(actions);
+      }
+      this.refreshPresentationState(presentation);
+    }
+    refreshPresentationState(presentation) {
+      const hasTranslation = presentation.translatedCount > 0;
+      const failure = presentation.bindings.find((binding) => binding.failureMessage)?.failureMessage;
+      if (presentation.body) presentation.body.hidden = !hasTranslation;
+      if (presentation.toggle) presentation.toggle.hidden = !hasTranslation;
+      if (presentation.status) {
+        setStatusMessage(presentation.status, failure ?? &quot;&quot;);
+        presentation.status.hidden = !failure;
+      }
+    }
+    authorFor(target) {
+      const source = target.sourceElements[0];
+      if (!source) {
+        return void 0;
+      }
+      const forumAuthor = source.closest(COMMUNITY_SELECTORS.topicRow)?.querySelector(COMMUNITY_SELECTORS.topicAuthor);
+      if (forumAuthor) return forumAuthor;
+      const activityAuthor = source.closest(COMMUNITY_SELECTORS.activityRow)?.querySelector(COMMUNITY_SELECTORS.activityAuthor);
+      if (activityAuthor) return activityAuthor;
+      const tickRow = source.closest(STATS_SELECTORS.tickRowLandmark);
+      if (tickRow) {
+        return tickRow.querySelector(STATS_SELECTORS.tickAuthor) ?? void 0;
+      }
+      const commentBody = target.parent.matches(SHARED_SELECTORS.commentBody) ? target.parent : source.closest(SHARED_SELECTORS.commentBody);
+      const localAuthor = commentBody?.querySelector(SHARED_SELECTORS.commentAuthor);
+      if (localAuthor) {
+        return localAuthor;
+      }
+      const commentContainer = commentBody?.closest(SHARED_SELECTORS.commentContainer);
+      return commentContainer?.querySelector(SHARED_SELECTORS.commentAuthor) ?? void 0;
+    }
+    wrapWholeRootOriginal(presentation) {
+      const root = presentation.sectionRoot;
+      if (!root || !presentation.bindings.some((binding) => binding.target.sourceElements.includes(root))) {
+        return;
+      }
+      const wrapper = root.ownerDocument.createElement(&quot;div&quot;);
+      wrapper.className = &quot;mpkr-original-section-content&quot;;
+      while (root.firstChild) {
+        wrapper.append(root.firstChild);
+      }
+      root.append(wrapper);
+      presentation.originalWrapper = wrapper;
+    }
+    unwrapOriginalContent(presentation) {
+      const root = presentation.sectionRoot;
+      const wrapper = presentation.originalWrapper;
+      if (!root || !wrapper) {
+        return;
+      }
+      while (wrapper.firstChild) {
+        root.insertBefore(wrapper.firstChild, wrapper);
+      }
+      wrapper.remove();
+      presentation.originalWrapper = void 0;
+    }
+    sourceForCopy = /* @__PURE__ */ new WeakMap();
+    insertInSourceOrder(parent, copy, source) {
+      if (source) this.sourceForCopy.set(copy, source);
+      let next = null;
+      for (let sibling = parent.lastElementChild; sibling; sibling = sibling.previousElementSibling) {
+        const siblingSource = this.sourceForCopy.get(sibling);
+        if (!source || !siblingSource || !(source.compareDocumentPosition(siblingSource) &amp; Node.DOCUMENT_POSITION_FOLLOWING)) break;
+        next = sibling;
+      }
+      parent.insertBefore(copy, next);
+    }
+    renderBinding(binding) {
+      const { presentation } = binding;
+      const body = presentation.body;
+      const source = binding.target.sourceElements[0];
+      const previous = binding.copy;
+      const previousParent = previous?.parentElement;
+      const previousNext = previous?.nextSibling ?? null;
+      previous?.remove();
+      let parent = previousParent ?? body;
+      if (!previousParent &amp;&amp; source?.tagName === &quot;LI&quot; &amp;&amp; source.parentElement) {
+        const listSource = source.parentElement;
+        let list = presentation.lists.get(listSource);
+        if (!list) {
+          list = binding.target.format ? cloneStructuredListShell(binding.target.format, body.ownerDocument) : void 0;
+          list ??= body.ownerDocument.createElement(listSource.tagName === &quot;OL&quot; ? &quot;ol&quot; : &quot;ul&quot;);
+          list.style.margin = &quot;0.35rem 0&quot;;
+          list.style.paddingLeft = &quot;1.4rem&quot;;
+          presentation.lists.set(listSource, list);
+          this.insertInSourceOrder(body, list, listSource);
+        }
+        parent = list;
+      }
+      const copy = binding.target.format ? renderStructuredTranslation(binding.target.format, binding.translated ?? &quot;&quot;, body.ownerDocument) : body.ownerDocument.createElement(
+        source?.tagName === &quot;LI&quot; ? &quot;li&quot; : source &amp;&amp; SAFE_TRANSLATION_TAGS.has(source.tagName) ? source.tagName.toLowerCase() : &quot;div&quot;
+      );
+      if (!binding.target.format) copy.textContent = binding.translated ?? &quot;&quot;;
+      if (copy.tagName !== &quot;LI&quot; &amp;&amp; binding.target.renderMode !== &quot;inline-copy&quot;) {
+        copy.style.marginTop = &quot;0.65rem&quot;;
+        copy.style.marginBottom = &quot;0&quot;;
+      }
+      binding.copy = copy;
+      if (previousParent) previousParent.insertBefore(copy, previousNext);
+      else this.insertInSourceOrder(parent, copy, source);
+      if (parent === body &amp;&amp; copy === body.firstElementChild &amp;&amp; binding.target.renderMode !== &quot;inline-copy&quot;) {
+        copy.style.marginTop = &quot;0&quot;;
+        const next = copy.nextElementSibling;
+        if (next &amp;&amp; ![&quot;UL&quot;, &quot;OL&quot;].includes(next.tagName)) next.style.marginTop = &quot;0.65rem&quot;;
+      }
+    }
+    removeCopy(binding) {
+      if (binding.translated) binding.presentation.translatedCount -= 1;
+      binding.translated = void 0;
+      binding.copy?.remove();
+      binding.copy = void 0;
+      for (const [source, list] of binding.presentation.lists) {
+        if (!list.childElementCount) {
+          list.remove();
+          binding.presentation.lists.delete(source);
+        }
+      }
+      const first = binding.presentation.body?.firstElementChild;
+      if (first &amp;&amp; ![&quot;UL&quot;, &quot;OL&quot;].includes(first.tagName)) first.style.marginTop = &quot;0&quot;;
+    }
+    applyPresentation(presentation) {
+      const showOriginal = presentation.forceOriginal;
+      if (presentation.block) {
+        presentation.block.style.display = &quot;&quot;;
+      }
+      if (presentation.toggle) {
+        presentation.toggle.textContent = showOriginal ? &quot;\uC6D0\uBB38 \uC228\uAE30\uAE30&quot; : &quot;\uC6D0\uBB38 \uBCF4\uAE30&quot;;
+        presentation.toggle.setAttribute(&quot;aria-expanded&quot;, String(showOriginal));
+        presentation.toggle.setAttribute(
+          &quot;aria-label&quot;,
+          showOriginal ? &quot;\uC774 \uC139\uC158\uC758 \uC6D0\uBB38 \uC228\uAE30\uAE30&quot; : &quot;\uC774 \uC139\uC158\uC758 \uC6D0\uBB38 \uBCF4\uAE30&quot;
+        );
+      }
+      presentation.bindings.forEach((binding) => {
+        if (showOriginal || !binding.translated) {
+          this.showOriginal(binding.target, presentation);
+        } else {
+          this.hideOriginal(binding.target, presentation);
+        }
+      });
+    }
+    hideOriginal(target, presentation) {
+      if (presentation.originalWrapper &amp;&amp; target.sourceElements.includes(presentation.sectionRoot)) {
+        presentation.originalWrapper.style.display = &quot;none&quot;;
+        return;
+      }
+      target.sourceElements.forEach((element) => {
+        element.style.display = &quot;none&quot;;
+      });
+    }
+    showOriginal(target, presentation) {
+      if (presentation.originalWrapper &amp;&amp; target.sourceElements.includes(presentation.sectionRoot)) {
+        presentation.originalWrapper.style.display = &quot;&quot;;
+        return;
+      }
+      target.sourceElements.forEach((element) => {
+        element.style.display = this.originalDisplays.get(element) ?? &quot;&quot;;
+      });
+    }
+  };
+
+  // &lt;stdin>
+  if (window.reviewCase === &quot;nav&quot;) {
+    const controls = new NavigationControls();
+    controls.mount(async () => {
+      throw Error(&quot;simulated storage failure&quot;);
+    });
+    controls.render(true);
+    document.querySelector(&quot;input&quot;).click();
+  } else {
+    const renderer = new OriginalPreservingRenderer();
+    const source = document.querySelector(&quot;#source&quot;);
+    const target = { id: &quot;review-description&quot;, category: &quot;description&quot;, source: source.textContent, sourceElements: [source], parent: source.parentElement, insertBefore: source.nextSibling };
+    if (window.reviewCase === &quot;same&quot;) {
+      renderer.setRetranslateHandler(async () => &quot;unchanged&quot;);
+      renderer.render(target, &quot;\uC774 \uB8E8\uD2B8\uB294 \uD06C\uB799\uC744 \uB530\uB77C \uC791\uC740 \uC120\uBC18\uAE4C\uC9C0 \uC774\uC5B4\uC9D1\uB2C8\uB2E4.&quot;);
+      document.querySelector(&quot;.mpkr-retranslate&quot;).click();
+    } else renderer.showFailure(target, &quot;\uC6D0\uBB38 \uD615\uC2DD\uC744 \uBCF4\uD638\uD558\uAE30 \uC704\uD574 \uBC88\uC5ED\uC744 \uBCF4\uB958\uD588\uC2B5\uB2C8\uB2E4. \uC6D0\uBB38\uC740 \uADF8\uB300\uB85C \uC720\uC9C0\uB429\uB2C8\uB2E4. \uC7AC\uBC88\uC5ED\uC73C\uB85C \uB2E4\uC2DC \uC2DC\uB3C4\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.&quot;);
+  }
+})();
+&lt;/script>&lt;/html>"></iframe><h2>원문 형식 보호</h2><iframe title="protected" srcdoc="&lt;!doctype html>&lt;html lang=&quot;ko&quot;>&lt;meta charset=&quot;utf-8&quot;>&lt;style>@font-face{font-family:ReviewKorean;src:url('file:///mnt/c/Windows/Fonts/malgun.ttf')}body{margin:0;padding:16px;font:13px/1.7 ReviewKorean,system-ui;background:white}.mpkr-status-message,.mpkr-translation-actions button,.mpkr-translation-feedback{font-family:ReviewKorean,system-ui!important}#source{font-family:Georgia,serif}#user{font-size:12px}#user a{color:#0060a9}&lt;/style>&lt;div class=&quot;fr-view&quot;>&lt;p id=&quot;source&quot;>The route follows the crack to a small ledge.&lt;/p>&lt;/div>&lt;script>window.reviewCase=&quot;protected&quot;;(() => {
+  // src/sites/mountain-project/contract/origins.ts
+  var MOUNTAIN_PROJECT_CANONICAL_ORIGIN = &quot;https://www.mountainproject.com&quot;;
+  var MOUNTAIN_PROJECT_HOSTNAMES = [
+    &quot;mountainproject.com&quot;,
+    &quot;www.mountainproject.com&quot;
+  ];
+  var supportedHostnames = new Set(MOUNTAIN_PROJECT_HOSTNAMES);
+  function buildMountainProjectUrl(path) {
+    return new URL(path, MOUNTAIN_PROJECT_CANONICAL_ORIGIN).href;
+  }
+
+  // src/sites/mountain-project/contract/routes.ts
+  function buildEntityPath(prefix, id, slug) {
+    return `${prefix}/${encodeURIComponent(id)}${slug ? `/${encodeURIComponent(slug)}` : &quot;&quot;}`;
+  }
+  function buildAreaPath(id, slug) {
+    return buildEntityPath(&quot;/area&quot;, id, slug);
+  }
+  function buildMapPath(id, slug) {
+    return buildEntityPath(&quot;/map&quot;, id, slug);
+  }
+
+  // src/sites/mountain-project/contract/regions/south-korea.ts
+  var SOUTH_KOREA_AREA_ID = &quot;106225629&quot;;
+  var SOUTH_KOREA_AREA_SLUG = &quot;south-korea&quot;;
+  var SOUTH_KOREA_AREA_PATH = buildAreaPath(
+    SOUTH_KOREA_AREA_ID,
+    SOUTH_KOREA_AREA_SLUG
+  );
+  var SOUTH_KOREA_MAP_PATH = buildMapPath(
+    SOUTH_KOREA_AREA_ID,
+    SOUTH_KOREA_AREA_SLUG
+  );
+  var SOUTH_KOREA_AREA_URL = buildMountainProjectUrl(SOUTH_KOREA_AREA_PATH);
+  var SOUTH_KOREA_MAP_URL = buildMountainProjectUrl(SOUTH_KOREA_MAP_PATH);
+  var SOUTH_KOREA_AREAS = [
+    {
+      id: &quot;126256865&quot;,
+      sourceName: &quot;Gamaksan (Dawn Wall), Paju-si, Gyeonggi-do (Seolma 12 Bridge)&quot;,
+      koreanName: &quot;\uAC10\uC545\uC0B0(\uC0C8\uBCBD\uBCBD), \uD30C\uC8FC\uC2DC, \uACBD\uAE30\uB3C4(\uC124\uB9C812\uAD50)&quot;
+    },
+    {
+      id: &quot;119456790&quot;,
+      sourceName: &quot;Gangwon-do (Northeast Korea)&quot;,
+      koreanName: &quot;\uAC15\uC6D0\uB3C4(\uD55C\uAD6D \uBD81\uB3D9\uBD80)&quot;
+    },
+    {
+      id: &quot;119631691&quot;,
+      sourceName: &quot;Jeju Island&quot;,
+      koreanName: &quot;\uC81C\uC8FC\uB3C4&quot;
+    },
+    {
+      id: &quot;119456771&quot;,
+      sourceName: &quot;North/South Chungcheong-do (Midwest/West Korea)&quot;,
+      koreanName: &quot;\uCDA9\uCCAD\uBD81\uB3C4/\uCDA9\uCCAD\uB0A8\uB3C4(\uD55C\uAD6D \uC911\uC11C\uBD80/\uC11C\uBD80)&quot;
+    },
+    {
+      id: &quot;119456816&quot;,
+      sourceName: &quot;North/South Gyeongsang-do (East/Southeast Korea)&quot;,
+      koreanName: &quot;\uACBD\uC0C1\uBD81\uB3C4/\uACBD\uC0C1\uB0A8\uB3C4(\uD55C\uAD6D \uB3D9\uBD80/\uB0A8\uB3D9\uBD80)&quot;
+    },
+    {
+      id: &quot;119456784&quot;,
+      sourceName: &quot;North/South Jeolla-do (Southwest Korea)&quot;,
+      koreanName: &quot;\uC804\uB77C\uBD81\uB3C4/\uC804\uB77C\uB0A8\uB3C4(\uD55C\uAD6D \uB0A8\uC11C\uBD80)&quot;
+    },
+    {
+      id: &quot;119456750&quot;,
+      sourceName: &quot;Seoul/Gyeonggi-do (Northwest Korea)&quot;,
+      koreanName: &quot;\uC11C\uC6B8/\uACBD\uAE30\uB3C4(\uD55C\uAD6D \uBD81\uC11C\uBD80)&quot;
+    }
+  ];
+  var SOUTH_KOREA_AREA_IDS = /* @__PURE__ */ new Set([
+    SOUTH_KOREA_AREA_ID,
+    ...SOUTH_KOREA_AREAS.map(({ id }) => id)
+  ]);
+  var SOUTH_KOREA_NAME_ALIASES = /* @__PURE__ */ new Set([
+    &quot;South Korea&quot;,
+    &quot;S Korea&quot;,
+    &quot;\uB300\uD55C\uBBFC\uAD6D&quot;,
+    ...SOUTH_KOREA_AREAS.flatMap(({ sourceName, koreanName }) => [sourceName, koreanName])
+  ]);
+  var koreanAreaNames = new Map(
+    SOUTH_KOREA_AREAS.map(({ id, koreanName }) => [id, koreanName])
+  );
+
+  // src/sites/mountain-project/dom/navigation.ts
+  var NAVIGATION_HEADER = &quot;#header-container&quot;;
+  var NAVIGATION_USER = &quot;.header-container__user&quot;;
+  function navigationUserItems(root) {
+    const result = /* @__PURE__ */ new Set();
+    for (const userArea of root.querySelectorAll(`${NAVIGATION_HEADER} ${NAVIGATION_USER}`)) {
+      const avatar = userArea.querySelector(&quot;.user-img-avatar&quot;);
+      const action = avatar?.closest('#user, a, button, [role=&quot;button&quot;]') ?? userArea.querySelector(&quot;#user a, #user button, a.sign-in&quot;);
+      if (!(action instanceof HTMLElement)) continue;
+      const item = action.closest(&quot;#user, .nav-item, li&quot;);
+      const target = item &amp;&amp; userArea.contains(item) ? item : action;
+      result.add(target);
+    }
+    return [...result];
+  }
+
+  // src/ui/design-tokens.ts
+  var NAV = {
+    surface: &quot;#202124&quot;,
+    surfaceHover: &quot;#2c3036&quot;,
+    border: &quot;#5f6368&quot;,
+    divider: &quot;#5f6368&quot;,
+    text: &quot;#fff&quot;,
+    link: &quot;#91c3e8&quot;,
+    muted: &quot;#b8c6d4&quot;,
+    focus: &quot;#91c3e8&quot;,
+    switchOff: &quot;#5f6368&quot;,
+    switchBorder: &quot;#7a8791&quot;,
+    switchThumb: &quot;#fff&quot;,
+    switchOn: &quot;#5ba2d8&quot;,
+    switchOnThumb: &quot;#fff&quot;,
+    height: &quot;38px&quot;,
+    fontSize: &quot;12px&quot;
+  };
+  var UI = {
+    nav: NAV,
+    color: {
+      text: &quot;#202124&quot;,
+      muted: &quot;#59635d&quot;,
+      link: &quot;#0060a9&quot;,
+      linkHover: &quot;#004b84&quot;,
+      linkActive: &quot;#003e70&quot;,
+      surface: &quot;#fff&quot;,
+      surfaceSubtle: &quot;#f7f8f8&quot;,
+      surfaceHover: &quot;#edf5fa&quot;,
+      border: &quot;#c8ceca&quot;,
+      borderHover: &quot;#9eabb3&quot;,
+      warning: &quot;#6b5b35&quot;,
+      accentSurface: &quot;#e8f0eb&quot;,
+      accentText: &quot;#294c39&quot;,
+      buttonSurface: &quot;#f1f5f9&quot;,
+      buttonHover: &quot;#e4edf5&quot;,
+      buttonActive: &quot;#d8e5f0&quot;,
+      buttonBorder: &quot;#b8c6d4&quot;,
+      buttonBorderHover: &quot;#7f9bb5&quot;,
+      headingHover: &quot;rgba(0, 96, 169, 0.12)&quot;,
+      headingFocus: &quot;rgba(0, 96, 169, 0.14)&quot;
+    },
+    font: {
+      family: 'system-ui, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif',
+      caption: &quot;0.75rem&quot;,
+      small: &quot;0.85rem&quot;,
+      hint: &quot;0.9rem&quot;,
+      body: &quot;1rem&quot;,
+      controlWeight: &quot;600&quot;,
+      bodyLineHeight: &quot;1.65&quot;,
+      uiLineHeight: &quot;1.5&quot;
+    },
+    space: {
+      xs: &quot;0.25rem&quot;,
+      sm: &quot;0.5rem&quot;,
+      md: &quot;0.75rem&quot;,
+      lg: &quot;1rem&quot;,
+      xl: &quot;1.5rem&quot;
+    },
+    radius: {
+      small: &quot;2px&quot;,
+      control: &quot;4px&quot;,
+      nav: &quot;7px&quot;
+    },
+    motion: { fast: &quot;150ms ease&quot; }
+  };
+  var UI_TOKEN_CSS = `:root {${Object.entries(UI).flatMap(
+    ([group, values]) => Object.entries(values).map(
+      ([name, value]) => `--mpkr-${group}-${name.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)}:${value};`
+    )
+  ).join(&quot;&quot;)}}`;
+
+  // src/ui/message-style.ts
+  var STATUS_MESSAGE_CSS = `
+.mpkr-status-message { box-sizing:border-box;display:block;margin:12px 0;padding:10px 12px;border-left:3px solid ${UI.color.link};background:${UI.color.surfaceHover};color:${UI.color.text};font:12px/1.75 ${UI.font.family};white-space:normal;overflow-wrap:anywhere;text-align:left; }
+.mpkr-status-message[hidden] { display:none; }
+.mpkr-status-message strong { display:block;font-size:13px;font-weight:600; }
+.mpkr-status-message p,.mpkr-status-message__detail { display:block; margin:3px 0 0;font-size:12px;line-height:1.75;color:${UI.color.muted}; }
+`;
+  var TRANSLATION_ACTION_CSS = `${STATUS_MESSAGE_CSS}
+.mpkr-translation-actions { display:inline-flex;max-width:100%;flex-wrap:wrap;align-items:center;gap:8px;margin:8px 0 4px; }
+.mpkr-translation-actions button { box-sizing:border-box;margin:0;padding:6px 10px;border:1px solid ${UI.color.border};border-radius:${UI.radius.control};background:${UI.color.surface};color:${UI.color.link};font:600 12px/1.5 ${UI.font.family};cursor:pointer;text-decoration:none; }
+.mpkr-translation-actions button:hover { background:${UI.color.surfaceHover}; }
+.mpkr-translation-actions button:focus-visible { outline:2px solid ${UI.color.link};outline-offset:3px; }
+.mpkr-translation-actions button:disabled { cursor:wait;opacity:.65; }
+.mpkr-translation-actions [hidden] { display:none; }
+.mpkr-translation-feedback { color:${UI.color.muted};font:12px/1.5 ${UI.font.family}; }
+`;
+  function setStatusMessage(element, message) {
+    if (element.textContent === message) return;
+    const split = message.indexOf(&quot;. &quot;);
+    if (split &lt; 0) {
+      element.textContent = message;
+      return;
+    }
+    const title = element.ownerDocument.createElement(&quot;strong&quot;);
+    title.textContent = message.slice(0, split + 2);
+    const detail = element.ownerDocument.createElement(&quot;span&quot;);
+    detail.className = &quot;mpkr-status-message__detail&quot;;
+    detail.textContent = message.slice(split + 2);
+    element.replaceChildren(title, detail);
+  }
+
+  // src/ui/navigation-control-style.ts
+  var NAVIGATION_CONTROL_CSS = `
+${STATUS_MESSAGE_CSS}
+/* Keep the added controls inside MP's native 15px container gutter. The second
+   8px inset absorbs the hamburger's native -8px end margin on narrow screens. */
+${NAVIGATION_HEADER} .header-container:has(.mp-nav-control) { flex-wrap: wrap; column-gap: 12px; }
+${NAVIGATION_HEADER} ${NAVIGATION_USER}:has(.mp-nav-control) { --mp-nav-gap: .5rem; display: flex; flex: 1 1 auto; align-items: center; align-content: center; justify-content: flex-end; flex-wrap: wrap; min-width: 0; max-width: calc(100% - 1rem); margin: .5rem .5rem .5rem auto; padding: 0 .5rem 0 0; box-sizing: border-box; column-gap: var(--mp-nav-gap); row-gap: .5rem; }
+${NAVIGATION_HEADER} .mp-nav-control { display: inline-flex; align-items: center; justify-content: center; gap: 9px; flex: 0 0 auto; position: relative; box-sizing: border-box; height: ${NAV.height}; margin: 0; padding: 0 12px; border: 1px solid transparent; border-radius: 0; white-space: nowrap; font: ${UI.font.controlWeight} ${NAV.fontSize}/1.2 ${UI.font.family}; letter-spacing: -.15px; text-decoration: none; color: ${NAV.text}; background: transparent; cursor: pointer; vertical-align: middle; }
+${NAVIGATION_HEADER} a.mp-nav-control { color: ${NAV.link}; text-decoration: none; }
+${NAVIGATION_HEADER} .mp-nav-control:focus-visible, ${NAVIGATION_HEADER} .mp-nav-control:has(input:focus-visible) { outline: 2px solid ${NAV.focus}; outline-offset: 3px; z-index: 1; }
+.mp-nav-control .mp-nav-icon { display: block; width: 18px; height: 18px; flex: 0 0 18px; }
+.mp-nav-control .mp-nav-copy { display: block; }
+${NAVIGATION_HEADER} .mp-nav-control input { appearance: none; box-sizing: border-box; position: relative; flex: 0 0 26px; width: 26px; height: 16px; margin: 0; border: 1px solid ${NAV.switchBorder}; border-radius: 9px; color: ${NAV.switchThumb}; background: ${NAV.switchOff}; cursor: pointer; }
+.mp-nav-control input::before { content: ''; position: absolute; width: 10px; height: 10px; left: 2px; top: 2px; border-radius: 50%; background: currentColor; }
+${NAVIGATION_HEADER} .mp-nav-control input:checked { color: ${NAV.switchOnThumb}; background: ${NAV.switchOn}; border-color: ${NAV.switchOn}; }
+.mp-nav-control input:checked::before { left: 12px; }
+.mp-nav-control input:disabled { opacity: .5; cursor: wait; }
+${NAVIGATION_HEADER} label.mp-nav-control:has(input:not(:checked)) .mp-nav-copy { color: ${NAV.muted}; }
+/* Preserve native siblings while visually joining them into one control bar. */
+${NAVIGATION_HEADER} .mp-nav-control { background: ${NAV.surface}; border-color: ${NAV.border}; }
+${NAVIGATION_HEADER} label.mp-nav-control { border-radius: ${UI.radius.nav} 0 0 ${UI.radius.nav}; border-right: 0; padding-right: 14px; }
+${NAVIGATION_HEADER} a.mp-nav-control { margin-left: calc(-1 * var(--mp-nav-gap, 8px)); border-radius: 0 ${UI.radius.nav} ${UI.radius.nav} 0; border-left: 0; gap: 7px; padding-left: 14px; }
+${NAVIGATION_HEADER} a.mp-nav-control::before { content: ''; position: absolute; left: 0; top: 10px; bottom: 10px; width: 1px; background: ${NAV.divider}; }
+${NAVIGATION_HEADER} .mp-nav-control:hover { background: ${NAV.surfaceHover}; }
+${NAVIGATION_HEADER} .mp-nav-error { flex:1 0 100%;order:1;min-width:0;max-width:100%;margin:4px 0 0; }
+@media (max-width: 420px) { ${NAVIGATION_HEADER} .mp-nav-control { padding-left: 9px; padding-right: 9px; gap: 6px; } }
+@media (forced-colors: active) { ${NAVIGATION_HEADER} .mp-nav-control { border: 1px solid ButtonText; } ${NAVIGATION_HEADER} .mp-nav-control input { appearance: auto; } .mp-nav-control input::before { content: none; } }
+`;
+  function createKoreaIcon() {
+    const ns = &quot;http://www.w3.org/2000/svg&quot;;
+    const icon = document.createElementNS(ns, &quot;svg&quot;);
+    icon.setAttribute(&quot;viewBox&quot;, &quot;0 0 24 24&quot;);
+    icon.setAttribute(&quot;aria-hidden&quot;, &quot;true&quot;);
+    icon.setAttribute(&quot;focusable&quot;, &quot;false&quot;);
+    icon.classList.add(&quot;mp-nav-icon&quot;);
+    const rim = document.createElementNS(ns, &quot;circle&quot;);
+    rim.setAttribute(&quot;cx&quot;, &quot;12&quot;);
+    rim.setAttribute(&quot;cy&quot;, &quot;12&quot;);
+    rim.setAttribute(&quot;r&quot;, &quot;12&quot;);
+    rim.setAttribute(&quot;fill&quot;, &quot;#f5f3eb&quot;);
+    const blue = document.createElementNS(ns, &quot;circle&quot;);
+    blue.setAttribute(&quot;cx&quot;, &quot;12&quot;);
+    blue.setAttribute(&quot;cy&quot;, &quot;12&quot;);
+    blue.setAttribute(&quot;r&quot;, &quot;8&quot;);
+    blue.setAttribute(&quot;fill&quot;, &quot;#477b9d&quot;);
+    const red = document.createElementNS(ns, &quot;path&quot;);
+    red.setAttribute(&quot;d&quot;, &quot;M4 12a8 8 0 0 1 16 0 4 4 0 0 1-8 0 4 4 0 0 0-8 0&quot;);
+    red.setAttribute(&quot;fill&quot;, &quot;#cf655c&quot;);
+    icon.append(rim, blue, red);
+    return icon;
+  }
+
+  // src/ui/navigation-controls.ts
+  var NavigationControls = class {
+    observer;
+    style;
+    pairs = /* @__PURE__ */ new Map();
+    enabled;
+    pending = false;
+    saveError = false;
+    change;
+    mount(change) {
+      if (this.observer) return;
+      this.change = change;
+      this.style = document.createElement(&quot;style&quot;);
+      this.style.textContent = NAVIGATION_CONTROL_CSS;
+      document.head.append(this.style);
+      this.observer = new MutationObserver((records) => {
+        if (records.some((record) => record.target instanceof Element &amp;&amp; record.target.closest(NAVIGATION_HEADER) || [...record.addedNodes, ...record.removedNodes].some((node) => node instanceof Element &amp;&amp; (node.matches(NAVIGATION_HEADER) || node.querySelector(NAVIGATION_HEADER))))) {
+          this.reconcile();
+        }
+      });
+      this.reconcile();
+    }
+    reconcile() {
+      const observer = this.observer;
+      if (!observer) return;
+      observer.disconnect();
+      const targets = navigationUserItems(document);
+      for (const [target, pair] of this.pairs) {
+        if (!targets.includes(target)) {
+          pair.label.remove();
+          pair.link.remove();
+          pair.error.remove();
+          this.pairs.delete(target);
+        }
+      }
+      for (const target of targets) {
+        let pair = this.pairs.get(target);
+        if (!pair) {
+          const label = document.createElement(&quot;label&quot;);
+          label.className = &quot;mp-nav-control&quot;;
+          const input = document.createElement(&quot;input&quot;);
+          input.type = &quot;checkbox&quot;;
+          input.setAttribute(&quot;role&quot;, &quot;switch&quot;);
+          input.setAttribute(&quot;aria-label&quot;, &quot;\uD655\uC7A5 \uAE30\uB2A5&quot;);
+          const error = document.createElement(&quot;div&quot;);
+          error.className = &quot;mp-nav-error mpkr-status-message&quot;;
+          error.hidden = true;
+          const errorTitle = document.createElement(&quot;strong&quot;);
+          errorTitle.textContent = &quot;\uC124\uC815\uC744 \uC800\uC7A5\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4.&quot;;
+          const errorDetail = document.createElement(&quot;p&quot;);
+          errorDetail.textContent = &quot;\uAE30\uC874 \uC124\uC815\uC744 \uC720\uC9C0\uD588\uC2B5\uB2C8\uB2E4. \uC2A4\uC704\uCE58\uB97C \uB2E4\uC2DC \uB20C\uB7EC \uC8FC\uC138\uC694.&quot;;
+          error.append(errorTitle, errorDetail);
+          error.setAttribute(&quot;role&quot;, &quot;status&quot;);
+          error.setAttribute(&quot;aria-live&quot;, &quot;polite&quot;);
+          error.setAttribute(&quot;aria-atomic&quot;, &quot;true&quot;);
+          const labelText = document.createElement(&quot;span&quot;);
+          labelText.className = &quot;mp-nav-copy&quot;;
+          labelText.textContent = &quot;\uD655\uC7A5 \uAE30\uB2A5&quot;;
+          label.append(labelText, input);
+          input.addEventListener(&quot;change&quot;, async () => {
+            if (this.pending || !this.change) return;
+            const next = input.checked;
+            this.pending = true;
+            this.saveError = false;
+            this.updateInputs();
+            try {
+              await this.change(next);
+            } catch {
+              if (this.observer) this.saveError = true;
+            } finally {
+              this.pending = false;
+              this.updateInputs();
+            }
+          });
+          const link = document.createElement(&quot;a&quot;);
+          link.className = &quot;mp-nav-control&quot;;
+          const linkText = document.createElement(&quot;span&quot;);
+          linkText.className = &quot;mp-nav-copy&quot;;
+          linkText.textContent = &quot;\uB300\uD55C\uBBFC\uAD6D&quot;;
+          link.setAttribute(&quot;aria-label&quot;, &quot;\uB300\uD55C\uBBFC\uAD6D&quot;);
+          link.append(createKoreaIcon(), linkText);
+          link.href = SOUTH_KOREA_AREA_URL;
+          pair = { label, input, link, error };
+          this.pairs.set(target, pair);
+        }
+        if (pair.error.parentElement !== target.parentElement) target.parentElement?.append(pair.error);
+        if (target.previousElementSibling !== pair.link || pair.link.previousElementSibling !== pair.label) {
+          target.before(pair.label, pair.link);
+        }
+      }
+      this.updateInputs();
+      const headers = document.querySelectorAll(NAVIGATION_HEADER);
+      for (const header of headers) {
+        observer.observe(header, { childList: true, subtree: true });
+        for (let parent = header.parentElement; parent; parent = parent.parentElement) {
+          observer.observe(parent, { childList: true });
+        }
+      }
+      if (!headers.length) {
+        observer.observe(document.documentElement, { childList: true });
+        if (document.body) observer.observe(document.body, { childList: true });
+      }
+    }
+    render(enabled) {
+      this.enabled = enabled;
+      this.saveError = false;
+      this.updateInputs();
+    }
+    updateInputs() {
+      for (const { input, error } of this.pairs.values()) {
+        error.hidden = !this.saveError;
+        input.checked = this.enabled === true;
+        input.disabled = this.pending || this.enabled === void 0;
+      }
+    }
+    destroy() {
+      this.observer?.disconnect();
+      this.observer = void 0;
+      this.change = void 0;
+      for (const { label, link, error } of this.pairs.values()) {
+        label.remove();
+        link.remove();
+        error.remove();
+      }
+      this.saveError = false;
+      this.pairs.clear();
+      this.style?.remove();
+      this.style = void 0;
+    }
+  };
+
+  // src/sites/mountain-project/contract/selectors/shared.ts
+  var SHARED_SELECTORS = {
+    areaLinks: 'a[href*=&quot;/area/&quot;]',
+    routeLinks: 'a[href*=&quot;/route/&quot;]',
+    explicitBreadcrumb: [
+      &quot;.breadcrumbs&quot;,
+      &quot;.breadcrumb&quot;,
+      '[aria-label=&quot;breadcrumb&quot;]',
+      '[aria-label=&quot;Breadcrumb&quot;]'
+    ].join(&quot;, &quot;),
+    routeGuideLink: 'a[href$=&quot;/route-guide&quot;]',
+    leftNavigation: &quot;.left-nav&quot;,
+    sidebarContent: &quot;.mp-sidebar&quot;,
+    areaPage: &quot;#climb-area-page&quot;,
+    routePage: &quot;#route-page&quot;,
+    mainContentContainer: &quot;.main-content-container&quot;,
+    mainContent: &quot;.main-content&quot;,
+    authoredContent: &quot;.fr-view&quot;,
+    commentBody: &quot;.comment-body&quot;,
+    commentContainer: '.main-comment, [id^=&quot;Comment-&quot;], .comment-item, tr',
+    commentAuthor: [
+      &quot;.comment-author&quot;,
+      &quot;.author&quot;,
+      '[rel=&quot;author&quot;]',
+      '.user a[href*=&quot;/user/&quot;]',
+      'a[href*=&quot;/user/&quot;]'
+    ].join(&quot;, &quot;),
+    descriptionDetailsClass: &quot;.description-details&quot;,
+    descriptionDetails: &quot;table.description-details&quot;,
+    titleWithBorderBottomClass: &quot;title-with-border-bottom&quot;,
+    directUiText: [
+      &quot;.mp-sidebar .small.text-warm&quot;,
+      &quot;.comments .form-char-count&quot;,
+      &quot;.text-section > div&quot;,
+      &quot;#sort-dropdown > strong&quot;,
+      &quot;#sort-dropdown > .current-sort&quot;,
+      &quot;.dropdown-menu.dropdown-menu-right .dropdown-item.comments-sort&quot;
+    ].join(&quot;, &quot;),
+    frameHeader: &quot;#header-container&quot;,
+    framePrintHeader: &quot;#header-container-print&quot;,
+    frameFooter: &quot;#footer-container&quot;,
+    frameAdvertisement: &quot;#div-gpt-ad-1614709329076-0&quot;,
+    frameCookieConsent: &quot;#cookie-consent&quot;,
+    navigationAction: [
+      &quot;a[href]&quot;,
+      &quot;button[data-href]&quot;,
+      &quot;button[data-url]&quot;,
+      &quot;button[onclick]&quot;,
+      &quot;input[data-href]&quot;,
+      &quot;input[data-url]&quot;,
+      &quot;input[onclick]&quot;,
+      '[role=&quot;button&quot;][data-href]',
+      '[role=&quot;button&quot;][data-url]',
+      '[role=&quot;button&quot;][onclick]'
+    ].join(&quot;,&quot;)
+  };
+  var LOCATION_TRAIL_CONTRACT = {
+    component: &quot;location-trail&quot;,
+    key: &quot;breadcrumb&quot;,
+    required: false,
+    candidates: [
+      { key: &quot;explicit&quot;, selector: SHARED_SELECTORS.explicitBreadcrumb },
+      { key: &quot;legacy-route-guide&quot;, selector: SHARED_SELECTORS.routeGuideLink }
+    ]
+  };
+
+  // src/sites/mountain-project/contract/selectors/stats.ts
+  var STATS_SELECTORS = {
+    root: &quot;#route-stats&quot;,
+    tableRoot: &quot;#route-stats .onx-stats-table&quot;,
+    tableRootFallback: &quot;.onx-stats-table&quot;,
+    componentHeadings: &quot;.onx-stats-table h3&quot;,
+    ticksSectionId: &quot;#ticks-column&quot;,
+    ticksBodyId: 'tbody[id=&quot;ticks-body&quot;]',
+    tickRowLandmark: 'tr[id^=&quot;ticks.&quot;]',
+    tickRows: '#route-stats .onx-stats-table tr[id^=&quot;ticks.&quot;]',
+    tickAuthor: 'td:first-child [rel=&quot;author&quot;], td:first-child .author, td:first-child a[href*=&quot;/user/&quot;]',
+    frameBreadcrumb: &quot;.main-content-container #route-stats > .row.pt-main-content > .col-xs-12 > .mb-half.small.text-warm&quot;,
+    frameTitle: &quot;.main-content-container #route-stats > .row.pt-main-content > .col-xs-12 > h1&quot;,
+    frameMainContainer: &quot;.main-content-container&quot;,
+    frameContainerFluid: &quot;.main-content-container > .container-fluid&quot;,
+    frameLayoutRow: &quot;.main-content-container #route-stats > .row.pt-main-content&quot;,
+    maxHeightClass: &quot;max-height&quot;
+  };
+  var STATS_FRAME_CHROME_HIDE_SELECTORS = [
+    SHARED_SELECTORS.framePrintHeader,
+    SHARED_SELECTORS.frameHeader,
+    SHARED_SELECTORS.frameAdvertisement,
+    SHARED_SELECTORS.frameCookieConsent,
+    SHARED_SELECTORS.frameFooter,
+    STATS_SELECTORS.frameBreadcrumb,
+    STATS_SELECTORS.frameTitle
+  ];
+  var STATS_FRAME_CONTRACT = {
+    component: &quot;route-stats-frame&quot;,
+    key: &quot;frame-landmarks&quot;,
+    required: true,
+    candidates: [
+      { key: &quot;stats-root&quot;, selector: STATS_SELECTORS.root },
+      { key: &quot;stats-table-root&quot;, selector: STATS_SELECTORS.tableRootFallback }
+    ]
+  };
+  var STATS_TICKS_SECTION_CONTRACT = {
+    component: &quot;route-stats-presentation&quot;,
+    key: &quot;ticks-section&quot;,
+    required: false,
+    candidates: [
+      { key: &quot;section-id&quot;, selector: STATS_SELECTORS.ticksSectionId },
+      { key: &quot;tbody-id&quot;, selector: STATS_SELECTORS.ticksBodyId },
+      { key: &quot;tick-row-id&quot;, selector: STATS_SELECTORS.tickRowLandmark }
+    ]
+  };
+
+  // src/sites/mountain-project/contract/selectors/community.ts
+  var COMMUNITY_SELECTORS = {
+    topicBody: &quot;#forum-table .message-row .fr-view&quot;,
+    topicRow: &quot;#forum-table .message-row&quot;,
+    topicAuthor: '.bio > a[href*=&quot;/user/&quot;]',
+    activityComment: &quot;#whats-new .comment-row td > .row > .col-md-12&quot;,
+    activityRow: &quot;#whats-new .comment-row&quot;,
+    activityAuthor: 'td > a[href*=&quot;/user/&quot;]',
+    protectedContent: '.fr-view, .mpkr-activity-comment-source, .signature, blockquote, pre, code, cite, [contenteditable=&quot;true&quot;], textarea',
+    gymDetailTitle: &quot;#climbing-gyms .pt-main-content h1&quot;,
+    protectedGymValue: '#climbing-gyms .gym-info > div, #climbing-gyms table td.text-xs-right, #climbing-gyms .gym-breadcrumbs a[href*=&quot;/gyms/&quot;]',
+    uiExtra: &quot;#partner-finder p, #partner-finder div, #whats-new div, #topic-guts div, #forum-table div, #climbing-gyms .gym-count, #climbing-gyms .add-gym-cta p, #climbing-gyms .improve-gym-cta p, #climbing-gyms .photos-cta p, #climbing-gyms .stars-avg&quot;
+  };
+
+  // src/core/translation-text-policy.ts
+  var PlaceholderIntegrityError = class extends Error {
+    constructor(failedKinds, message = &quot;\uBC88\uC5ED\uAE30\uAC00 \uBCF4\uD638 \uD1A0\uD070\uC744 \uBCC0\uACBD\uD574 \uC548\uC804\uD558\uAC8C \uC6D0\uBB38\uC744 \uBCF5\uC6D0\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.&quot;) {
+      super(message);
+      this.failedKinds = failedKinds;
+      this.name = &quot;PlaceholderIntegrityError&quot;;
+    }
+  };
+
+  // src/rendering/dom-translation-format.ts
+  var SAFE_TAGS = /* @__PURE__ */ new Set([
+    &quot;A&quot;,
+    &quot;ABBR&quot;,
+    &quot;B&quot;,
+    &quot;BLOCKQUOTE&quot;,
+    &quot;BR&quot;,
+    &quot;CODE&quot;,
+    &quot;DIV&quot;,
+    &quot;EM&quot;,
+    &quot;H3&quot;,
+    &quot;H4&quot;,
+    &quot;H5&quot;,
+    &quot;H6&quot;,
+    &quot;I&quot;,
+    &quot;IMG&quot;,
+    &quot;KBD&quot;,
+    &quot;LI&quot;,
+    &quot;MARK&quot;,
+    &quot;OL&quot;,
+    &quot;P&quot;,
+    &quot;PRE&quot;,
+    &quot;S&quot;,
+    &quot;SMALL&quot;,
+    &quot;SPAN&quot;,
+    &quot;STRONG&quot;,
+    &quot;SUB&quot;,
+    &quot;SUP&quot;,
+    &quot;U&quot;,
+    &quot;UL&quot;
+  ]);
+  var VOID_TAGS = /* @__PURE__ */ new Set([&quot;BR&quot;, &quot;IMG&quot;]);
+  var BLOCKED_TAGS = /* @__PURE__ */ new Set([
+    &quot;SCRIPT&quot;,
+    &quot;STYLE&quot;,
+    &quot;NOSCRIPT&quot;,
+    &quot;TEMPLATE&quot;,
+    &quot;FORM&quot;,
+    &quot;INPUT&quot;,
+    &quot;TEXTAREA&quot;,
+    &quot;SELECT&quot;,
+    &quot;OPTION&quot;,
+    &quot;BUTTON&quot;,
+    &quot;IFRAME&quot;,
+    &quot;OBJECT&quot;,
+    &quot;EMBED&quot;,
+    &quot;LINK&quot;,
+    &quot;META&quot;
+  ]);
+  var GLOBAL_ATTRIBUTES = /* @__PURE__ */ new Set([&quot;class&quot;, &quot;title&quot;, &quot;lang&quot;, &quot;dir&quot;, &quot;role&quot;]);
+  var TAG_ATTRIBUTES = {
+    A: /* @__PURE__ */ new Set([&quot;href&quot;, &quot;target&quot;, &quot;rel&quot;, &quot;download&quot;, &quot;hreflang&quot;]),
+    IMG: /* @__PURE__ */ new Set([&quot;src&quot;, &quot;alt&quot;, &quot;width&quot;, &quot;height&quot;, &quot;loading&quot;]),
+    OL: /* @__PURE__ */ new Set([&quot;start&quot;, &quot;reversed&quot;, &quot;type&quot;]),
+    LI: /* @__PURE__ */ new Set([&quot;value&quot;]),
+    ABBR: /* @__PURE__ */ new Set([&quot;title&quot;])
+  };
+  function safeUrl(value, attribute) {
+    const normalized = value.trim().toLocaleLowerCase(&quot;en-US&quot;);
+    if (attribute === &quot;src&quot; &amp;&amp; normalized.startsWith(&quot;data:image/&quot;)) return true;
+    return !/^(?:javascript|vbscript|data):/u.test(normalized);
+  }
+  function descriptor(element) {
+    const attributes = [];
+    for (const attribute of Array.from(element.attributes)) {
+      const name = attribute.name.toLocaleLowerCase(&quot;en-US&quot;);
+      if (name === &quot;id&quot; || name === &quot;style&quot; || name.startsWith(&quot;on&quot;) || name.startsWith(&quot;data-&quot;)) continue;
+      const allowed = GLOBAL_ATTRIBUTES.has(name) || name.startsWith(&quot;aria-&quot;) || TAG_ATTRIBUTES[element.tagName]?.has(name);
+      if (!allowed) continue;
+      if ((name === &quot;href&quot; || name === &quot;src&quot;) &amp;&amp; !safeUrl(attribute.value, name)) continue;
+      attributes.push([name, attribute.value]);
+    }
+    return { tagName: SAFE_TAGS.has(element.tagName) ? element.tagName : &quot;SPAN&quot;, attributes, source: element };
+  }
+  function applyClickMeaning(clone, source) {
+    if (clone.tagName === &quot;A&quot; &amp;&amp; clone.hasAttribute(&quot;href&quot;) &amp;&amp; !source.hasAttribute(&quot;onclick&quot;)) return;
+    if (!source.matches('a[href], [role=&quot;button&quot;], [onclick]')) return;
+    clone.addEventListener(&quot;click&quot;, (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (source instanceof HTMLElement) source.click();
+    });
+  }
+  function createShell(value, ownerDocument) {
+    const element = ownerDocument.createElement(value.tagName.toLocaleLowerCase(&quot;en-US&quot;));
+    value.attributes.forEach(([name, attributeValue]) => element.setAttribute(name, attributeValue));
+    applyClickMeaning(element, value.source);
+    return element;
+  }
+  function safeClone(source, ownerDocument) {
+    if (BLOCKED_TAGS.has(source.tagName)) return void 0;
+    if (!SAFE_TAGS.has(source.tagName)) {
+      const fragment = ownerDocument.createDocumentFragment();
+      source.childNodes.forEach((child) => {
+        if (child instanceof Text) fragment.append(ownerDocument.createTextNode(child.nodeValue ?? &quot;&quot;));
+        else if (child instanceof Element) {
+          const clone2 = safeClone(child, ownerDocument);
+          if (clone2) fragment.append(clone2);
+        }
+      });
+      return fragment;
+    }
+    const clone = createShell(descriptor(source), ownerDocument);
+    if (!VOID_TAGS.has(source.tagName)) {
+      source.childNodes.forEach((child) => {
+        if (child instanceof Text) clone.append(ownerDocument.createTextNode(child.nodeValue ?? &quot;&quot;));
+        else if (child instanceof Element) {
+          const childClone = safeClone(child, ownerDocument);
+          if (childClone) clone.append(childClone);
+        }
+      });
+    }
+    return clone;
+  }
+  function escaped(value) {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, &quot;\\$&amp;&quot;);
+  }
+  function renderStructuredTranslation(format, translated, ownerDocument) {
+    const root = createShell(format.root, ownerDocument);
+    if (format.tokens.length === 0) {
+      root.textContent = translated;
+      return root;
+    }
+    const byValue = new Map(format.tokens.map((token) => [token.value, token]));
+    const pattern = new RegExp(
+      format.tokens.map(({ value }) => value).sort((left, right) => right.length - left.length).map(escaped).join(&quot;|&quot;),
+      &quot;gu&quot;
+    );
+    const seen = /* @__PURE__ */ new Set();
+    const stack = [{ element: root }];
+    let cursor = 0;
+    for (const match of translated.matchAll(pattern)) {
+      const index = match.index;
+      const value = match[0];
+      const token = byValue.get(value);
+      if (index === void 0 || !token || seen.has(value)) {
+        throw new PlaceholderIntegrityError([&quot;protected&quot;], &quot;DOM \uAD6C\uC870 \uBCF4\uD638 \uD1A0\uD070\uC774 \uC911\uBCF5\uB418\uAC70\uB098 \uC190\uC0C1\uB418\uC5C8\uC2B5\uB2C8\uB2E4.&quot;);
+      }
+      seen.add(value);
+      if (index > cursor) stack.at(-1).element.append(ownerDocument.createTextNode(translated.slice(cursor, index)));
+      if (token.kind === &quot;open&quot;) {
+        const element = createShell(token.element, ownerDocument);
+        stack.at(-1).element.append(element);
+        stack.push({ id: token.id, element });
+      } else if (token.kind === &quot;close&quot;) {
+        if (stack.length === 1 || stack.at(-1).id !== token.id) {
+          throw new PlaceholderIntegrityError([&quot;protected&quot;], &quot;DOM \uAD6C\uC870 \uBCF4\uD638 \uD1A0\uD070\uC758 \uC911\uCCA9 \uC21C\uC11C\uAC00 \uC190\uC0C1\uB418\uC5C8\uC2B5\uB2C8\uB2E4.&quot;);
+        }
+        stack.pop();
+      } else if (token.kind === &quot;void&quot;) {
+        stack.at(-1).element.append(createShell(token.element, ownerDocument));
+      } else {
+        const clone = safeClone(token.element.source, ownerDocument);
+        if (clone) stack.at(-1).element.append(clone);
+      }
+      cursor = index + value.length;
+    }
+    if (seen.size !== format.tokens.length || stack.length !== 1) {
+      throw new PlaceholderIntegrityError([&quot;protected&quot;], &quot;DOM \uAD6C\uC870 \uBCF4\uD638 \uD1A0\uD070\uC758 \uAC1C\uC218 \uB610\uB294 \uC911\uCCA9\uC774 \uC190\uC0C1\uB418\uC5C8\uC2B5\uB2C8\uB2E4.&quot;);
+    }
+    if (cursor &lt; translated.length) root.append(ownerDocument.createTextNode(translated.slice(cursor)));
+    return root;
+  }
+  function cloneStructuredListShell(format, ownerDocument) {
+    return format.parentList ? createShell(format.parentList, ownerDocument) : void 0;
+  }
+
+  // src/rendering/original-preserving-renderer.ts
+  var SAFE_TRANSLATION_TAGS = /* @__PURE__ */ new Set([
+    &quot;BLOCKQUOTE&quot;,
+    &quot;DIV&quot;,
+    &quot;H3&quot;,
+    &quot;H4&quot;,
+    &quot;H5&quot;,
+    &quot;H6&quot;,
+    &quot;P&quot;,
+    &quot;PRE&quot;
+  ]);
+  var OriginalPreservingRenderer = class {
+    style;
+    bindings = /* @__PURE__ */ new Map();
+    presentations = /* @__PURE__ */ new Set();
+    sectionPresentations = /* @__PURE__ */ new WeakMap();
+    originalDisplays = /* @__PURE__ */ new WeakMap();
+    inlineBindings = /* @__PURE__ */ new Map();
+    retranslateHandler;
+    setRetranslateHandler(handler) {
+      this.retranslateHandler = handler;
+    }
+    track(target) {
+      if (target.renderMode === &quot;inline&quot;) {
+        const existing2 = this.inlineBindings.get(target.id);
+        const source = target.sourceElements[0];
+        if (!source) return;
+        if (existing2) {
+          existing2.target = target;
+          return;
+        }
+        this.inlineBindings.set(target.id, {
+          target,
+          original: source.textContent ?? target.source
+        });
+        return;
+      }
+      const existing = this.bindings.get(target.id);
+      if (existing) {
+        existing.target = target;
+        target.sourceElements.forEach((element) => {
+          if (!this.originalDisplays.has(element)) {
+            this.originalDisplays.set(element, element.style.display);
+          }
+        });
+        return;
+      }
+      target.sourceElements.forEach((element) => {
+        this.originalDisplays.set(element, element.style.display);
+      });
+      const sectionRoot = this.sectionRoot(target);
+      let presentation = sectionRoot ? this.sectionPresentations.get(sectionRoot) : void 0;
+      if (!presentation) {
+        presentation = {
+          bindings: [],
+          forceOriginal: false,
+          sectionRoot,
+          lists: /* @__PURE__ */ new Map(),
+          translatedCount: 0
+        };
+        this.presentations.add(presentation);
+        if (sectionRoot) {
+          this.sectionPresentations.set(sectionRoot, presentation);
+        }
+      }
+      const binding = { target, presentation };
+      presentation.bindings.push(binding);
+      this.bindings.set(target.id, binding);
+    }
+    reset(target) {
+      if (target.renderMode === &quot;inline&quot;) {
+        const binding2 = this.inlineBindings.get(target.id);
+        const source = target.sourceElements[0];
+        if (!source) return;
+        if (binding2) {
+          binding2.target = target;
+          binding2.original = source.textContent ?? target.source;
+        } else {
+          this.track(target);
+        }
+        return;
+      }
+      this.track(target);
+      const binding = this.bindings.get(target.id);
+      if (!binding) {
+        return;
+      }
+      const presentation = binding.presentation;
+      binding.failureMessage = void 0;
+      this.removeCopy(binding);
+      this.showOriginal(binding.target, presentation);
+      if (presentation.translatedCount > 0) {
+        return;
+      }
+      this.releaseEmptyPresentation(presentation);
+    }
+    render(target, translated) {
+      if (!translated.trim()) {
+        return;
+      }
+      this.track(target);
+      if (target.renderMode === &quot;inline&quot;) {
+        const binding2 = this.inlineBindings.get(target.id);
+        const source = binding2?.target.sourceElements[0];
+        if (!binding2 || !source) return;
+        const leading = binding2.original.match(/^\s*/)?.[0] ?? &quot;&quot;;
+        const trailing = binding2.original.match(/\s*$/)?.[0] ?? &quot;&quot;;
+        source.textContent = `${leading}${translated}${trailing}`;
+        return;
+      }
+      const binding = this.bindings.get(target.id);
+      if (!binding) {
+        return;
+      }
+      binding.failureMessage = void 0;
+      if (binding.translated === void 0) binding.presentation.translatedCount += 1;
+      binding.translated = translated;
+      this.ensurePresentation(binding.presentation);
+      this.renderBinding(binding);
+      this.refreshPresentationState(binding.presentation);
+      if (binding.presentation.forceOriginal) this.showOriginal(target, binding.presentation);
+      else this.hideOriginal(target, binding.presentation);
+    }
+    showFailure(target, message) {
+      if (target.renderMode === &quot;inline&quot;) return;
+      this.track(target);
+      const binding = this.bindings.get(target.id);
+      if (!binding) return;
+      binding.failureMessage = message;
+      this.ensurePresentation(binding.presentation);
+      this.showOriginal(target, binding.presentation);
+      this.refreshPresentationState(binding.presentation);
+    }
+    hasFailureNotice(target) {
+      const status = this.bindings.get(target.id)?.presentation.status;
+      return Boolean(status?.isConnected &amp;&amp; !status.closest(&quot;[hidden]&quot;));
+    }
+    remove(id) {
+      const inline = this.inlineBindings.get(id);
+      if (inline) {
+        const source = inline.target.sourceElements[0];
+        if (source) source.textContent = inline.original;
+        this.inlineBindings.delete(id);
+        return;
+      }
+      const binding = this.bindings.get(id);
+      if (!binding) return;
+      this.removeCopy(binding);
+      this.showOriginal(binding.target, binding.presentation);
+      this.bindings.delete(id);
+      const presentation = binding.presentation;
+      presentation.bindings = presentation.bindings.filter((entry) => entry !== binding);
+      if (presentation.translatedCount === 0) this.releaseEmptyPresentation(presentation);
+      if (presentation.bindings.length === 0) {
+        this.presentations.delete(presentation);
+        if (presentation.sectionRoot) this.sectionPresentations.delete(presentation.sectionRoot);
+      }
+    }
+    releaseEmptyPresentation(presentation) {
+      presentation.toggleHost?.remove();
+      presentation.block?.remove();
+      presentation.block = void 0;
+      presentation.body = void 0;
+      presentation.toggle = void 0;
+      presentation.retranslate = void 0;
+      presentation.status = void 0;
+      presentation.feedback = void 0;
+      presentation.toggleHost = void 0;
+      presentation.lists.clear();
+      presentation.bindings.forEach((binding) => this.showOriginal(binding.target, presentation));
+      this.unwrapOriginalContent(presentation);
+    }
+    destroy() {
+      this.style?.remove();
+      this.style = void 0;
+      this.inlineBindings.forEach((binding) => {
+        const source = binding.target.sourceElements[0];
+        if (source) source.textContent = binding.original;
+      });
+      this.inlineBindings.clear();
+      this.presentations.forEach((presentation) => {
+        presentation.toggleHost?.remove();
+        presentation.block?.remove();
+        presentation.bindings.forEach((binding) => this.showOriginal(binding.target, presentation));
+        this.unwrapOriginalContent(presentation);
+      });
+      this.bindings.clear();
+      this.presentations.clear();
+      this.sectionPresentations = /* @__PURE__ */ new WeakMap();
+      this.originalDisplays = /* @__PURE__ */ new WeakMap();
+    }
+    sectionRoot(target) {
+      if (target.category === &quot;comment&quot;) {
+        return void 0;
+      }
+      for (const element of target.sourceElements) {
+        if (element.matches(SHARED_SELECTORS.authoredContent)) {
+          return element;
+        }
+        const root = element.closest(SHARED_SELECTORS.authoredContent);
+        if (root) {
+          return root;
+        }
+      }
+      return void 0;
+    }
+    ensurePresentation(presentation) {
+      if (presentation.block) {
+        return;
+      }
+      const first = presentation.bindings[0];
+      if (!first) {
+        return;
+      }
+      const ownerDocument = first.target.parent.ownerDocument;
+      if (!this.style) {
+        this.style = ownerDocument.createElement(&quot;style&quot;);
+        this.style.dataset.mpkrTranslationActions = &quot;&quot;;
+        this.style.textContent = TRANSLATION_ACTION_CSS;
+        ownerDocument.head.append(this.style);
+      }
+      const inlineCopy = first.target.renderMode === &quot;inline-copy&quot;;
+      const block = ownerDocument.createElement(inlineCopy ? &quot;span&quot; : &quot;div&quot;);
+      block.className = presentation.sectionRoot ? &quot;mpkr-machine-translation mpkr-section-translation&quot; : &quot;mpkr-machine-translation&quot;;
+      block.dataset.mpkrTranslationId = first.target.id;
+      block.style.color = &quot;inherit&quot;;
+      block.style.fontSize = &quot;inherit&quot;;
+      block.style.lineHeight = inlineCopy ? &quot;inherit&quot; : UI.font.bodyLineHeight;
+      block.style.margin = inlineCopy || presentation.sectionRoot ? &quot;0&quot; : &quot;0.5rem 0&quot;;
+      const body = ownerDocument.createElement(inlineCopy ? &quot;span&quot; : &quot;div&quot;);
+      body.className = &quot;mpkr-translation-body&quot;;
+      const status = ownerDocument.createElement(inlineCopy ? &quot;span&quot; : &quot;div&quot;);
+      status.className = &quot;mpkr-translation-status mpkr-status-message&quot;;
+      status.setAttribute(&quot;role&quot;, &quot;status&quot;);
+      status.setAttribute(&quot;aria-live&quot;, &quot;polite&quot;);
+      status.setAttribute(&quot;aria-atomic&quot;, &quot;true&quot;);
+      const feedback = ownerDocument.createElement(&quot;span&quot;);
+      feedback.className = &quot;mpkr-translation-feedback&quot;;
+      feedback.setAttribute(&quot;role&quot;, &quot;status&quot;);
+      feedback.setAttribute(&quot;aria-live&quot;, &quot;polite&quot;);
+      feedback.hidden = true;
+      const toggle = ownerDocument.createElement(&quot;button&quot;);
+      toggle.type = &quot;button&quot;;
+      toggle.className = &quot;mpkr-original-toggle&quot;;
+      toggle.textContent = presentation.forceOriginal ? &quot;\uC6D0\uBB38 \uC228\uAE30\uAE30&quot; : &quot;\uC6D0\uBB38 \uBCF4\uAE30&quot;;
+      toggle.setAttribute(&quot;aria-expanded&quot;, String(presentation.forceOriginal));
+      toggle.setAttribute(&quot;aria-label&quot;, presentation.forceOriginal ? &quot;\uC774 \uC139\uC158\uC758 \uC6D0\uBB38 \uC228\uAE30\uAE30&quot; : &quot;\uC774 \uC139\uC158\uC758 \uC6D0\uBB38 \uBCF4\uAE30&quot;);
+      toggle.addEventListener(&quot;click&quot;, (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        presentation.forceOriginal = !presentation.forceOriginal;
+        this.applyPresentation(presentation);
+      });
+      const retranslate = ownerDocument.createElement(&quot;button&quot;);
+      retranslate.type = &quot;button&quot;;
+      retranslate.className = &quot;mpkr-retranslate&quot;;
+      retranslate.textContent = &quot;\uC7AC\uBC88\uC5ED&quot;;
+      retranslate.setAttribute(&quot;aria-label&quot;, &quot;\uC774 \uC139\uC158 \uB2E4\uC2DC \uBC88\uC5ED&quot;);
+      retranslate.addEventListener(&quot;click&quot;, async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const handler = this.retranslateHandler;
+        if (!handler || retranslate.disabled) return;
+        const targetIds = presentation.bindings.map((binding) => binding.target).filter((target) => target.renderMode !== &quot;inline&quot;).map((target) => target.id);
+        if (targetIds.length === 0) return;
+        retranslate.disabled = true;
+        retranslate.setAttribute(&quot;aria-busy&quot;, &quot;true&quot;);
+        feedback.hidden = false;
+        feedback.textContent = &quot;\uC7AC\uBC88\uC5ED \uC911\u2026&quot;;
+        try {
+          const result = await handler(targetIds);
+          feedback.textContent = result === &quot;unchanged&quot; ? &quot;\uAE30\uC874 \uBC88\uC5ED\uACFC \uAC19\uC2B5\uB2C8\uB2E4.&quot; : result === &quot;failed&quot; ? &quot;\uC7AC\uBC88\uC5ED\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uC2DC\uB3C4\uD574 \uC8FC\uC138\uC694.&quot; : &quot;\uBC88\uC5ED\uC744 \uAC31\uC2E0\uD588\uC2B5\uB2C8\uB2E4.&quot;;
+          feedback.hidden = result === &quot;failed&quot; &amp;&amp; !status.hidden;
+        } catch {
+          feedback.textContent = &quot;\uC7AC\uBC88\uC5ED\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uC2DC\uB3C4\uD574 \uC8FC\uC138\uC694.&quot;;
+          feedback.hidden = !status.hidden;
+        } finally {
+          retranslate.disabled = false;
+          retranslate.removeAttribute(&quot;aria-busy&quot;);
+        }
+      });
+      block.append(body, status);
+      presentation.block = block;
+      presentation.body = body;
+      presentation.toggle = toggle;
+      presentation.retranslate = retranslate;
+      presentation.status = status;
+      presentation.feedback = feedback;
+      if (presentation.sectionRoot) {
+        this.wrapWholeRootOriginal(presentation);
+        presentation.sectionRoot.insertBefore(block, presentation.sectionRoot.firstChild);
+      } else {
+        first.target.parent.insertBefore(block, first.target.insertBefore ?? null);
+      }
+      const author = this.authorFor(first.target);
+      if (first.target.category === &quot;comment&quot; &amp;&amp; author?.parentElement) {
+        const toggleHost = ownerDocument.createElement(&quot;div&quot;);
+        toggleHost.className = &quot;mpkr-original-toggle-host mpkr-translation-actions&quot;;
+        author.insertAdjacentElement(&quot;afterend&quot;, toggleHost);
+        toggleHost.append(toggle);
+        toggleHost.append(retranslate, feedback);
+        presentation.toggleHost = toggleHost;
+      } else {
+        const actions = ownerDocument.createElement(&quot;span&quot;);
+        actions.className = &quot;mpkr-translation-actions&quot;;
+        actions.append(toggle, retranslate, feedback);
+        block.append(actions);
+      }
+      this.refreshPresentationState(presentation);
+    }
+    refreshPresentationState(presentation) {
+      const hasTranslation = presentation.translatedCount > 0;
+      const failure = presentation.bindings.find((binding) => binding.failureMessage)?.failureMessage;
+      if (presentation.body) presentation.body.hidden = !hasTranslation;
+      if (presentation.toggle) presentation.toggle.hidden = !hasTranslation;
+      if (presentation.status) {
+        setStatusMessage(presentation.status, failure ?? &quot;&quot;);
+        presentation.status.hidden = !failure;
+      }
+    }
+    authorFor(target) {
+      const source = target.sourceElements[0];
+      if (!source) {
+        return void 0;
+      }
+      const forumAuthor = source.closest(COMMUNITY_SELECTORS.topicRow)?.querySelector(COMMUNITY_SELECTORS.topicAuthor);
+      if (forumAuthor) return forumAuthor;
+      const activityAuthor = source.closest(COMMUNITY_SELECTORS.activityRow)?.querySelector(COMMUNITY_SELECTORS.activityAuthor);
+      if (activityAuthor) return activityAuthor;
+      const tickRow = source.closest(STATS_SELECTORS.tickRowLandmark);
+      if (tickRow) {
+        return tickRow.querySelector(STATS_SELECTORS.tickAuthor) ?? void 0;
+      }
+      const commentBody = target.parent.matches(SHARED_SELECTORS.commentBody) ? target.parent : source.closest(SHARED_SELECTORS.commentBody);
+      const localAuthor = commentBody?.querySelector(SHARED_SELECTORS.commentAuthor);
+      if (localAuthor) {
+        return localAuthor;
+      }
+      const commentContainer = commentBody?.closest(SHARED_SELECTORS.commentContainer);
+      return commentContainer?.querySelector(SHARED_SELECTORS.commentAuthor) ?? void 0;
+    }
+    wrapWholeRootOriginal(presentation) {
+      const root = presentation.sectionRoot;
+      if (!root || !presentation.bindings.some((binding) => binding.target.sourceElements.includes(root))) {
+        return;
+      }
+      const wrapper = root.ownerDocument.createElement(&quot;div&quot;);
+      wrapper.className = &quot;mpkr-original-section-content&quot;;
+      while (root.firstChild) {
+        wrapper.append(root.firstChild);
+      }
+      root.append(wrapper);
+      presentation.originalWrapper = wrapper;
+    }
+    unwrapOriginalContent(presentation) {
+      const root = presentation.sectionRoot;
+      const wrapper = presentation.originalWrapper;
+      if (!root || !wrapper) {
+        return;
+      }
+      while (wrapper.firstChild) {
+        root.insertBefore(wrapper.firstChild, wrapper);
+      }
+      wrapper.remove();
+      presentation.originalWrapper = void 0;
+    }
+    sourceForCopy = /* @__PURE__ */ new WeakMap();
+    insertInSourceOrder(parent, copy, source) {
+      if (source) this.sourceForCopy.set(copy, source);
+      let next = null;
+      for (let sibling = parent.lastElementChild; sibling; sibling = sibling.previousElementSibling) {
+        const siblingSource = this.sourceForCopy.get(sibling);
+        if (!source || !siblingSource || !(source.compareDocumentPosition(siblingSource) &amp; Node.DOCUMENT_POSITION_FOLLOWING)) break;
+        next = sibling;
+      }
+      parent.insertBefore(copy, next);
+    }
+    renderBinding(binding) {
+      const { presentation } = binding;
+      const body = presentation.body;
+      const source = binding.target.sourceElements[0];
+      const previous = binding.copy;
+      const previousParent = previous?.parentElement;
+      const previousNext = previous?.nextSibling ?? null;
+      previous?.remove();
+      let parent = previousParent ?? body;
+      if (!previousParent &amp;&amp; source?.tagName === &quot;LI&quot; &amp;&amp; source.parentElement) {
+        const listSource = source.parentElement;
+        let list = presentation.lists.get(listSource);
+        if (!list) {
+          list = binding.target.format ? cloneStructuredListShell(binding.target.format, body.ownerDocument) : void 0;
+          list ??= body.ownerDocument.createElement(listSource.tagName === &quot;OL&quot; ? &quot;ol&quot; : &quot;ul&quot;);
+          list.style.margin = &quot;0.35rem 0&quot;;
+          list.style.paddingLeft = &quot;1.4rem&quot;;
+          presentation.lists.set(listSource, list);
+          this.insertInSourceOrder(body, list, listSource);
+        }
+        parent = list;
+      }
+      const copy = binding.target.format ? renderStructuredTranslation(binding.target.format, binding.translated ?? &quot;&quot;, body.ownerDocument) : body.ownerDocument.createElement(
+        source?.tagName === &quot;LI&quot; ? &quot;li&quot; : source &amp;&amp; SAFE_TRANSLATION_TAGS.has(source.tagName) ? source.tagName.toLowerCase() : &quot;div&quot;
+      );
+      if (!binding.target.format) copy.textContent = binding.translated ?? &quot;&quot;;
+      if (copy.tagName !== &quot;LI&quot; &amp;&amp; binding.target.renderMode !== &quot;inline-copy&quot;) {
+        copy.style.marginTop = &quot;0.65rem&quot;;
+        copy.style.marginBottom = &quot;0&quot;;
+      }
+      binding.copy = copy;
+      if (previousParent) previousParent.insertBefore(copy, previousNext);
+      else this.insertInSourceOrder(parent, copy, source);
+      if (parent === body &amp;&amp; copy === body.firstElementChild &amp;&amp; binding.target.renderMode !== &quot;inline-copy&quot;) {
+        copy.style.marginTop = &quot;0&quot;;
+        const next = copy.nextElementSibling;
+        if (next &amp;&amp; ![&quot;UL&quot;, &quot;OL&quot;].includes(next.tagName)) next.style.marginTop = &quot;0.65rem&quot;;
+      }
+    }
+    removeCopy(binding) {
+      if (binding.translated) binding.presentation.translatedCount -= 1;
+      binding.translated = void 0;
+      binding.copy?.remove();
+      binding.copy = void 0;
+      for (const [source, list] of binding.presentation.lists) {
+        if (!list.childElementCount) {
+          list.remove();
+          binding.presentation.lists.delete(source);
+        }
+      }
+      const first = binding.presentation.body?.firstElementChild;
+      if (first &amp;&amp; ![&quot;UL&quot;, &quot;OL&quot;].includes(first.tagName)) first.style.marginTop = &quot;0&quot;;
+    }
+    applyPresentation(presentation) {
+      const showOriginal = presentation.forceOriginal;
+      if (presentation.block) {
+        presentation.block.style.display = &quot;&quot;;
+      }
+      if (presentation.toggle) {
+        presentation.toggle.textContent = showOriginal ? &quot;\uC6D0\uBB38 \uC228\uAE30\uAE30&quot; : &quot;\uC6D0\uBB38 \uBCF4\uAE30&quot;;
+        presentation.toggle.setAttribute(&quot;aria-expanded&quot;, String(showOriginal));
+        presentation.toggle.setAttribute(
+          &quot;aria-label&quot;,
+          showOriginal ? &quot;\uC774 \uC139\uC158\uC758 \uC6D0\uBB38 \uC228\uAE30\uAE30&quot; : &quot;\uC774 \uC139\uC158\uC758 \uC6D0\uBB38 \uBCF4\uAE30&quot;
+        );
+      }
+      presentation.bindings.forEach((binding) => {
+        if (showOriginal || !binding.translated) {
+          this.showOriginal(binding.target, presentation);
+        } else {
+          this.hideOriginal(binding.target, presentation);
+        }
+      });
+    }
+    hideOriginal(target, presentation) {
+      if (presentation.originalWrapper &amp;&amp; target.sourceElements.includes(presentation.sectionRoot)) {
+        presentation.originalWrapper.style.display = &quot;none&quot;;
+        return;
+      }
+      target.sourceElements.forEach((element) => {
+        element.style.display = &quot;none&quot;;
+      });
+    }
+    showOriginal(target, presentation) {
+      if (presentation.originalWrapper &amp;&amp; target.sourceElements.includes(presentation.sectionRoot)) {
+        presentation.originalWrapper.style.display = &quot;&quot;;
+        return;
+      }
+      target.sourceElements.forEach((element) => {
+        element.style.display = this.originalDisplays.get(element) ?? &quot;&quot;;
+      });
+    }
+  };
+
+  // &lt;stdin>
+  if (window.reviewCase === &quot;nav&quot;) {
+    const controls = new NavigationControls();
+    controls.mount(async () => {
+      throw Error(&quot;simulated storage failure&quot;);
+    });
+    controls.render(true);
+    document.querySelector(&quot;input&quot;).click();
+  } else {
+    const renderer = new OriginalPreservingRenderer();
+    const source = document.querySelector(&quot;#source&quot;);
+    const target = { id: &quot;review-description&quot;, category: &quot;description&quot;, source: source.textContent, sourceElements: [source], parent: source.parentElement, insertBefore: source.nextSibling };
+    if (window.reviewCase === &quot;same&quot;) {
+      renderer.setRetranslateHandler(async () => &quot;unchanged&quot;);
+      renderer.render(target, &quot;\uC774 \uB8E8\uD2B8\uB294 \uD06C\uB799\uC744 \uB530\uB77C \uC791\uC740 \uC120\uBC18\uAE4C\uC9C0 \uC774\uC5B4\uC9D1\uB2C8\uB2E4.&quot;);
+      document.querySelector(&quot;.mpkr-retranslate&quot;).click();
+    } else renderer.showFailure(target, &quot;\uC6D0\uBB38 \uD615\uC2DD\uC744 \uBCF4\uD638\uD558\uAE30 \uC704\uD574 \uBC88\uC5ED\uC744 \uBCF4\uB958\uD588\uC2B5\uB2C8\uB2E4. \uC6D0\uBB38\uC740 \uADF8\uB300\uB85C \uC720\uC9C0\uB429\uB2C8\uB2E4. \uC7AC\uBC88\uC5ED\uC73C\uB85C \uB2E4\uC2DC \uC2DC\uB3C4\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.&quot;);
+  }
+})();
+&lt;/script>&lt;/html>"></iframe><p class="note">오류와 결과를 모의 입력했습니다. 확장 설정이나 실제 페이지 내용은 변경하지 않습니다.</p></html>

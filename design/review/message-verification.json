@@ -1,0 +1,55 @@
+{
+  "date": "2026-09-28",
+  "decision": "Approved visible header errors, stable translation action labels, separate live result messages, and deduplicated paragraph/page failures. Supporting icons remain a proposal awaiting approval.",
+  "sources": {
+    "src/ui/message-style.ts": "c39dcf0560bcbdd77deca96c63c4ae1534fe43c0f3564eae12a1b77749d5ac40",
+    "src/ui/navigation-controls.ts": "9f92f047b380b0010807c720d6435adfd34d7645cd0d56a9092e795449073afb",
+    "src/ui/navigation-control-style.ts": "77e1345cce0da7960834fbf4b737946dd15ef01e440e2455000d97b284f5462a",
+    "src/rendering/original-preserving-renderer.ts": "cb6b09cdf50b84618697e3f15349d5b0e4712f41706b1bca247d37c8a0b7e87e",
+    "src/application/ports.ts": "34b5ee760b5c45ac3192bf9e6a36e56c14b1ac32cc3e7d43eb9754b253d9dc43",
+    "src/localization/page-translation-controller.ts": "a1c7e74c2369821595a2f6f16871659b9f3f38d3991a1de4a7a93b9b7e84dd0b"
+  },
+  "tests": {
+    "initial": {
+      "files": 7,
+      "passed": 80,
+      "failed": 2,
+      "log": "message-tests-initial.log"
+    },
+    "correctedExpectations": "Updated pending-label and action-wrapper expectations to match the approved presentation; retained disabled-state, original-content, target-identity, and recovery assertions.",
+    "rerun": {
+      "files": 2,
+      "passed": 41,
+      "failed": 0,
+      "log": "message-tests-rerun.log"
+    },
+    "uniqueCasesCoveredAcrossRuns": 82,
+    "singleAllPassingRun": false,
+    "fullSuiteRerun": false,
+    "testTypecheck": "passed"
+  },
+  "render": {
+    "actualSource": "message-applied.html",
+    "desktop": 820,
+    "narrow": 390,
+    "allFramesOverflowX": 0,
+    "allFramesOverflowY": 0,
+    "engineAndStorage": "Local simulated results; actual renderer and navigation controls",
+    "realSiteSession": false
+  },
+  "nextProposal": "icon-proposal.html",
+  "builds": {
+    "chrome": {
+      "productionTypecheck": "passed",
+      "bundleSmoke": "passed",
+      "contentSha256AtSmoke": "f3b27333c325471c25ed79034e214d5a4c0980371cbd4e5504f6b7084658bd17",
+      "log": "message-chrome-build.log"
+    },
+    "firefox": {
+      "productionTypecheck": "passed",
+      "bundleSmoke": "passed",
+      "contentSha256AtSmoke": "f3b27333c325471c25ed79034e214d5a4c0980371cbd4e5504f6b7084658bd17",
+      "log": "message-firefox-build.log"
+    }
+  }
+}

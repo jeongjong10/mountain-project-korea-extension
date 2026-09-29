@@ -1,0 +1,36 @@
+{
+  "purpose": "2026-09-29 translation comparison",
+  "resources": [
+    {
+      "kind": "research-agent",
+      "handle": "/root/translator_strategy_research",
+      "ownership": "created",
+      "state": "completed"
+    },
+    {
+      "kind": "browser",
+      "ownership": "created",
+      "state": "cleanup-removed",
+      "sessionId": 91835,
+      "manifest": "C:\\Users\\JJY\\AppData\\Local\\Temp\\codex-live-browser-SA5zYN\\ownership.json",
+      "port": 54524,
+      "wrapperPid": 18376,
+      "browserPid": 27820
+    },
+    {
+      "kind": "server",
+      "ownership": "created",
+      "state": "stopped-connection-refused",
+      "sessionId": 86306,
+      "port": 57809,
+      "command": "Windows Node translation-comparison-server.cjs"
+    }
+  ],
+  "existingBrowsers": "not accessed",
+  "artifacts": "comparison source and page retained as review deliverables",
+  "liveObservation": {
+    "api": "downloadable",
+    "translationResults": "not collected",
+    "blocker": "Computer Use node_repl rejected WSL sandboxCwd file URI before app interaction"
+  }
+}

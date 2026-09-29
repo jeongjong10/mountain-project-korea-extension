@@ -1,14 +1,6 @@
-const ROW_SELECTOR = '.lef-nav-row';
-
-const AREA_NAMES_BY_ID: Readonly<Record<string, string>> = {
-  '126256865': '감악산(새벽벽), 파주시, 경기도(설마12교)',
-  '119456790': '강원도(한국 북동부)',
-  '119631691': '제주도',
-  '119456771': '충청북도/충청남도(한국 중서부/서부)',
-  '119456816': '경상북도/경상남도(한국 동부/남동부)',
-  '119456784': '전라북도/전라남도(한국 남서부)',
-  '119456750': '서울/경기도(한국 북서부)',
-};
+import { parseAreaPath } from '../sites/mountain-project/contract/routes';
+import { southKoreaAreaName } from '../sites/mountain-project/contract/regions/south-korea';
+import { AREA_SELECTORS } from '../sites/mountain-project/contract/selectors/area';
 
 interface AnchorState {
   readonly node: Text;
@@ -23,13 +15,15 @@ interface ContainerState {
 
 function directRows(container: Element): HTMLElement[] {
   return Array.from(container.children).filter(
-    (child): child is HTMLElement => child instanceof HTMLElement && child.matches(ROW_SELECTOR),
+    (child): child is HTMLElement => (
+      child instanceof HTMLElement && child.matches(AREA_SELECTORS.sidebarRow)
+    ),
   );
 }
 
 function areaId(anchor: HTMLAnchorElement): string | undefined {
   try {
-    return new URL(anchor.href, document.baseURI).pathname.match(/^\/area\/(\d+)(?:\/|$)/)?.[1];
+    return parseAreaPath(new URL(anchor.href, document.baseURI).pathname)?.id;
   } catch {
     return undefined;
   }
@@ -55,7 +49,7 @@ function withOriginalWhitespace(original: string, translated: string): string {
 }
 
 function displayedCount(row: HTMLElement): number {
-  const countElements = row.querySelectorAll<HTMLElement>('.text-warm');
+  const countElements = row.querySelectorAll<HTMLElement>(AREA_SELECTORS.warmText);
   const text = countElements.item(countElements.length - 1)?.textContent ?? '';
   const value = Number.parseInt(text.replace(/[^\d]/g, ''), 10);
   return Number.isFinite(value) ? value : 0;
@@ -113,9 +107,9 @@ export class SouthKoreaAreaList {
 
   private apply(root: ParentNode): boolean {
     const containers = new Set<Element>();
-    const rows = root instanceof Element && root.matches(ROW_SELECTOR)
-      ? [root, ...root.querySelectorAll<HTMLElement>(ROW_SELECTOR)]
-      : Array.from(root.querySelectorAll<HTMLElement>(ROW_SELECTOR));
+    const rows = root instanceof Element && root.matches(AREA_SELECTORS.sidebarRow)
+      ? [root, ...root.querySelectorAll<HTMLElement>(AREA_SELECTORS.sidebarRow)]
+      : Array.from(root.querySelectorAll<HTMLElement>(AREA_SELECTORS.sidebarRow));
 
     for (const row of rows) {
       if (row.parentElement) {
@@ -130,7 +124,7 @@ export class SouthKoreaAreaList {
         if (!containerRows.some((row) => {
           const anchor = directAnchor(row);
           const id = anchor ? areaId(anchor) : undefined;
-          return Boolean(id && AREA_NAMES_BY_ID[id]);
+          return Boolean(southKoreaAreaName(id));
         })) {
           continue;
         }
@@ -147,7 +141,7 @@ export class SouthKoreaAreaList {
     for (const row of rows) {
       const anchor = directAnchor(row);
       const id = anchor ? areaId(anchor) : undefined;
-      const korean = id ? AREA_NAMES_BY_ID[id] : undefined;
+      const korean = southKoreaAreaName(id);
       if (!anchor || !korean) {
         continue;
       }

@@ -6,10 +6,12 @@
   "scripts": {
     "dev": "wxt",
     "dev:firefox": "wxt -b firefox",
-    "build": "wxt build",
-    "build:firefox": "wxt build -b firefox",
-    "zip": "wxt zip",
-    "typecheck": "tsc --noEmit",
+    "build": "npm run typecheck && wxt build && node test/build/content-script-smoke.mjs .output/chrome-mv3",
+    "build:firefox": "npm run typecheck && wxt build -b firefox && node test/build/content-script-smoke.mjs .output/firefox-mv2",
+    "zip": "npm run typecheck && node test/build/zip-verified.mjs",
+    "typecheck": "wxt prepare && tsc -p tsconfig.json --noEmit",
+    "typecheck:test": "tsc -p tsconfig.test.json --noEmit",
+    "check": "npm run typecheck && npm run typecheck:test && npm test",
     "test": "TMPDIR=/tmp vitest run"
   },
   "devDependencies": {

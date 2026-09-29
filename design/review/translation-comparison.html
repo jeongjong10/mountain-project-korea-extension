@@ -1,0 +1,448 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><title>번역 정책 비교</title>
+<style>body{font:16px system-ui;max-width:1100px;margin:40px auto}pre{white-space:pre-wrap}td,th{border:1px solid #bbb;padding:10px;vertical-align:top}table{border-collapse:collapse}button{padding:12px;margin:10px}</style>
+<h1>Translator API 정책 비교</h1><p>합성 원문 40개. 이전 정책 / 개선 정책 / 원문 직접 호출. 결과는 의미 품질 판정이 아닙니다. Chrome 메뉴 번역은 별도로 비교하세요.</p>
+<button id="run">언어팩 준비 및 비교 시작</button><button id="save" disabled>JSON 저장</button><pre id="status">API 확인 중</pre><table><thead><tr><th>원문</th><th>이전 정책</th><th>개선 정책</th><th>직접 호출</th></tr></thead><tbody id="rows"></tbody></table>
+<script>(() => {
+  // src/core/translation-text-policy.ts
+  var PlaceholderIntegrityError = class extends Error {
+    constructor(failedKinds, message = "\uBC88\uC5ED\uAE30\uAC00 \uBCF4\uD638 \uD1A0\uD070\uC744 \uBCC0\uACBD\uD574 \uC548\uC804\uD558\uAC8C \uC6D0\uBB38\uC744 \uBCF5\uC6D0\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.") {
+      super(message);
+      this.failedKinds = failedKinds;
+      this.name = "PlaceholderIntegrityError";
+    }
+  };
+  function hash(value) {
+    let result = 2166136261;
+    for (let index = 0; index < value.length; index += 1) {
+      result ^= value.charCodeAt(index);
+      result = Math.imul(result, 16777619);
+    }
+    return (result >>> 0).toString(36).toUpperCase();
+  }
+  function escaped(value) {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+  function namespaceTokenPattern(prefix) {
+    return new RegExp(`${escaped(prefix)}\\d+QXZ`, "giu");
+  }
+  function normalizedReplacements(source, replacements) {
+    const sorted = [...replacements].sort((left, right) => left.start - right.start || right.end - left.end);
+    let previousEnd = 0;
+    for (const replacement of sorted) {
+      if (replacement.start < previousEnd || replacement.start < 0 || replacement.end <= replacement.start || replacement.end > source.length) {
+        throw new RangeError("Translation replacements must be valid and non-overlapping.");
+      }
+      previousEnd = replacement.end;
+    }
+    return sorted;
+  }
+  function preparePlaceholderTranslation(source, replacements, fallbackReplacements) {
+    const sorted = normalizedReplacements(source, replacements);
+    if (sorted.length === 0) {
+      return {
+        text: source,
+        cacheDiscriminator: "plain",
+        metrics: { sourceCharacters: source.length, protectedSpans: 0, glossarySpans: 0 },
+        restore: (translated) => translated
+      };
+    }
+    let prefix = "ZXQ";
+    while (namespaceTokenPattern(prefix).test(source)) prefix += "X";
+    const tokens = sorted.map((replacement, index) => {
+      const original = source.slice(replacement.start, replacement.end);
+      return {
+        token: `${prefix}${index}QXZ`,
+        value: replacement.value,
+        kind: replacement.kind,
+        original
+      };
+    });
+    let cursor = 0;
+    const parts = [];
+    sorted.forEach((replacement, index) => {
+      parts.push(source.slice(cursor, replacement.start), tokens[index].token);
+      cursor = replacement.end;
+    });
+    parts.push(source.slice(cursor));
+    const fallback = fallbackReplacements ? preparePlaceholderTranslation(source, fallbackReplacements) : void 0;
+    return {
+      text: parts.join(""),
+      cacheDiscriminator: hash(tokens.map(({ kind, original, value }) => `${kind}\0${original}\0${value}`).join("")),
+      metrics: {
+        sourceCharacters: source.length,
+        protectedSpans: tokens.filter(({ kind }) => kind !== "glossary").length,
+        glossarySpans: tokens.filter(({ kind }) => kind === "glossary").length
+      },
+      ...fallback ? { fallback } : {},
+      restore(translated) {
+        const matches = tokens.map((token) => ({
+          ...token,
+          matches: [...translated.matchAll(new RegExp(escaped(token.token), "giu"))]
+        }));
+        const knownTokens = new Set(tokens.map(({ token }) => token));
+        const hasUnknownToken = [...translated.matchAll(namespaceTokenPattern(prefix))].some(([token]) => !knownTokens.has(token.toUpperCase()));
+        const failedKinds = [.../* @__PURE__ */ new Set([
+          ...matches.filter(({ matches: tokenMatches }) => tokenMatches.length !== 1).map(({ kind }) => kind),
+          ...hasUnknownToken ? tokens.map(({ kind }) => kind) : []
+        ])];
+        if (failedKinds.length > 0) {
+          throw new PlaceholderIntegrityError(failedKinds);
+        }
+        return matches.map(({ matches: [match], value }) => ({
+          start: match.index,
+          end: match.index + match[0].length,
+          value
+        })).sort((left, right) => right.start - left.start).reduce((result, replacement) => result.slice(0, replacement.start) + replacement.value + result.slice(replacement.end), translated);
+      }
+    };
+  }
+
+  // src/sites/mountain-project/contract/translation/glossary.ts
+  var MOUNTAIN_PROJECT_TRANSLATION_POLICY_VERSION = "mpkr-policy-5";
+  var MOUNTAIN_PROJECT_GLOSSARY_VERSION = "mpkr-climbing-ko-3";
+
+  // src/sites/mountain-project/translation/mountain-project-translation-policy.ts
+  var TECHNICAL_PATTERNS = [
+    /https?:\/\/[^\s<>"']*[^\s<>"'.,;:!?)]/giu,
+    /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/giu,
+    /(?<!\d)-?\d{1,3}\.\d{3,}\s*[,/]\s*-?\d{1,3}\.\d{3,}(?!\d)/gu,
+    /\b5\.\d{1,2}[abcd]?[+-]?(?:\s+(?:PG-?13|R|X))?\b/giu,
+    /\b(?:V\d{1,2}[+-]?|(?:A|C|WI|M)\d{1,2}[+-]?)\b/gu,
+    /\b\d+(?:\.\d+)?\s?(?:mm|cm|m|ft|in|kg|lbs?|kN)\b/gu
+  ];
+  function overlaps(left, right) {
+    return left.start < right.end && right.start < left.end;
+  }
+  function wordBoundary(text, start, end) {
+    const before = start > 0 ? text[start - 1] : void 0;
+    const after = end < text.length ? text[end] : void 0;
+    return (!before || !/[\p{L}\p{N}_]/u.test(before)) && (!after || !/[\p{L}\p{N}_]/u.test(after));
+  }
+  function literalCandidates(text, source, caseSensitive, replacement, requireBoundary) {
+    const haystack = caseSensitive ? text : text.toLocaleLowerCase("en-US");
+    const needle = caseSensitive ? source : source.toLocaleLowerCase("en-US");
+    const matches = [];
+    let from = 0;
+    while (from <= haystack.length - needle.length) {
+      const start = haystack.indexOf(needle, from);
+      if (start === -1) break;
+      const end = start + needle.length;
+      if (!requireBoundary || wordBoundary(text, start, end)) {
+        matches.push({ start, end, ...replacement });
+      }
+      from = end;
+    }
+    return matches;
+  }
+  function technicalCandidates(text) {
+    return TECHNICAL_PATTERNS.flatMap((pattern, patternIndex) => [...text.matchAll(pattern)].flatMap((match) => {
+      const value = match[0];
+      const start = match.index;
+      if (start === void 0 || !value) return [];
+      return [{
+        start,
+        end: start + value.length,
+        value,
+        kind: "protected",
+        priority: 1e3 - patternIndex
+      }];
+    }));
+  }
+  function trustedValueCandidates(text, trustedValues) {
+    return [...new Set(trustedValues.map((value) => value.replace(/\s+/g, " ").trim()))].filter((value) => value.length >= 2).sort((left, right) => right.length - left.length).flatMap((value) => literalCandidates(
+      text,
+      value,
+      true,
+      { value, kind: "protected", priority: 900 },
+      wordBoundary(value, 0, value.length)
+    ));
+  }
+  function selectCandidates(candidates) {
+    const selected = [];
+    const sorted = [...candidates].sort((left, right) => right.priority - left.priority || right.end - right.start - (left.end - left.start) || left.start - right.start);
+    for (const candidate of sorted) {
+      if (!selected.some((current) => overlaps(current, candidate))) selected.push(candidate);
+    }
+    return selected.sort((left, right) => left.start - right.start);
+  }
+  var MountainProjectTranslationPolicy = class {
+    policyVersion = MOUNTAIN_PROJECT_TRANSLATION_POLICY_VERSION;
+    glossaryVersion = MOUNTAIN_PROJECT_GLOSSARY_VERSION;
+    prepare(input) {
+      const protectedCandidates = [
+        ...(input.protectedReplacements ?? []).map((replacement) => ({
+          ...replacement,
+          priority: 2e3
+        })),
+        ...technicalCandidates(input.text),
+        ...trustedValueCandidates(input.text, input.trustedValues)
+      ];
+      return preparePlaceholderTranslation(
+        input.text,
+        selectCandidates(protectedCandidates)
+      );
+    }
+  };
+
+  // baseline:src/sites/mountain-project/contract/translation/glossary.ts
+  var NARRATIVE = ["description", "safety", "comment", "help"];
+  var ALL = ["description", "access", "safety", "comment", "help"];
+  var MOUNTAIN_PROJECT_TRANSLATION_POLICY_VERSION2 = "mpkr-policy-4";
+  var MOUNTAIN_PROJECT_GLOSSARY_VERSION2 = "mpkr-climbing-ko-2";
+  var CLIMBING_GLOSSARY = [
+    { id: "bolt-ladder", source: ["bolt ladder", "bolt-ladder"], policy: "preserve-original", categories: NARRATIVE, match: "phrase", priority: 120 },
+    { id: "rope-drag", source: ["rope drag", "rope-drag"], policy: "preserve-original", categories: NARRATIVE, match: "phrase", priority: 120 },
+    { id: "peep-the-badass", source: ["peep the badass"], policy: "preserve-original", categories: NARRATIVE, match: "phrase", priority: 120 },
+    { id: "old-style-anchor", source: ["old-style anchor", "old style anchor"], policy: "translate", target: "\uAD6C\uD615 \uC575\uCEE4", categories: NARRATIVE, match: "phrase", priority: 120 },
+    { id: "alpine-draws", source: ["alpine draws"], policy: "translate", target: "\uC54C\uD30C\uC778 \uD035\uB4DC\uB85C\uC6B0", categories: NARRATIVE, match: "phrase", priority: 120 },
+    { id: "route-wanders", source: ["route wanders"], policy: "translate", target: "\uBD88\uADDC\uCE59\uD55C \uC575\uCEE4 \uB8E8\uD2B8", categories: NARRATIVE, match: "phrase", priority: 120 },
+    { id: "belay-station", source: ["belay stations", "belay station"], policy: "translate", target: "\uBE4C\uB808\uC774 \uC2A4\uD14C\uC774\uC158", categories: ALL, match: "phrase", priority: 100 },
+    { id: "sport-climbing", source: ["sport climbing"], policy: "translate", target: "\uC2A4\uD3EC\uCE20 \uD074\uB77C\uC774\uBC0D", categories: ALL, match: "phrase", priority: 100 },
+    { id: "top-rope", source: ["top roping", "top-roping", "top rope", "top-rope"], policy: "translate", target: "\uD1B1\uB85C\uD504", categories: ALL, match: "phrase", priority: 100 },
+    { id: "hand-crack", source: ["hand cracks", "hand crack"], policy: "translate", target: "\uD578\uB4DC \uD06C\uB799", categories: NARRATIVE, match: "phrase", priority: 100 },
+    { id: "finger-crack", source: ["finger cracks", "finger crack"], policy: "translate", target: "\uD551\uAC70 \uD06C\uB799", categories: NARRATIVE, match: "phrase", priority: 100 },
+    { id: "fixed-anchor", source: ["fixed anchors", "fixed anchor"], policy: "translate", target: "\uACE0\uC815 \uC575\uCEE4", categories: ALL, match: "phrase", priority: 100 },
+    { id: "anchor", source: ["anchors", "anchor"], policy: "translate", target: "\uC575\uCEE4", categories: ALL, match: "word", priority: 80 },
+    { id: "belay", source: ["belaying", "belays", "belay"], policy: "translate", target: "\uBE4C\uB808\uC774", categories: ALL, match: "word", priority: 80 },
+    { id: "crux", source: ["cruxes", "crux"], policy: "translate", target: "\uD06C\uB7ED\uC2A4", categories: NARRATIVE, match: "word", priority: 80 },
+    { id: "pitch", source: ["pitches", "pitch"], policy: "translate", target: "\uD53C\uCE58", categories: ALL, match: "word", priority: 80 },
+    { id: "rappel", source: ["rappelling", "rappels", "rappel"], policy: "translate", target: "\uB77C\uD3A0", categories: ALL, match: "word", priority: 80 },
+    { id: "trad", source: ["traditional climbing", "trad climbing", "trad"], policy: "translate", target: "\uD2B8\uB798\uB4DC", categories: ALL, match: "word", priority: 80 },
+    { id: "bouldering", source: ["bouldering"], policy: "translate", target: "\uBCFC\uB354\uB9C1", categories: ALL, match: "word", priority: 80 },
+    { id: "quickdraw", source: ["quickdraws", "quickdraw"], policy: "translate", target: "\uD035\uB4DC\uB85C\uC6B0", categories: NARRATIVE, match: "word", priority: 80 },
+    { id: "draws", source: ["draws"], policy: "translate", target: "\uD035\uB4DC\uB85C\uC6B0", categories: NARRATIVE, match: "word", excludedPhrases: ["draws attention"], priority: 80 },
+    { id: "topo", source: ["topos", "topo"], policy: "translate", target: "\uB4F1\uBC18 \uAC1C\uB150\uB3C4", categories: NARRATIVE, match: "word", priority: 80 },
+    { id: "cam", source: ["cams", "cam"], policy: "translate", target: "\uCEA0", categories: NARRATIVE, match: "word", priority: 80 },
+    { id: "bolt", source: ["bolts", "bolt"], policy: "translate", target: "\uBCFC\uD2B8", categories: NARRATIVE, match: "word", priority: 80 },
+    { id: "runout", source: ["run-outs", "run-out", "runouts", "runout"], policy: "translate", target: "\uB7F0\uC544\uC6C3", categories: NARRATIVE, match: "word", priority: 80 },
+    { id: "offwidth", source: ["off-widths", "off-width", "offwidths", "offwidth"], policy: "translate", target: "\uC624\uD504\uC704\uB4DC\uC2A4", categories: NARRATIVE, match: "word", priority: 80 },
+    { id: "chimney", source: ["chimneys", "chimney"], policy: "translate", target: "\uCE68\uB2C8", categories: NARRATIVE, match: "word", priority: 80 },
+    { id: "slab", source: ["slabs", "slab"], policy: "translate", target: "\uC2AC\uB7A9", categories: NARRATIVE, match: "word", priority: 80 },
+    { id: "approach", source: ["approaches", "approach"], policy: "translate", target: "\uC5B4\uD504\uB85C\uCE58", categories: ["access"], match: "word", priority: 80 },
+    { id: "trailhead", source: ["trailheads", "trailhead"], policy: "translate", target: "\uB4F1\uC0B0\uB85C \uC785\uAD6C", categories: ["access"], match: "word", priority: 80 },
+    { id: "scramble", source: ["scrambling", "scrambles", "scramble"], policy: "translate", target: "\uC2A4\uD06C\uB7A8\uBE14", categories: ["description", "access", "comment"], match: "word", priority: 80 },
+    { id: "descent", source: ["descents", "descent"], policy: "translate", target: "\uD558\uAC15", categories: ["access", "safety", "help"], match: "word", priority: 80 },
+    { id: "rack", source: ["racks", "rack"], policy: "translate", target: "\uB799", categories: ["safety"], match: "word", priority: 80 },
+    { id: "protection", source: ["protection"], policy: "translate", target: "\uBCF4\uD638 \uC7A5\uBE44", categories: ["safety"], match: "word", priority: 80 },
+    { id: "beta", source: ["beta"], policy: "translate", target: "\uBCA0\uD0C0", categories: ["description", "comment", "help"], match: "word", priority: 80 },
+    { id: "tick", source: ["ticks", "tick"], policy: "translate", target: "\uB4F1\uBC18 \uAE30\uB85D", categories: ["comment", "help"], match: "word", priority: 80 }
+  ];
+
+  // baseline:src/sites/mountain-project/translation/mountain-project-translation-policy.ts
+  var TECHNICAL_PATTERNS2 = [
+    /https?:\/\/[^\s<>"']*[^\s<>"'.,;:!?)]/giu,
+    /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/giu,
+    /(?<!\d)-?\d{1,3}\.\d{3,}\s*[,/]\s*-?\d{1,3}\.\d{3,}(?!\d)/gu,
+    /\b5\.\d{1,2}[abcd]?[+-]?(?:\s+(?:PG-?13|R|X))?\b/giu,
+    /\b(?:V\d{1,2}[+-]?|(?:A|C|WI|M)\d{1,2}[+-]?)\b/gu,
+    /\b\d+(?:\.\d+)?\s?(?:mm|cm|m|ft|in|kg|lbs?|kN)\b/gu
+  ];
+  function overlaps2(left, right) {
+    return left.start < right.end && right.start < left.end;
+  }
+  function wordBoundary2(text, start, end) {
+    const before = start > 0 ? text[start - 1] : void 0;
+    const after = end < text.length ? text[end] : void 0;
+    return (!before || !/[\p{L}\p{N}_]/u.test(before)) && (!after || !/[\p{L}\p{N}_]/u.test(after));
+  }
+  function literalCandidates2(text, source, caseSensitive, replacement, requireBoundary) {
+    const haystack = caseSensitive ? text : text.toLocaleLowerCase("en-US");
+    const needle = caseSensitive ? source : source.toLocaleLowerCase("en-US");
+    const matches = [];
+    let from = 0;
+    while (from <= haystack.length - needle.length) {
+      const start = haystack.indexOf(needle, from);
+      if (start === -1) break;
+      const end = start + needle.length;
+      if (!requireBoundary || wordBoundary2(text, start, end)) {
+        matches.push({ start, end, ...replacement });
+      }
+      from = end;
+    }
+    return matches;
+  }
+  function technicalCandidates2(text) {
+    return TECHNICAL_PATTERNS2.flatMap((pattern, patternIndex) => [...text.matchAll(pattern)].flatMap((match) => {
+      const value = match[0];
+      const start = match.index;
+      if (start === void 0 || !value) return [];
+      return [{
+        start,
+        end: start + value.length,
+        value,
+        kind: "protected",
+        priority: 1e3 - patternIndex
+      }];
+    }));
+  }
+  function trustedValueCandidates2(text, trustedValues) {
+    return [...new Set(trustedValues.map((value) => value.replace(/\s+/g, " ").trim()))].filter((value) => value.length >= 2).sort((left, right) => right.length - left.length).flatMap((value) => literalCandidates2(
+      text,
+      value,
+      true,
+      { value, kind: "protected", priority: 900 },
+      wordBoundary2(value, 0, value.length)
+    ));
+  }
+  function glossaryCandidates(input, entries) {
+    return entries.filter((entry) => entry.categories.includes(input.context.category)).flatMap((entry) => entry.source.map((source) => ({ entry, source }))).sort((left, right) => right.source.length - left.source.length || right.entry.priority - left.entry.priority).flatMap(({ entry, source }) => {
+      const replacement = (start, end) => ({
+        value: entry.policy === "preserve-original" ? input.text.slice(start, end) : entry.target,
+        kind: entry.policy === "preserve-original" ? "preserve-original" : "glossary",
+        priority: entry.priority
+      });
+      if (entry.match === "exact") {
+        const leading = input.text.length - input.text.trimStart().length;
+        const trimmed = input.text.trim();
+        const equal = entry.caseSensitive ? trimmed === source : trimmed.toLocaleLowerCase("en-US") === source.toLocaleLowerCase("en-US");
+        return equal ? [{
+          start: leading,
+          end: leading + trimmed.length,
+          ...replacement(leading, leading + trimmed.length)
+        }] : [];
+      }
+      return literalCandidates2(
+        input.text,
+        source,
+        entry.caseSensitive ?? false,
+        { value: "", kind: "glossary", priority: entry.priority },
+        true
+      ).filter((candidate) => !entry.excludedPhrases?.some((phrase) => {
+        const phraseCandidates = literalCandidates2(
+          input.text,
+          phrase,
+          entry.caseSensitive ?? false,
+          { value: "", kind: "glossary", priority: entry.priority },
+          true
+        );
+        return phraseCandidates.some((blocked) => blocked.start <= candidate.start && blocked.end >= candidate.end);
+      })).map((candidate) => ({
+        ...candidate,
+        ...replacement(candidate.start, candidate.end)
+      }));
+    });
+  }
+  function selectCandidates2(candidates) {
+    const selected = [];
+    const sorted = [...candidates].sort((left, right) => right.priority - left.priority || right.end - right.start - (left.end - left.start) || left.start - right.start);
+    for (const candidate of sorted) {
+      if (!selected.some((current) => overlaps2(current, candidate))) selected.push(candidate);
+    }
+    return selected.sort((left, right) => left.start - right.start);
+  }
+  var MountainProjectTranslationPolicy2 = class {
+    policyVersion = MOUNTAIN_PROJECT_TRANSLATION_POLICY_VERSION2;
+    glossaryVersion = MOUNTAIN_PROJECT_GLOSSARY_VERSION2;
+    prepare(input) {
+      const protectedCandidates = [
+        ...(input.protectedReplacements ?? []).map((replacement) => ({
+          ...replacement,
+          priority: 2e3
+        })),
+        ...technicalCandidates2(input.text),
+        ...trustedValueCandidates2(input.text, input.trustedValues)
+      ];
+      const glossary = glossaryCandidates(input, CLIMBING_GLOSSARY);
+      const protectedReplacements = selectCandidates2([
+        ...protectedCandidates,
+        ...glossary.filter(({ kind }) => kind === "preserve-original")
+      ]);
+      const replacements = selectCandidates2([
+        ...protectedCandidates,
+        ...glossary
+      ]);
+      return preparePlaceholderTranslation(
+        input.text,
+        replacements,
+        replacements.some(({ kind }) => kind === "glossary") ? protectedReplacements : void 0
+      );
+    }
+  };
+
+  // test/fixtures/mountain-project/translation-quality-corpus.ts
+  var TRANSLATION_QUALITY_CORPUS = [
+    { category: "description", source: "Clip the anchor at the top.", expected: "\uC575\uCEE4" },
+    { category: "comment", source: "Both anchors were replaced.", expected: "\uC575\uCEE4" },
+    { category: "safety", source: "The belay station has two bolts.", expected: "\uBE4C\uB808\uC774 \uC2A4\uD14C\uC774\uC158" },
+    { category: "safety", source: "Use the fixed anchor for descent.", expected: "\uACE0\uC815 \uC575\uCEE4" },
+    { category: "description", source: "The crux comes early.", expected: "\uD06C\uB7ED\uC2A4" },
+    { category: "description", source: "The route has four pitches.", expected: "\uD53C\uCE58" },
+    { category: "safety", source: "Rappel from the upper anchor.", expected: "\uB77C\uD3A0" },
+    { category: "help", source: "How is trad recorded?", expected: "\uD2B8\uB798\uB4DC" },
+    { category: "help", source: "Select sport climbing.", expected: "\uC2A4\uD3EC\uCE20 \uD074\uB77C\uC774\uBC0D" },
+    { category: "help", source: "Can I log a top rope?", expected: "\uD1B1\uB85C\uD504" },
+    { category: "description", source: "Bouldering is popular here.", expected: "\uBCFC\uB354\uB9C1" },
+    { category: "safety", source: "Bring twelve quickdraws.", expected: "\uD035\uB4DC\uB85C\uC6B0" },
+    { category: "safety", source: "Bring 12 draws.", expected: "\uD035\uB4DC\uB85C\uC6B0" },
+    { category: "description", source: "Clip the draws before the crux.", expected: "\uD035\uB4DC\uB85C\uC6B0" },
+    { category: "safety", source: "Carry Alpine draws for extension.", expected: "\uC54C\uD30C\uC778 \uD035\uB4DC\uB85C\uC6B0" },
+    { category: "safety", source: "Replace the old style anchor.", expected: "\uAD6C\uD615 \uC575\uCEE4" },
+    { category: "comment", source: "The old-style anchor needs inspection.", expected: "\uAD6C\uD615 \uC575\uCEE4" },
+    { category: "description", source: "Check the topo before climbing.", expected: "\uB4F1\uBC18 \uAC1C\uB150\uB3C4" },
+    { category: "description", source: "The route wanders after the ledge.", expected: "\uB8E8\uD2B8\uAC00 \uC774\uB9AC\uC800\uB9AC \uC774\uC5B4\uC9D0(\uC575\uCEE4 \uC5B8\uAE09 \uC5C6\uC74C)" },
+    { category: "description", source: "Climb the Bolt-Ladder carefully.", expected: "\uBCFC\uD2B8 \uC0AC\uB2E4\uB9AC" },
+    { category: "safety", source: "Expect Rope Drag above the roof.", expected: "\uB85C\uD504 \uB9C8\uCC30" },
+    { category: "comment", source: "Peep the badass on the final pitch.", expected: "\uBA4B\uC9C4 \uAC83\uC744 \uBCF4\uB77C\uB294 \uAD6C\uC5B4 \uD45C\uD604(\uBB38\uB9E5 \uD655\uC778 \uD544\uC694)" },
+    { category: "safety", source: "Small cams protect the crack.", expected: "\uCEA0" },
+    { category: "safety", source: "The bolts are stainless steel.", expected: "\uBCFC\uD2B8" },
+    { category: "comment", source: "The finish feels runout.", expected: "\uB7F0\uC544\uC6C3" },
+    { category: "description", source: "Climb the offwidth on the right.", expected: "\uC624\uD504\uC704\uB4DC\uC2A4" },
+    { category: "description", source: "Enter the chimney above the ledge.", expected: "\uCE68\uB2C8" },
+    { category: "description", source: "The slab is polished.", expected: "\uC2AC\uB7A9" },
+    { category: "description", source: "Follow the hand crack.", expected: "\uD578\uB4DC \uD06C\uB799" },
+    { category: "description", source: "Start in the finger crack.", expected: "\uD551\uAC70 \uD06C\uB799" },
+    { category: "access", source: "The approach takes one hour.", expected: "\uC5B4\uD504\uB85C\uCE58" },
+    { category: "access", source: "Park beside the trailhead.", expected: "\uB4F1\uC0B0\uB85C \uC785\uAD6C" },
+    { category: "access", source: "Scramble up the final ridge.", expected: "\uC2A4\uD06C\uB7A8\uBE14" },
+    { category: "safety", source: "The descent follows the gully.", expected: "\uD558\uAC15" },
+    { category: "safety", source: "Carry a standard rack.", expected: "\uB799" },
+    { category: "safety", source: "Protection is sparse near the top.", expected: "\uBCF4\uD638 \uC7A5\uBE44" },
+    { category: "comment", source: "Thanks for the beta.", expected: "\uBCA0\uD0C0" },
+    { category: "help", source: "A tick records your ascent.", expected: "\uB4F1\uBC18 \uAE30\uB85D" },
+    { category: "comment", source: "Belaying from the ledge is comfortable.", expected: "\uBE4C\uB808\uC774" },
+    { category: "description", source: "Top-roping is possible from above.", expected: "\uD1B1\uB85C\uD504" }
+  ];
+
+  // <stdin>
+  window.comparisonInputs = TRANSLATION_QUALITY_CORPUS.map((entry) => {
+    const prepare = (Policy) => {
+      const policy = new Policy();
+      return policy.prepare({ text: entry.source, trustedValues: [], context: {
+        category: entry.category,
+        pageKind: "route",
+        policyVersion: policy.policyVersion,
+        glossaryVersion: policy.glossaryVersion
+      } });
+    };
+    return { ...entry, previous: prepare(MountainProjectTranslationPolicy2), current: prepare(MountainProjectTranslationPolicy) };
+  });
+})();
+</script><script>
+const status = document.querySelector('#status');
+const pair = {sourceLanguage:'en',targetLanguage:'ko'};
+const result = {createdAt:new Date().toISOString(),userAgent:navigator.userAgent,sourceLanguage:'en',targetLanguage:'ko',rows:[]};
+async function available(){try{status.textContent='API 상태: '+(globalThis.Translator ? await Translator.availability(pair) : 'unsupported')}catch(e){status.textContent=String(e)}}
+available();
+document.querySelector('#run').onclick=async()=>{
+ document.querySelector('#run').disabled=true; let translator;
+ try{
+  translator=await Translator.create({...pair,monitor(m){m.addEventListener('downloadprogress',e=>{status.textContent='언어팩 다운로드: '+Math.round(e.loaded*100)+'%'})}});
+  for(const [index,item] of window.comparisonInputs.entries()){
+   status.textContent='비교 중 '+(index+1)+'/'+window.comparisonInputs.length;
+   const row={source:item.source,category:item.category,reviewHint:item.expected};
+   // Rotate order to reduce systematic warm-up bias. Timing is descriptive only.
+   const modes=['previous','current','direct'];
+   for(const mode of [...modes.slice(index%3),...modes.slice(0,index%3)]){
+    const prepared=item[mode]; const input=prepared?.text??item.source;const started=performance.now();
+    try{const raw=await translator.translate(input);row[mode]={input,raw,output:prepared?prepared.restore(raw):raw,milliseconds:performance.now()-started};}
+    catch(e){row[mode]={input,error:String(e),milliseconds:performance.now()-started};}
+   }
+   result.rows.push(row);const tr=document.createElement('tr');
+   for(const value of [row.source,...modes.map(mode=>row[mode].output??row[mode].error)]){const td=document.createElement('td');td.textContent=value;tr.append(td)}
+   document.querySelector('#rows').append(tr);
+  }
+  status.textContent='완료: '+result.rows.length+'개. 의미 정확도와 자연스러움은 별도 평가 필요.';
+ }catch(e){status.textContent=String(e)}finally{translator?.destroy();document.querySelector('#save').disabled=false}
+};
+document.querySelector('#save').onclick=()=>{const url=URL.createObjectURL(new Blob([JSON.stringify(result,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='translation-comparison.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
+</script></html>

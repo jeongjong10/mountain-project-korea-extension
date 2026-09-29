@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <style>
+    * { box-sizing: border-box; }
+    html { font-size: 14px; }
+    body { margin: 0; font-family: Arial, sans-serif; }
+    #header-container { color: #fff; background: #151515; }
+    #header { margin: 0 auto; padding: 0 15px; }
+    .header-container { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+    .header-container__nav { display: flex; align-items: center; min-width: 0; }
+    .app-logo { display: inline-block; flex: 0 0 auto; width: 64px; height: 44px; margin: 13px 0; background: #fff; }
+    #header-nav { display: inline-flex; align-items: center; line-height: 70px; }
+    #header-nav .tab { display: inline-block; margin-right: 12px; }
+    #header-nav .tab:last-child { margin-right: 0; }
+    #header-nav .tab a { display: inline-block; padding: .5rem .75rem; color: #fff; }
+    #user { display: inline-flex; flex: 0 0 auto; }
+    #user .btn { border: 0; border-radius: 4px; padding: .5rem 1rem; color: #fff; background: #056eb7; font-weight: 700; }
+    #hamburger-container { display: none; flex: 0 0 auto; }
+    #hamburger-trigger { display: inline-flex; align-items: center; min-height: 38px; margin-right: -.5rem; padding: 0 .5rem; color: #fff; }
+    #hamburger-trigger::before { content: 'Menu'; }
+    __MPKR_NAVIGATION_CONTROL_CSS__
+    @media (max-width: 767px) {
+      #header { width: 340px; }
+      .app-logo { width: 48px; height: 35px; margin: 10px 0; }
+      #header-nav { display: none; }
+      #hamburger-container { display: inline-block; }
+    }
+  </style>
+</head>
+<body>
+  <div id="header-container">
+    <div id="header">
+      <div class="header-container">
+        <div class="header-container__nav">
+          <a class="app-logo" aria-label="Mountain Project"></a>
+          <div id="header-nav">
+            <div class="tab"><a>Route Guide</a></div>
+            <div class="tab"><a>Gyms</a></div>
+            <div class="tab"><a>What's New</a></div>
+          </div>
+        </div>
+        <div class="header-container__user">
+          <label class="mp-nav-control"><span class="mp-nav-copy">확장 기능</span><input type="checkbox" checked></label>
+          <a class="mp-nav-control"><span class="mp-nav-icon"></span><span class="mp-nav-copy">대한민국</span></a>
+          <div id="user"><a class="btn">Sign In</a></div>
+          <div id="hamburger-container"><a id="hamburger-trigger" class="hamburger"></a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <pre id="layout-result"></pre>
+  <script>
+    const rect = (element) => {
+      const value = element.getBoundingClientRect();
+      return { left: value.left, right: value.right, top: value.top, bottom: value.bottom, width: value.width, height: value.height };
+    };
+    const header = document.querySelector('#header');
+    const user = document.querySelector('.header-container__user');
+    const controls = [...user.children].filter((element) => getComputedStyle(element).display !== 'none');
+    const computed = getComputedStyle(user);
+    document.querySelector('#layout-result').textContent = JSON.stringify({
+      viewport: innerWidth,
+      header: rect(header),
+      user: rect(user),
+      controls: controls.map((element) => ({ id: element.id, className: element.className, rect: rect(element) })),
+      style: {
+        alignContent: computed.alignContent,
+        justifyContent: computed.justifyContent,
+        marginBlockStart: computed.marginBlockStart,
+        marginInlineEnd: computed.marginInlineEnd,
+        paddingInlineEnd: computed.paddingInlineEnd,
+        rowGap: computed.rowGap,
+      },
+    });
+  </script>
+</body>
+</html>

@@ -10,6 +10,7 @@ export type TranslationStatus =
   | 'pending'
   | 'waiting-user-start'
   | 'translated'
+  | 'preserved'
   | 'failed'
   | 'unsupported';
 
@@ -32,6 +33,10 @@ export class TranslationLedger {
 
   get(id: string): TranslationRecord | undefined {
     return this.records.get(id);
+  }
+
+  delete(id: string): void {
+    this.records.delete(id);
   }
 
   snapshot(): TranslationRecord[] {
