@@ -1,8 +1,0 @@
-#header-container .mp-nav-control {background:#f7f8f8;border-color:#c8ceca;color:#202124}
-#header-container a.mp-nav-control {color:#0060a9}
-#header-container .mp-nav-control:hover {background:#e4edf5}
-#header-container a.mp-nav-control::before {background:#c8ceca}
-#header-container .mp-nav-control:focus-visible,#header-container .mp-nav-control:has(input:focus-visible) {outline-color:#0060a9}
-#header-container .mp-nav-control input {background:#c8ceca;border-color:#9eabb3;color:#fff}
-#header-container .mp-nav-control input:checked {background:#0060a9;border-color:#0060a9;color:#fff}
-#header-container label.mp-nav-control:has(input:not(:checked)) .mp-nav-copy {color:#59635d}

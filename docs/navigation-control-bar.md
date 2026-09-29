@@ -60,7 +60,7 @@ shell의 MutationObserver는 하나입니다. 헤더 내부 childList/subtree와
 
 ## 검증과 남은 범위
 
-다크 색상 적용 후 상단 바·팝업 설정 테스트 7개, production typecheck, Chrome MV3·Firefox MV2 빌드 및 출력 번들 smoke가 통과했습니다. [이번 적용 검사 기록](../design/review/navigation-approved-verification.json).
+다크 색상 적용 후 상단 바·팝업 설정 테스트 7개, production typecheck, Chrome MV3·Firefox MV2 빌드 및 출력 번들 smoke가 통과했습니다. 이번 적용 검사 기록 (로컬 참고: `design/review/navigation-approved-verification.json`).
 
 - [navigation-controls.test.ts](../test/ui/navigation-controls.test.ts): 배치·순서·URL, 클릭 영역 보존, 중복 방지, OFF 유지, 설정 반영, 헤더 교체·늦은 생성, 복수 사용자 영역, 저장 실패, destroy 복원과 비교 패널 부재.
 - [popup-settings.test.ts](../test/application/popup-settings.test.ts): 팝업의 외부 설정 반영·저장·구독 해제.
@@ -69,4 +69,4 @@ shell의 MutationObserver는 하나입니다. 헤더 내부 childList/subtree와
 
 헤더의 지원 구조가 없으면 삽입을 건너뜁니다. 사이트 구조 변경, 실제 로그인/로그아웃 전환, 아바타·Sign In 메뉴, 키보드 포커스와 모바일 헤더·임베드 페이지에서의 실사용 확인은 계속 필요합니다.
 
-[현재 다크 버전 미리보기](../design/review/navigation-applied.html)는 실제 컨트롤 코드와 재현한 주변 헤더를 사용합니다. 미리보기의 스위치는 데모 상태만 변경하며 확장 설정을 저장하지 않습니다. [미리보기 자료 구분과 재생성 방법](../previews/README.md)을 참고하세요.
+현재 다크 버전 미리보기 (로컬 참고: `design/review/navigation-applied.html`)는 실제 컨트롤 코드와 재현한 주변 헤더를 사용합니다. 미리보기의 스위치는 데모 상태만 변경하며 확장 설정을 저장하지 않습니다. 미리보기 자료 구분과 재생성 방법 (로컬 참고: `previews/README.md`)을 참고하세요.

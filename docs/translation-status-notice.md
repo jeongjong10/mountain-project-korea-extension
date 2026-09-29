@@ -20,9 +20,9 @@
 
 ## 검증 자료
 
-[실제 소스 검토 화면](../design/review/translation-state-applied.html)은 실제 컨트롤러·어댑터·렌더러·안내 UI를 모의 provider에 연결했다. 실제 Mountain Project 로그인 세션이나 Chrome 언어팩을 실행한 증거는 아니다.
+실제 소스 검토 화면 (로컬 참고: `design/review/translation-state-applied.html`)은 실제 컨트롤러·어댑터·렌더러·안내 UI를 모의 provider에 연결했다. 실제 Mountain Project 로그인 세션이나 Chrome 언어팩을 실행한 증거는 아니다.
 
-[안내 통합 테스트](../test/ui/translation-notice.test.ts)는 정상 상태의 무표시, 미지원·원문 유지, 준비 버튼·중복 실행 방지, 실패 후 재시도, OFF 이후 늦은 완료, 대상 없음·대상 제거, 접힌 본문 밖 배치를 확인한다. [검증 기록](../design/review/translation-notice-verification.json).
+[안내 통합 테스트](../test/ui/translation-notice.test.ts)는 정상 상태의 무표시, 미지원·원문 유지, 준비 버튼·중복 실행 방지, 실패 후 재시도, OFF 이후 늦은 완료, 대상 없음·대상 제거, 접힌 본문 밖 배치를 확인한다. 검증 기록 (로컬 참고: `design/review/translation-notice-verification.json`).
 
 검증 결과: 최초 관련 3파일 33개와 최종 안내 테스트 8개가 통과했고 production/test 타입 검사, Chrome·Firefox 빌드와 출력 번들 smoke가 통과했다. 마지막 접힘 위치 수정 전에 시작한 전체 회귀 실행에서는 516개 통과·1개 실패를 기록했다. 실패한 위치 검사는 수정이 끝난 소스의 별도 실행에서 통과했다. 전체 회귀를 단일 전수 통과로 표기하지 않는다.
 

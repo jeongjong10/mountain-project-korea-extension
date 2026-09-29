@@ -13,3 +13,37 @@ coverage/
 # Raw live-browser captures remain local; store assets are published separately.
 /design/review/2026-09-29/
 /docs/forum-verification-2026-09-29/
+
+# Publish final store assets only; keep design studies and one-off tooling local.
+/design/*
+!/design/store-assets/
+/design/store-assets/*
+!/design/store-assets/mpkr-small-promo-v1-440x280.png
+!/design/store-assets/screenshot-home-1280x800.png
+!/design/store-assets/screenshot-korea-map-1280x800.png
+!/design/store-assets/screenshot-route-detail-1280x800.png
+/previews/
+/test/manual/
+
+# Historical investigations stay local; current documentation remains versioned.
+/docs/asset-and-attribution-review.md
+/docs/evidence/map-layout-change-2026-09-28.patch
+/docs/evidence/map-layout-regression-2026-09-28.json
+/docs/evidence/privacy-directory-parser-2026-09-28.json
+/docs/evidence/rc-live-verification-2026-09-28.json
+/docs/evidence/rc-native-model-2026-09-28.json
+/docs/fixture-sanitization-2026-09-28.md
+/docs/forum-translation-finish-2026-09-29.md
+/docs/layout-verification-2026-09-29.md
+/docs/map-attribution-layout-fix.md
+/docs/onx-permission-request.md
+/docs/p1-verification.md
+/docs/privacy-policy-review-2026-09-28.md
+/docs/rc-live-verification-2026-09-28.md
+/docs/region-directory-layout-audit.md
+/docs/region-directory-mp-inventory.json
+/docs/region-directory-mp-inventory.md
+/docs/region-directory-research.md
+/docs/sidebar-runtime-error-2026-09-28.md
+/docs/translation-policy-change-2026-09-29.md
+/docs/translator-api-strategy-research-2026-09-29.md

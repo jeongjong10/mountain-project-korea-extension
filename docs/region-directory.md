@@ -49,6 +49,6 @@
 | `test/ui/directory-counts.test.ts` | 총수·0·미인식 파싱, 요청 중복 제거, 실패·동시 요청 제한·취소 |
 | `test/application/mountain-project-application.test.ts` | 애플리케이션 OFF/ON과 복원 |
 
-[페이지별 배치 검토](region-directory-layout-audit.md): 홈페이지·Route Guide, 1440/768/390px, 원본 및 세 탭의 24개 화면. 실제 HTML·CSS 스냅샷에 가이드 컴포넌트를 적용한 검토이며 로그인·광고·지도·확장 전체 기능을 함께 실행한 검증은 아니다.
+페이지별 배치 검토 (로컬 참고: `docs/region-directory-layout-audit.md`): 홈페이지·Route Guide, 1440/768/390px, 원본 및 세 탭의 24개 화면. 실제 HTML·CSS 스냅샷에 가이드 컴포넌트를 적용한 검토이며 로그인·광고·지도·확장 전체 기능을 함께 실행한 검증은 아니다.
 
-[원본 스타일 미리보기](../previews/region-directory-designs.html) · [페이지별 비교 화면](../previews/guide-layout-audit/index.html) · [선정 근거 기록](region-directory-research.md) · [전체 MP 조사표](region-directory-mp-inventory.md)
+원본 스타일 미리보기 (로컬 참고: `previews/region-directory-designs.html`) · 페이지별 비교 화면 (로컬 참고: `previews/guide-layout-audit/index.html`) · 선정 근거 기록 (로컬 참고: `docs/region-directory-research.md`) · 전체 MP 조사표 (로컬 참고: `docs/region-directory-mp-inventory.md`)

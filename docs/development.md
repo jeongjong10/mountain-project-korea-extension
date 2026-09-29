@@ -33,7 +33,7 @@ Area 지도와 Route 설명·위치·보호장비 섹션 UI는 전역으로 적�
 - 현재 제품은 다크 색상의 통합 컨트롤 바를 사용합니다. 어두운 중성 바탕·흰 글자·밝은 파란색 조작부를 사용합니다. [현재 디자인 기준과 시안](design-system.md)
 - OFF로 바꾸면 페이지 기능을 중단·복원하지만, 다시 켤 수 있도록 컨트롤 바와 대한민국 링크는 남습니다. 대한민국 링크는 중앙 계약의 South Korea Area URL로 같은 탭에서 이동합니다.
 - 본문 번역 준비·미지원·provider 실패가 발생하면 해당 본문 근처에 안내합니다. 보호 토큰·구조 검사로 거부한 결과는 `preserved`로 원문을 조용히 유지하며, 일반 오류와 구분합니다. 정상 번역 중에는 안내를 표시하지 않습니다. [표시 조건과 동작](translation-status-notice.md)
-- 팝업은 다크 색상과 KOREA 아이콘을 사용하며 대한민국 지역·사용 안내·문의 링크를 제공합니다. 설정 조회·저장 실패를 표시합니다. [팝업 적용 결과](../design/review/popup-applied.html)
+- 팝업은 다크 색상과 KOREA 아이콘을 사용하며 대한민국 지역·사용 안내·문의 링크를 제공합니다. 설정 조회·저장 실패를 표시합니다. 팝업 적용 결과 (로컬 참고: `design/review/popup-applied.html`)
 - 상단 스위치와 팝업의 **확장 기능** 설정은 같은 `storage.local.enabled`를 사용합니다. 기본값은 ON이며, 같은 브라우저 프로필에서 실행 중인 페이지·팝업은 저장소 변경 구독으로 함께 반영합니다. 기기 간 클라우드 동기화는 아닙니다.
 - 로그인 상태 변화나 헤더 교체 시 인식 가능한 사용자 메뉴를 다시 찾아 삽입합니다. 원본 아바타 클릭 영역·메뉴 노드는 유지합니다. 인식 가능한 헤더가 없는 페이지에는 컨트롤 바를 삽입하지 않습니다.
 
@@ -131,7 +131,7 @@ Firefox의 `about:debugging#/runtime/this-firefox`에서 **임시 부가 기능 
 
 현재 `npm test` 스크립트는 `TMPDIR=/tmp` 문법을 사용하므로 WSL 또는 POSIX 셸에서 실행하세요. Windows PowerShell에서는 `npx vitest run`으로 테스트를 직접 실행할 수 있습니다. 테스트 소스는 제품 코드와 분리된 최상위 `test/`에 있으며, `src/` 구조를 따라 application·localization·site contract·UI 경계를 검증합니다.
 
-빌드 후 `test/build/content-script-smoke.mjs`는 실제 manifest가 가리키는 번들을 Happy DOM에서 실행하여 Area·Route 사이드바 초기화, 열기·닫기, OFF/ON, 재주입을 확인합니다. 네트워크·번역 API·사용자 프로필은 사용하지 않으며 실제 브라우저 검증을 대체하지 않습니다. `npx wxt build`나 `npx wxt zip` 직접 실행은 이 필수 검사를 우회하므로 검증된 배포 명령으로 취급하지 않습니다. [사이드바 오류 조사 기록](sidebar-runtime-error-2026-09-28.md)
+빌드 후 `test/build/content-script-smoke.mjs`는 실제 manifest가 가리키는 번들을 Happy DOM에서 실행하여 Area·Route 사이드바 초기화, 열기·닫기, OFF/ON, 재주입을 확인합니다. 네트워크·번역 API·사용자 프로필은 사용하지 않으며 실제 브라우저 검증을 대체하지 않습니다. `npx wxt build`나 `npx wxt zip` 직접 실행은 이 필수 검사를 우회하므로 검증된 배포 명령으로 취급하지 않습니다. 사이드바 오류 조사 기록 (로컬 참고: `docs/sidebar-runtime-error-2026-09-28.md`)
 
 테스트는 페이지 판별, 번역 규칙, DOM 변경과 원복, 동적 콘텐츠, 지도·통계·목록 UI 등을 다룹니다. 번역 품질 corpus는 문맥별 용어, 다의어 충돌, 고유명사·등급 보존, 토큰 무결성 실패, 캐시 격리, 섹션 재번역과 장문 댓글의 원자적 표시를 검증합니다. Mountain Project 계약 테스트는 현재 구조뿐 아니라 Bootstrap 클래스 변경, 중간 wrapper 추가, 필수 landmark 누락과 fallback도 검증합니다. 상단 컨트롤은 운영 헤더의 gutter·로고·탭·사용자 버튼·햄버거 spacing을 재현한 렌더 fixture에서 computed style을 추가로 검증합니다. 자동 테스트와 빌드 성공만으로 실제 사이트의 로그인·기여·지도·번역 엔진 동작까지 검증되는 것은 아닙니다.
 
@@ -146,7 +146,7 @@ npm run build:firefox
 git diff --check
 ```
 
-2026-09-28 작업트리 동기화 당시 프로덕션·테스트 타입 검사, `52/52` 테스트 파일의 `490/490` 테스트, Chrome MV3·Firefox MV2 빌드와 `git diff --check`가 통과했습니다. 당시 content script SHA-256은 `b4ee302460f300be7e964459320c6082e0db5f59ab890f5e846bc8274c15554d`이며 이후 사이드바 오류 조사에서 재빌드한 산출물·검증 범위는 [후속 기록](sidebar-runtime-error-2026-09-28.md)에 구분했습니다. 검증 기록은 clean commit이나 공개 배포 승인을 뜻하지 않습니다.
+2026-09-28 작업트리 동기화 당시 프로덕션·테스트 타입 검사, `52/52` 테스트 파일의 `490/490` 테스트, Chrome MV3·Firefox MV2 빌드와 `git diff --check`가 통과했습니다. 당시 content script SHA-256은 `b4ee302460f300be7e964459320c6082e0db5f59ab890f5e846bc8274c15554d`이며 이후 사이드바 오류 조사에서 재빌드한 산출물·검증 범위는 후속 기록 (로컬 참고: `docs/sidebar-runtime-error-2026-09-28.md`)에 구분했습니다. 검증 기록은 clean commit이나 공개 배포 승인을 뜻하지 않습니다.
 
 2026-09-29 출시 준비 점검에서는 타입 검사, 전체 61개 파일·634개 테스트(`--maxWorkers=4`), Chrome ZIP 생성과 패키지 검사를 통과했습니다. 기본 동시 실행에서 발생한 시간 초과와 재검증 조건은 [소스 점검 기록](release-source-audit-2026-09-29.md)에 남겨 두었습니다.
 
@@ -268,4 +268,4 @@ wxt.config.ts       # 매니페스트와 브라우저별 WXT 빌드 설정
 - 원본 목록은 파싱해 재구성하지 않고 그대로 보존합니다. 현재 문서를 마운트하며 이후 원본 디렉터리 자체를 동적으로 교체하는 사이트 변형은 별도 대응이 필요합니다.
 - 미리보기 (로컬 참고 파일: `previews/region-directory-designs.html`)는 공개 Route Guide의 디렉터리 HTML과 실제 구현 컴포넌트를 사용합니다. 미리보기 OFF는 데모 안에서만 작동합니다.
 
-지역 디렉터리의 [구현 명세](region-directory.md)와 [페이지별 배치 검토](region-directory-layout-audit.md)를 참고하세요.
+지역 디렉터리의 [구현 명세](region-directory.md)와 페이지별 배치 검토 (로컬 참고: `docs/region-directory-layout-audit.md`)를 참고하세요.
