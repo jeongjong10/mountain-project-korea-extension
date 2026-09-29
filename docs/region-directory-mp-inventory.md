@@ -1427,4 +1427,3 @@
 - [Querol](https://www.mountainproject.com/area/203004117/querol) — 13
 - [Siurana](https://www.mountainproject.com/area/106624710/siurana) — 355
 - [Vilanova de Prades](https://www.mountainproject.com/area/113944261/vilanova-de-prades) — 13
-
