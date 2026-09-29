@@ -47,3 +47,6 @@ coverage/
 /docs/sidebar-runtime-error-2026-09-28.md
 /docs/translation-policy-change-2026-09-29.md
 /docs/translator-api-strategy-research-2026-09-29.md
+
+# GitHub Pages is not used for the published privacy site.
+/privacy-site/.nojekyll
