@@ -1,6 +1,6 @@
 # Chrome 웹 스토어 제출 문안
 
-최초 작성: 2026-09-28. 현재 상태 갱신: 2026-09-29. 첫 배포 버전 `0.1.0`은 사용자가 심사 제출을 완료했으며 검토 대기·승인 후 자동 게시 상태입니다. 아래 문안은 제출·후속 수정 시 참고하는 키트이며 실제 제출 필드의 사본은 아닙니다. 최신 상태는 [출시 현황](release-status.md)을 따릅니다. 날짜별 공개·검증 이력은 당시 기록으로 보존합니다.
+최초 작성: 2026-09-28. 현재 상태 갱신: 2026-09-30. 첫 배포 버전 `0.1.0`은 심사 승인 및 공개 출시를 확인했습니다. 아래 문안은 제출·후속 수정 시 참고하는 키트이며 실제 제출 필드의 사본은 아닙니다. 최신 상태는 [출시 현황](release-status.md)을 따릅니다. 날짜별 공개·검증 이력은 당시 기록으로 보존합니다.
 
 ## 1. 이름과 짧은 설명
 
@@ -139,7 +139,7 @@ Limited Use 확인란에 대응하는 현재 구현의 약속:
 | 응답 가능한 개인정보 문의처·지원 수단  | whdduf972@gmail.com. 사용자가 공개용으로 승인한 개인정보 문의처입니다.                                                          |
 | 개인정보처리방침 호스팅·공개 HTTPS URL | [공개 방침](https://mountain-project-korea-privacy.jeongjongyeol.chatgpt.site). 2026-09-28 인증·쿠키 없는 요청으로 HTTP 200, 실제 본문·게시자·문의처·시행일을 확인했습니다. GitHub Pages 예정 주소는 사용하지 않습니다. |
 | 개인정보처리방침 시행일                | 2026년 9월 28일. 실제 최초 게시일이며 Markdown·공개용 HTML·공개본에 반영했습니다. |
-| 스토어 항목 URL·심사 상태              | 항목 ID `ijgghnbmgbapfckfnkcapbkbbobjochh`. 2026-09-29 사용자 확인: 검토 대기, 승인 후 자동 게시. 공개 출시 전입니다.                                                                                             |
+| 스토어 항목 URL·심사 상태              | 항목 ID `ijgghnbmgbapfckfnkcapbkbbobjochh`. 2026-09-30 심사 승인·공개 출시 확인. [Chrome 웹 스토어에서 설치](https://chromewebstore.google.com/detail/mountain-project-korea-%EB%B9%84%EA%B3%B5/ijgghnbmgbapfckfnkcapbkbbobjochh).                                                                                             |
 
 ## 8. 현재 게시 자료
 

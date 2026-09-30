@@ -8,12 +8,14 @@ Mountain Project를 한국어로 읽고 더 편리하게 탐색하도록 돕는 
 
 ## 출시 현황
 
-**첫 배포 버전 `0.1.0`의 기능 구현과 배포 준비를 마쳤으며, Chrome 웹 스토어 심사 대기 중입니다.** 승인 후 자동 게시하도록 설정했습니다. 아직 스토어 승인이나 공개 출시가 완료된 상태는 아닙니다.
+**첫 배포 버전 `0.1.0`이 Chrome 웹 스토어에 출시되었습니다.**
+
+[Chrome 웹 스토어에서 설치](https://chromewebstore.google.com/detail/mountain-project-korea-%EB%B9%84%EA%B3%B5/ijgghnbmgbapfckfnkcapbkbbobjochh)
 
 첫 버전 완성을 출발점으로, 실제 사용자의 피드백과 Mountain Project의 변화에 맞춰 오류 수정, 번역 품질 개선, 탐색 기능 확장 등 유지보수와 추가 개발을 계속합니다.
 
 - 출시 대상: 데스크톱 Chrome
-- 상태 확인일: 2026년 9월 29일 — 게시자 확인 기준
+- 상태 확인일: 2026년 9월 30일 — 게시자 승인 확인 및 공개 스토어 페이지 확인
 - [출시 현황과 다음 단계](docs/release-status.md) · [버전 변경 내역](CHANGELOG.md)
 
 Mountain Project 또는 onX의 공식 제품이 아니며, 공식 제휴나 승인을 의미하지 않습니다.
@@ -35,7 +37,11 @@ Mountain Project 또는 onX의 공식 제품이 아니며, 공식 제휴나 승�
 
 ## 설치 및 사용
 
-Chrome 웹 스토어 설치 링크는 승인·공개 상태를 확인한 뒤 추가합니다. 현재는 아래 방법으로 소스를 빌드하여 설치할 수 있습니다.
+[Chrome 웹 스토어에서 설치](https://chromewebstore.google.com/detail/mountain-project-korea-%EB%B9%84%EA%B3%B5/ijgghnbmgbapfckfnkcapbkbbobjochh) 페이지에서 **Chrome에 추가**를 선택하세요. 설치 후 Mountain Project 페이지를 새로고침하면 사용할 수 있습니다.
+
+### 소스로 직접 설치하기
+
+개발하거나 직접 빌드하려면 아래 방법을 사용합니다.
 
 Node.js와 npm이 필요합니다. 개발 기준 Node.js 버전은 `22.23.2`입니다.
 
@@ -90,4 +96,4 @@ WXT, TypeScript, Vitest, happy-dom을 사용합니다. 설치·실행 명령, �
 - [문서 목록](docs/README.md)
 - [첫 배포 버전 소스·패키지 검증 기록](docs/release-source-audit-2026-09-29.md)
 
-후속 개발은 버전별로 변경 내용을 기록하고 검증한 뒤 배포합니다. 현재 심사 중인 버전과 이후 작업 상태는 구분하여 관리합니다.
+후속 개발은 버전별로 변경 내용을 기록하고 검증한 뒤 배포합니다. 스토어에 배포된 버전과 후속 개발 상태는 구분하여 관리합니다.
