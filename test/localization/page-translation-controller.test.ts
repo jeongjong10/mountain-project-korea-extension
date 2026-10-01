@@ -337,7 +337,7 @@ describe('PageTranslationController', () => {
       status: 'waiting-user-start',
       source: 'A classic line above Seoul.',
     });
-    expect(ledger.snapshot()[0]?.message).toContain('자동으로 다시 시도');
+    expect(ledger.snapshot()[0]?.message).toBe('페이지를 계속 사용하면 번역 준비가 자동으로 시작됩니다.');
     expect(document.querySelector('#mpkr-translation-review')).toBeNull();
 
     document.body.click();
@@ -434,7 +434,7 @@ describe('PageTranslationController', () => {
     expect(ledger.snapshot()[0]).toMatchObject({
       status: 'waiting-user-start',
     });
-    expect(ledger.snapshot()[0]?.message).toContain('자동으로 다시 시도');
+    expect(ledger.snapshot()[0]?.message).toBe('페이지를 계속 사용하면 번역 준비가 자동으로 시작됩니다.');
     expect(document.querySelector('.mpkr-machine-translation')).toBeNull();
     controller.destroy();
   });

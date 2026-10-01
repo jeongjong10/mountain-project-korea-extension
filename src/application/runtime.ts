@@ -7,7 +7,7 @@ export interface ApplicationRuntime extends PageLifecycle {
 
 export interface ApplicationShell {
   mount(change: (enabled: boolean) => Promise<void>): void;
-  render(enabled: boolean): void;
+  render(enabled: boolean, context?: { isFirstRun: boolean }): void;
   destroy(): void;
 }
 
@@ -19,14 +19,16 @@ export function createApplicationRuntime(
 ): ApplicationRuntime {
   let destroyed = false;
   let enabled: boolean | undefined;
+  let isFirstRun = false;
   let revision = 0;
   let started: Promise<void> | undefined;
   let unwatch: (() => void) | undefined;
 
-  const apply = (next: boolean) => {
+  const apply = (next: boolean, nextIsFirstRun = false) => {
     if (destroyed) return;
     revision += 1;
-    shell?.render(next);
+    isFirstRun = nextIsFirstRun;
+    shell?.render(next, { isFirstRun });
     if (enabled === next) return;
     enabled = next;
     if (next) page.enable();
@@ -43,10 +45,28 @@ export function createApplicationRuntime(
 
   const setEnabled = async (next: boolean) => {
     if (destroyed) return;
-    const beforeWrite = revision;
-    await settings.setEnabled(next);
-    // A storage event may already have applied this or a newer external value.
-    if (revision === beforeWrite) apply(next);
+    if (!next) {
+      const beforeWrite = revision;
+      await settings.setEnabled(false);
+      // A storage event may already have applied this or a newer external value.
+      if (revision === beforeWrite) apply(false);
+      return;
+    }
+
+    const previous = enabled;
+    apply(true, isFirstRun);
+    const optimisticRevision = revision;
+    try {
+      await settings.setEnabled(true);
+      if (!destroyed && revision === optimisticRevision && isFirstRun) {
+        isFirstRun = false;
+        shell?.render(true, { isFirstRun: false });
+      }
+    } catch (error) {
+      // Roll back only when storage has not supplied a newer authoritative value.
+      if (!destroyed && revision === optimisticRevision && previous !== undefined) apply(previous, isFirstRun);
+      throw error;
+    }
   };
 
   return {
@@ -62,14 +82,18 @@ export function createApplicationRuntime(
         const initialRevision = revision;
         try {
           shell?.mount(setEnabled);
-          const stopWatching = settings.watch((next) => apply(next.enabled));
+          const stopWatching = settings.watch((next) => {
+            apply(next.enabled, next.isFirstRun === true);
+          });
           if (destroyed) {
             stopWatching();
             return;
           }
           unwatch = stopWatching;
           const initial = await settings.get();
-          if (!destroyed && revision === initialRevision) apply(initial.enabled);
+          if (!destroyed && revision === initialRevision) {
+            apply(initial.enabled, initial.isFirstRun === true);
+          }
         } catch (error) {
           destroy();
           throw error;

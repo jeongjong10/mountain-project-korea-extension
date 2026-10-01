@@ -72,11 +72,13 @@ export function createMountainProjectApplication(provider: TranslationProvider):
   const routeLists = new RouteListPresentation();
   const directory = new RegionDirectory();
   let enabled = false;
+  let lifecycleRevision = 0;
 
   root.dataset.mpKoreaPageKind = pageKind;
 
   const disable = () => {
     enabled = false;
+    lifecycleRevision += 1;
     directory.destroy();
     gateway.destroy();
     sidebarToggle.destroy();
@@ -104,6 +106,7 @@ export function createMountainProjectApplication(provider: TranslationProvider):
       return;
     }
     enabled = true;
+    const enableRevision = ++lifecycleRevision;
     root.dataset.mpKoreaExtension = 'enabled';
     sidebarToggle.mount();
 
@@ -127,8 +130,26 @@ export function createMountainProjectApplication(provider: TranslationProvider):
     const isSouthKorea = capabilities.southKoreaEnhancements;
     const hasAuthoredTranslation = capabilities.authoredTranslation
       || pageKind === 'route-stats';
+    let preparation: Promise<void> | undefined;
+    if (hasAuthoredTranslation || pageKind === 'main') {
+      try {
+        // Keep model preparation in the switch's user-activation stack, even
+        // on the homepage where there are no authored targets to translate.
+        preparation = provider.prepare?.();
+      } catch (error) {
+        preparation = Promise.reject(error);
+      }
+    }
     if (hasAuthoredTranslation) {
-      void controller.start();
+      const start = controller.start();
+      if (preparation) {
+        void Promise.allSettled([preparation, start]).then(() => {
+          if (enabled && lifecycleRevision === enableRevision) void controller.retry();
+        });
+      }
+    } else {
+      // Homepage preparation is best-effort; authored pages handle retry UI.
+      void preparation?.catch(() => undefined);
     }
     if (hasGenericArea) {
       areaPresentation.mount(document);

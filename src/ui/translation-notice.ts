@@ -2,7 +2,7 @@ import type { TranslationNoticeState } from '../application/translation-notice-s
 import { UI } from './design-tokens';
 
 const COPY = {
-  waiting: ['한국어 번역을 준비해 주세요', '처음에는 브라우저 번역 언어팩 준비가 필요할 수 있습니다.', '번역 준비 시작'],
+  waiting: ['한국어 번역을 준비하고 있습니다', '페이지를 계속 사용하면 번역 준비가 자동으로 시작됩니다.', '번역 준비 시작'],
   preparing: ['한국어 번역을 준비하고 있습니다', '준비가 끝나면 번역을 이어갑니다. 그동안 원문을 읽을 수 있습니다.', '준비 중…'],
   unsupported: ['이 환경에서는 본문 번역을 사용할 수 없습니다', '원문을 표시합니다. 지원되는 지도·통계와 탐색 기능은 계속 사용할 수 있습니다.', '사용 안내'],
   failed: ['번역을 완료하지 못했습니다', '번역하지 못한 부분은 원문을 유지합니다. 잠시 후 다시 시도해 주세요.', '다시 시도'],
@@ -30,7 +30,9 @@ export class TranslationNotice {
     if (this.message!.textContent !== message) this.message!.textContent = message;
     if (this.button!.textContent !== action) this.button!.textContent = action;
     this.button!.disabled = state.kind === 'preparing';
-    this.button!.hidden = state.kind === 'unsupported' || state.kind === 'failed' && !state.retryable;
+    this.button!.hidden = state.kind === 'waiting'
+      || state.kind === 'unsupported'
+      || state.kind === 'failed' && !state.retryable;
     this.guide!.hidden = state.kind !== 'unsupported';
     if (!this.root!.isConnected) {
       // Keep the action visible even when the authored section is collapsed.

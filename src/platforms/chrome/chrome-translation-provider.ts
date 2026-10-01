@@ -36,6 +36,10 @@ export class ChromeTranslationProvider implements TranslationProvider {
   readonly id = 'chrome-on-device-translator';
   private instancePromise: Promise<ChromeTranslatorInstance> | undefined;
 
+  prepare(): Promise<void> {
+    return this.instance('en', 'ko').then(() => undefined);
+  }
+
   async availability(): Promise<'available' | 'downloadable' | 'unavailable'> {
     const translator = factory();
     if (!translator) {
@@ -60,22 +64,39 @@ export class ChromeTranslationProvider implements TranslationProvider {
   }
 
   async translate(request: TranslationRequest): Promise<string> {
-    const translator = factory();
-    if (!translator) {
-      throw new Error('Chrome Translator API is unavailable');
-    }
-
-    this.instancePromise ??= translator.create({
-      sourceLanguage: request.sourceLanguage,
-      targetLanguage: request.targetLanguage,
-    });
+    const instancePromise = this.instance(request.sourceLanguage, request.targetLanguage);
     try {
-      const instance = await this.instancePromise;
+      const instance = await instancePromise;
       return await instance.translate(request.text);
     } catch (error) {
-      this.instancePromise = undefined;
+      if (this.instancePromise === instancePromise) this.instancePromise = undefined;
       throw error;
     }
+  }
+
+  private instance(sourceLanguage: string, targetLanguage: string): Promise<ChromeTranslatorInstance> {
+    if (this.instancePromise) {
+      return this.instancePromise;
+    }
+    const translator = factory();
+    if (!translator) {
+      return Promise.reject(new Error('Chrome Translator API is unavailable'));
+    }
+
+    let created: Promise<ChromeTranslatorInstance>;
+    try {
+      // Keep create() in the caller's activation stack when prepare() is called
+      // from the extension switch or the page's first ordinary interaction.
+      created = translator.create({ sourceLanguage, targetLanguage });
+    } catch (error) {
+      return Promise.reject(error);
+    }
+    const tracked = created.catch((error) => {
+      if (this.instancePromise === tracked) this.instancePromise = undefined;
+      throw error;
+    });
+    this.instancePromise = tracked;
+    return tracked;
   }
 
   destroy(): void {

@@ -23,6 +23,7 @@ export interface TranslationRequest {
 export interface TranslationProvider {
   readonly id: string;
   availability(): Promise<'available' | 'downloadable' | 'unavailable'>;
+  prepare?(): Promise<void>;
   translate(request: TranslationRequest): Promise<string>;
   destroy?(): void;
 }

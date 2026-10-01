@@ -8,11 +8,11 @@ const header = (signedIn = true) => `<div id="header-container"><div class="head
   : '<a href="#" class="sign-in" data-toggle="modal">Sign In</a>'}</div><div id="hamburger-container">Menu</div></div></div>`;
 const flush = () => new Promise((resolve) => setTimeout(resolve, 10));
 
-function setup(initial = true) {
+function setup(initial = true, isFirstRun = false) {
   document.body.innerHTML = header();
   let emit!: (settings: ExtensionSettings) => void;
   const settings: SettingsRepository = {
-    get: vi.fn(async () => ({ enabled: initial })),
+    get: vi.fn(async () => ({ enabled: initial, isFirstRun })),
     setEnabled: vi.fn(async () => {}),
     watch: vi.fn((listener) => { emit = listener; return vi.fn(); }),
   };
@@ -89,6 +89,51 @@ describe('persistent navigation controls', () => {
     runtime.destroy();
     document.body.innerHTML = header(); await flush();
     expect(document.querySelectorAll('.mp-nav-control')).toHaveLength(0);
+  });
+
+  it('spotlights only the existing switch for a genuine first run and removes it after persistence', async () => {
+    const s = setup(false, true); runtime = s.runtime;
+    let finish!: () => void;
+    vi.mocked(s.settings.setEnabled).mockImplementation(() => new Promise<void>((resolve) => {
+      finish = resolve;
+    }));
+    await runtime.start();
+
+    const input = document.querySelector<HTMLInputElement>('.mp-nav-control input')!;
+    const label = input.closest('label')!;
+    expect(document.querySelectorAll('.mpkr-first-run-overlay')).toHaveLength(1);
+    expect(document.querySelectorAll('.mpkr-first-run-shade')).toHaveLength(4);
+    expect(label.classList.contains('mpkr-first-run-target')).toBe(true);
+    expect(input.getAttribute('aria-label')).toBe('확장 기능을 켜서 한국어 기능 시작');
+    expect(input.tabIndex).toBe(0);
+    expect(document.body.hasAttribute('inert')).toBe(false);
+    const style = document.querySelector('style')?.textContent ?? '';
+    expect(style).toContain('@media (prefers-reduced-motion: reduce)');
+
+    input.click();
+    expect(s.page.enable).toHaveBeenCalledTimes(1);
+    expect(document.querySelector('.mpkr-first-run-overlay')).not.toBeNull();
+    finish(); await flush();
+    expect(document.querySelector('.mpkr-first-run-overlay')).toBeNull();
+    expect(label.classList.contains('mpkr-first-run-target')).toBe(false);
+    expect(input.getAttribute('aria-label')).toBe('확장 기능');
+  });
+
+  it.each([true, false])('never onboards an existing user whose saved state is %s', async (initial) => {
+    const s = setup(initial, false); runtime = s.runtime; await runtime.start();
+    expect(document.querySelector('.mpkr-first-run-overlay')).toBeNull();
+    expect(document.querySelector('.mpkr-first-run-target')).toBeNull();
+  });
+
+  it('removes the dimming after a failed first-run save and leaves the switch usable', async () => {
+    const s = setup(false, true); runtime = s.runtime; await runtime.start();
+    vi.mocked(s.settings.setEnabled).mockRejectedValue(new Error('storage unavailable'));
+    const input = document.querySelector<HTMLInputElement>('.mp-nav-control input')!;
+    input.click(); await flush();
+    expect(document.querySelector('.mpkr-first-run-overlay')).toBeNull();
+    expect(input.disabled).toBe(false);
+    expect(input.checked).toBe(false);
+    expect(document.querySelector<HTMLElement>('.mp-nav-error')!.hidden).toBe(false);
   });
 
   it('supports direct avatar anchors and separate responsive user areas, excluding content avatars', async () => {

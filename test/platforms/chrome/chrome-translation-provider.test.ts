@@ -43,4 +43,51 @@ describe('ChromeTranslationProvider', () => {
     await Promise.resolve();
     expect(destroy).toHaveBeenCalledOnce();
   });
+
+  it('starts create synchronously from prepare and shares it with translation', async () => {
+    let finish!: (instance: { translate(text: string): Promise<string> }) => void;
+    const translate = vi.fn(async (text: string) => `KO:${text}`);
+    const create = vi.fn(() => new Promise<{ translate(text: string): Promise<string> }>((resolve) => {
+      finish = resolve;
+    }));
+    Object.defineProperty(globalThis, 'Translator', {
+      configurable: true,
+      value: { availability: vi.fn(async () => 'downloadable'), create },
+    });
+    const provider = new ChromeTranslationProvider();
+
+    const preparation = provider.prepare();
+    expect(create).toHaveBeenCalledOnce();
+    expect(create).toHaveBeenCalledWith({ sourceLanguage: 'en', targetLanguage: 'ko' });
+    const translation = provider.translate({
+      sourceLanguage: 'en', targetLanguage: 'ko', text: 'shared', context,
+    });
+    const repeatedPreparation = provider.prepare();
+    expect(create).toHaveBeenCalledOnce();
+
+    finish({ translate });
+    await expect(preparation).resolves.toBeUndefined();
+    await expect(repeatedPreparation).resolves.toBeUndefined();
+    await expect(translation).resolves.toBe('KO:shared');
+    expect(translate).toHaveBeenCalledOnce();
+  });
+
+  it('clears a rejected preparation so the next activation can retry create', async () => {
+    const translate = vi.fn(async (text: string) => `KO:${text}`);
+    const create = vi.fn()
+      .mockRejectedValueOnce(new Error('Requires a user activation'))
+      .mockResolvedValueOnce({ translate });
+    Object.defineProperty(globalThis, 'Translator', {
+      configurable: true,
+      value: { availability: vi.fn(async () => 'downloadable'), create },
+    });
+    const provider = new ChromeTranslationProvider();
+
+    await expect(provider.prepare()).rejects.toThrow('user activation');
+    await expect(provider.prepare()).resolves.toBeUndefined();
+    await expect(provider.translate({
+      sourceLanguage: 'en', targetLanguage: 'ko', text: 'retry', context,
+    })).resolves.toBe('KO:retry');
+    expect(create).toHaveBeenCalledTimes(2);
+  });
 });

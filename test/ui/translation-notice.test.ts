@@ -52,22 +52,31 @@ it('shows only one unsupported notice, preserves the original, and cleans up acr
   expect(document.querySelectorAll('.mpkr-translation-notice')).toHaveLength(1);
 });
 
-it('starts preparation from one button click, prevents duplicate work, and hides the notice after success', async () => {
+it.each(['click', 'keydown'] as const)(
+  'starts preparation from the first ordinary %s, prevents duplicate work, and hides the notice after success',
+  async (eventType) => {
   const provider = setup('downloadable');
   let finish!: (value: string) => void;
   provider.translate.mockImplementationOnce(() => new Promise(resolve => { finish = resolve; }));
   await controller.start(); await settle();
   expect(notice()?.dataset.state).toBe('waiting');
-  button().click();
+  expect(notice()?.textContent).toContain('페이지를 계속 사용하면 번역 준비가 자동으로 시작됩니다.');
+  expect(button().hidden).toBe(true);
+  const first = eventType === 'click'
+    ? new MouseEvent('click', { bubbles: true })
+    : new KeyboardEvent('keydown', { bubbles: true, key: 'ArrowDown' });
+  notice()!.dispatchEvent(first);
+  document.body.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+  document.body.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, key: 'Tab' }));
   await settle();
   expect(notice()?.dataset.state).toBe('preparing');
   expect(button().disabled).toBe(true);
-  button().click();
   expect(provider.translate).toHaveBeenCalledTimes(1);
   finish('계곡 위의 멋진 크랙.');
   await settle();
   expect(notice()).toBeNull();
-});
+  },
+);
 
 it('offers recovery after availability or translation failure without hiding the original', async () => {
   const provider = setup('available');
@@ -163,11 +172,12 @@ it('removes a stale notice when its source content is removed', async () => {
   expect(notice()).toBeNull();
 });
 
-it('keeps the preparation action outside a collapsed authored section', async () => {
+it('keeps the waiting notice outside a collapsed authored section without a preparation button', async () => {
   setup('downloadable');
   document.body.innerHTML = '<section><h2>Description</h2><div class="mpkr-area-section-body" hidden><div class="fr-view"><p>A classic crack above the valley.</p></div></div></section>';
   await controller.start(); await settle();
   expect(notice()?.dataset.state).toBe('waiting');
+  expect(button().hidden).toBe(true);
   expect(notice()?.closest('[hidden]')).toBeNull();
   expect(notice()?.nextElementSibling?.classList.contains('mpkr-area-section-body')).toBe(true);
 });

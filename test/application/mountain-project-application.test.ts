@@ -2,6 +2,8 @@ import directoryFixture from '../ui/fixtures/region-directory.html?raw';
 import { createMountainProjectApplication } from '@/application/mountain-project-application';
 import { createApplicationRuntime, type ApplicationRuntime } from '@/application/runtime';
 import type { ExtensionSettings } from '@/application/ports';
+import type { TranslationProvider } from '@/core/translation-provider';
+import { PageTranslationController } from '@/localization/page-translation-controller';
 import { RouteStatsPresentation } from '@/ui/route-stats-presentation';
 import asiaFixture from '../fixtures/mountain-project/asia-area.html?raw';
 import { CHOUINARD_B_STATS_FIXTURE } from '../fixtures/mountain-project/chouinard-b-route';
@@ -22,6 +24,15 @@ let runtime: ApplicationRuntime | undefined;
 let parentPresentation: RouteStatsPresentation | undefined;
 const originalUrl = window.location.href;
 
+function deferred<T>() {
+  let resolve!: (value: T | PromiseLike<T>) => void;
+  let reject!: (reason: Error) => void;
+  const promise = new Promise<T>((yes, no) => { resolve = yes; reject = no; });
+  return { promise, resolve, reject };
+}
+
+const settle = async () => { await new Promise((resolve) => setTimeout(resolve, 0)); };
+
 beforeEach(() => { vi.stubGlobal('fetch', vi.fn(async () => new Response('', { status: 503 }))); });
 
 afterEach(() => {
@@ -31,13 +42,13 @@ afterEach(() => {
   parentPresentation = undefined;
   window.location.href = originalUrl;
   vi.unstubAllGlobals();
+  vi.restoreAllMocks();
 });
 
-function bootstrap() {
+function bootstrap(engine = provider(), enabled = true) {
   let listener!: (settings: ExtensionSettings) => void;
-  const engine = provider();
   runtime = createApplicationRuntime({
-    get: async () => ({ enabled: true }),
+    get: async () => ({ enabled }),
     setEnabled: async () => {},
     watch: (next) => { listener = next; return vi.fn(); },
   }, createMountainProjectApplication(engine));
@@ -102,13 +113,191 @@ it('does not start translation on unsupported pages', async () => {
   window.location.href = 'https://www.mountainproject.com/not-a-supported-page';
   document.head.innerHTML = '';
   document.body.innerHTML = '<p>Original</p>';
-  const app = bootstrap();
+  const engine = { ...provider(), prepare: vi.fn(async () => {}) };
+  const app = bootstrap(engine);
   await app.runtime.start();
   expect(document.documentElement.dataset.mpKoreaCore).toBe('unsupported');
+  expect(engine.prepare).not.toHaveBeenCalled();
   expect(app.engine.availability).not.toHaveBeenCalled();
+  expect(app.engine.translate).not.toHaveBeenCalled();
   app.runtime.destroy();
   expect(document.body.innerHTML).toBe('<p>Original</p>');
 });
+
+it('prepares the model synchronously on homepage enable without starting authored translation', async () => {
+  window.location.href = 'https://www.mountainproject.com/';
+  document.head.innerHTML = '';
+  document.body.innerHTML = '<p>Original homepage text.</p>';
+  const preparation = deferred<void>();
+  const engine = { ...provider(), prepare: vi.fn(() => preparation.promise) };
+  const start = vi.spyOn(PageTranslationController.prototype, 'start');
+  const retry = vi.spyOn(PageTranslationController.prototype, 'retry');
+  const app = bootstrap(engine, false);
+  await app.runtime.start();
+  expect(engine.prepare).not.toHaveBeenCalled();
+  engine.destroy.mockClear();
+
+  app.runtime.enable();
+  expect(engine.prepare).toHaveBeenCalledOnce();
+  app.runtime.enable();
+  expect(engine.prepare).toHaveBeenCalledOnce();
+  preparation.resolve();
+  await settle();
+
+  expect(start).not.toHaveBeenCalled();
+  expect(retry).not.toHaveBeenCalled();
+  expect(engine.availability).not.toHaveBeenCalled();
+  expect(engine.translate).not.toHaveBeenCalled();
+  expect(document.documentElement.dataset.mpKoreaRenderer).toBe('direct-translation');
+  expect(document.body.textContent).toContain('Original homepage text.');
+
+  app.runtime.disable();
+  expect(engine.destroy).toHaveBeenCalledOnce();
+  app.runtime.enable();
+  expect(engine.prepare).toHaveBeenCalledTimes(2);
+  app.runtime.destroy();
+  expect(engine.destroy).toHaveBeenCalledTimes(2);
+});
+
+it.each(['rejection', 'synchronous throw'] as const)(
+  'keeps homepage localization working after model preparation %s',
+  async (failure) => {
+    window.location.href = 'https://www.mountainproject.com/';
+    document.head.innerHTML = '';
+    document.body.innerHTML = '<p>Original homepage text.</p>';
+    const engine = {
+      ...provider(),
+      prepare: vi.fn(() => {
+        const error = new Error('user activation required');
+        if (failure === 'synchronous throw') throw error;
+        return Promise.reject(error);
+      }),
+    };
+    const start = vi.spyOn(PageTranslationController.prototype, 'start');
+    const retry = vi.spyOn(PageTranslationController.prototype, 'retry');
+    const app = bootstrap(engine, false);
+    await app.runtime.start();
+    engine.destroy.mockClear();
+
+    expect(() => app.runtime.enable()).not.toThrow();
+    await settle();
+
+    expect(engine.prepare).toHaveBeenCalledOnce();
+    expect(start).not.toHaveBeenCalled();
+    expect(retry).not.toHaveBeenCalled();
+    expect(engine.translate).not.toHaveBeenCalled();
+    expect(document.documentElement.dataset.mpKoreaCore).toBe('ready');
+    expect(document.querySelector('.mpkr-translation-notice')).toBeNull();
+    app.runtime.destroy();
+    expect(engine.destroy).toHaveBeenCalledOnce();
+  },
+);
+
+it.each([
+  ['disable', 'resolve'],
+  ['destroy', 'reject'],
+] as const)('releases pending homepage preparation on %s and ignores its late %s', async (operation, result) => {
+  window.location.href = 'https://www.mountainproject.com/';
+  document.head.innerHTML = '';
+  document.body.innerHTML = '<p>Original homepage text.</p>';
+  const preparation = deferred<void>();
+  const engine = { ...provider(), prepare: vi.fn(() => preparation.promise) };
+  const start = vi.spyOn(PageTranslationController.prototype, 'start');
+  const retry = vi.spyOn(PageTranslationController.prototype, 'retry');
+  const app = bootstrap(engine);
+  await app.runtime.start();
+  app.runtime[operation]();
+  expect(engine.destroy).toHaveBeenCalledOnce();
+
+  if (result === 'resolve') preparation.resolve();
+  else preparation.reject(new Error('preparation interrupted'));
+  await settle();
+
+  expect(start).not.toHaveBeenCalled();
+  expect(retry).not.toHaveBeenCalled();
+  expect(engine.translate).not.toHaveBeenCalled();
+  expect(document.querySelector('.mpkr-translation-notice')).toBeNull();
+  expect(document.documentElement.dataset.mpKoreaExtension)
+    .toBe(operation === 'disable' ? 'disabled' : undefined);
+  expect(document.body.innerHTML).toBe('<p>Original homepage text.</p>');
+});
+
+it('retries waiting targets only after provider preparation and controller start have both settled', async () => {
+  window.location.href = 'https://www.mountainproject.com/route/123/test-route';
+  document.head.innerHTML = '';
+  document.body.innerHTML = '<main id="route-page"><div id="you-and-route"></div><section><h2>Description</h2><div class="fr-view"><p>Original route text.</p></div></section></main>';
+  const preparation = deferred<void>();
+  const engine: TranslationProvider = {
+    id: 'prepared-test',
+    prepare: vi.fn(() => preparation.promise),
+    availability: vi.fn(async () => 'downloadable' as const),
+    translate: vi.fn(async () => '번역된 루트 설명.'),
+    destroy: vi.fn(),
+  };
+  const page = createMountainProjectApplication(engine);
+
+  page.enable();
+  expect(engine.prepare).toHaveBeenCalledOnce();
+  await settle();
+  expect(engine.translate).not.toHaveBeenCalled();
+  expect(document.querySelector('.mpkr-translation-notice')?.getAttribute('data-state')).toBe('waiting');
+
+  preparation.resolve();
+  await settle();
+  await settle();
+  expect(engine.translate).toHaveBeenCalledOnce();
+  expect(document.querySelector('.mpkr-machine-translation')?.textContent).toContain('번역된 루트 설명.');
+  page.destroy();
+});
+
+it('keeps providers without a prepare hook on the existing waiting interaction path', async () => {
+  window.location.href = 'https://www.mountainproject.com/route/123/test-route';
+  document.head.innerHTML = '';
+  document.body.innerHTML = '<main id="route-page"><div id="you-and-route"></div><section><h2>Description</h2><div class="fr-view"><p>Original route text.</p></div></section></main>';
+  const engine: TranslationProvider = {
+    id: 'legacy-test',
+    availability: vi.fn(async () => 'downloadable' as const),
+    translate: vi.fn(async () => '번역된 루트 설명.'),
+    destroy: vi.fn(),
+  };
+  const page = createMountainProjectApplication(engine);
+
+  page.enable();
+  await settle();
+  expect(engine.translate).not.toHaveBeenCalled();
+  expect(document.querySelector('.mpkr-translation-notice')?.getAttribute('data-state')).toBe('waiting');
+  page.destroy();
+});
+
+it.each(['disable', 'destroy'] as const)(
+  'blocks a late preparation result after application %s',
+  async (operation) => {
+    window.location.href = 'https://www.mountainproject.com/route/123/test-route';
+    document.head.innerHTML = '';
+    document.body.innerHTML = '<main id="route-page"><div id="you-and-route"></div><section><h2>Description</h2><div class="fr-view"><p>Original route text.</p></div></section></main>';
+    const preparation = deferred<void>();
+    const engine: TranslationProvider = {
+      id: 'late-test',
+      prepare: vi.fn(() => preparation.promise),
+      availability: vi.fn(async () => 'downloadable' as const),
+      translate: vi.fn(async () => '번역된 루트 설명.'),
+      destroy: vi.fn(),
+    };
+    const page = createMountainProjectApplication(engine);
+
+    page.enable();
+    await settle();
+    page[operation]();
+    preparation.resolve();
+    await settle();
+    await settle();
+
+    expect(engine.translate).not.toHaveBeenCalled();
+    expect(document.querySelector('.mpkr-translation-notice')).toBeNull();
+    expect(document.body.textContent).toContain('Original route text.');
+    page.destroy();
+  },
+);
 
 it('runs contribution pages through the direct-localization lifecycle', async () => {
   window.location.href = 'https://www.mountainproject.com/add/climb-area/106225629';

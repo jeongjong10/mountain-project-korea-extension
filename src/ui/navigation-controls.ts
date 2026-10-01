@@ -3,6 +3,7 @@ import { SOUTH_KOREA_AREA_URL } from '../sites/mountain-project/contract/regions
 import { NAVIGATION_HEADER, navigationUserItems } from '../sites/mountain-project/dom/navigation';
 
 import { NAVIGATION_CONTROL_CSS, createKoreaIcon } from './navigation-control-style';
+import { FirstRunOnboarding } from './first-run-onboarding';
 
 export class NavigationControls implements ApplicationShell {
   private observer?: MutationObserver;
@@ -11,7 +12,10 @@ export class NavigationControls implements ApplicationShell {
   private enabled?: boolean;
   private pending = false;
   private saveError = false;
+  private isFirstRun = false;
+  private onboardingSuppressed = false;
   private change?: (enabled: boolean) => Promise<void>;
+  private readonly onboarding = new FirstRunOnboarding();
 
   mount(change: (enabled: boolean) => Promise<void>): void {
     if (this.observer) return;
@@ -74,7 +78,12 @@ export class NavigationControls implements ApplicationShell {
           this.saveError = false;
           this.updateInputs();
           try { await this.change(next); }
-          catch { if (this.observer) this.saveError = true; }
+          catch {
+            if (this.observer) {
+              this.saveError = true;
+              this.onboardingSuppressed = true;
+            }
+          }
           finally { this.pending = false; this.updateInputs(); }
         });
         const link = document.createElement('a');
@@ -94,6 +103,7 @@ export class NavigationControls implements ApplicationShell {
       }
     }
     this.updateInputs();
+    this.updateOnboarding();
     // Observe header descendants, plus only direct ancestor children to detect
     // whole-header replacement. Never observe the page-content subtree.
     const headers = document.querySelectorAll(NAVIGATION_HEADER);
@@ -109,14 +119,41 @@ export class NavigationControls implements ApplicationShell {
     }
   }
 
-  render(enabled: boolean): void { this.enabled = enabled; this.saveError = false; this.updateInputs(); }
+  render(enabled: boolean, context?: { isFirstRun: boolean }): void {
+    this.enabled = enabled;
+    this.isFirstRun = context?.isFirstRun === true;
+    if (!this.isFirstRun) this.onboardingSuppressed = false;
+    this.saveError = false;
+    this.updateInputs();
+    this.updateOnboarding();
+  }
 
   private updateInputs(): void {
     for (const { input, error } of this.pairs.values()) {
       error.hidden = !this.saveError;
       input.checked = this.enabled === true;
       input.disabled = this.pending || this.enabled === undefined;
+      input.setAttribute(
+        'aria-label',
+        this.isFirstRun && !this.onboardingSuppressed
+          ? '확장 기능을 켜서 한국어 기능 시작'
+          : '확장 기능',
+      );
     }
+    this.updateOnboarding();
+  }
+
+  private updateOnboarding(): void {
+    if (!this.isFirstRun || this.onboardingSuppressed) {
+      this.onboarding.hide();
+      return;
+    }
+    const target = [...this.pairs.values()]
+      .map(({ label }) => label)
+      .find((label) => label.getClientRects().length > 0)
+      ?? this.pairs.values().next().value?.label;
+    if (target) this.onboarding.show(target);
+    else this.onboarding.hide();
   }
 
   destroy(): void {
@@ -125,6 +162,9 @@ export class NavigationControls implements ApplicationShell {
     this.change = undefined;
     for (const { label, link, error } of this.pairs.values()) { label.remove(); link.remove(); error.remove(); }
     this.saveError = false;
+    this.isFirstRun = false;
+    this.onboardingSuppressed = false;
+    this.onboarding.destroy();
     this.pairs.clear();
     this.style?.remove();
     this.style = undefined;

@@ -54,7 +54,7 @@ export interface TranslationWorkMetrics {
   glossaryFallbacks: number;
 }
 
-const USER_START_REQUIRED_MESSAGE = '브라우저 번역 언어팩 준비를 기다리고 있습니다. 다음 페이지 상호작용에서 자동으로 다시 시도합니다.';
+const USER_START_REQUIRED_MESSAGE = '페이지를 계속 사용하면 번역 준비가 자동으로 시작됩니다.';
 const UNSUPPORTED_MESSAGE = '현재 이 브라우저에서는 페이지 본문 번역 엔진을 사용할 수 없습니다. 원문을 유지합니다.';
 const EXTENSION_CONTENT_SELECTOR = [
   '.mpkr-machine-translation',
@@ -738,8 +738,7 @@ export class PageTranslationController {
     this.armUserStartRetry();
   }
 
-  private readonly handleUserStartRetry = (event: Event): void => {
-    if (event.target instanceof Element && event.target.closest('.mpkr-translation-notice')) return;
+  private readonly handleUserStartRetry = (): void => {
     this.disarmUserStartRetry();
     void this.retry();
   };
