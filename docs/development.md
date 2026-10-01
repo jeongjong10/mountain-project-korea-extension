@@ -79,7 +79,7 @@ Area 지도와 Route 설명·위치·보호장비 섹션 UI는 전역으로 적�
 | --- | --- |
 | Chrome | 주 개발 대상. MV3 빌드와 내장 번역 API 연동 코드가 있습니다. 실제 본문 번역은 API 제공 여부와 언어팩 상태에 따라 달라집니다. |
 | Desktop Edge | 공통 소스·기능 감지 provider를 재사용하는 미출시 MV3 개발 빌드입니다. 빌드·ZIP·배포 기록을 별도 관리합니다. [설치 안내](edge-installation.md) · [실제 확인 범위](edge-validation-2026-10-01.md) |
-| Desktop Whale | 별도 MV3 툴바 빌드·ZIP을 제공하는 미출시 호환성 프로토타입입니다. 공통 코드를 재사용하며, 본문 번역은 실행 환경의 `Translator` API와 영어→한국어 가용성에 달려 있습니다. Chromium·Papago 지원만으로 번역 동등성을 가정하지 않습니다. [설치 안내](whale-installation.md) · [검증 범위](whale-validation-2026-10-01.md) |
+| Desktop Whale | **2026-10-01 개발 중단.** 본문 자동 번역을 제공하지 못한 미출시 MV3 프로토타입입니다. 기존 코드·명령·증거를 보존하며 추가 진단·검증·배포는 사용자 재개 요청 전까지 진행하지 않습니다. [보존 안내](whale-installation.md) · [중단 결정과 검증 기록](whale-validation-2026-10-01.md) |
 | Firefox Desktop | MV2 빌드와 공통 WebExtension 설정을 제공합니다. 전용 본문 번역 엔진은 아직 구현되지 않았으며, 고정 UI와 탐색 기능은 별도 실사용 검증이 필요합니다. |
 | Firefox Android | 장기 정식 Android 지원 경로입니다. `gecko_android` 매니페스트 설정은 포함되어 있지만 모바일 실기기 검증은 완료되지 않았습니다. |
 | Android Yandex | Chrome 계열 빌드의 빠른 모바일 호환성 실험용이며 정식 지원 플랫폼이 아닙니다. |
@@ -109,6 +109,8 @@ npm run build
 이미 열려 있던 페이지는 새로고침하세요. 코드를 변경하고 다시 빌드한 경우 확장 관리 화면에서 확장을 새로고침한 뒤 해당 페이지도 새로고침합니다.
 
 ### Whale에 개발 빌드 설치
+
+2026-10-01 개발 중단에 따라 아래 절차는 기존 구현의 참고 기록입니다. 현재 설치·검증 또는 배포를 진행하는 계획이 아닙니다.
 
 `npm run build:whale`로 `.output/whale-mv3`를 생성하고, 별도 개발 프로필의 `whale://extensions`에서 개발자 모드를 켜 해당 폴더를 로드합니다. Chrome 빌드 폴더와 혼용하지 않습니다. 업데이트·최초 OFF·번역 미지원 안내 및 Papago와의 구분은 [웨일 설치 안내](whale-installation.md)를 따릅니다. 사용자 일반 프로필의 설정이나 번역 플래그는 자동으로 변경하지 않습니다.
 
@@ -207,6 +209,8 @@ git diff --check
 Git 커밋·push, Notion 수정, 실제 Chrome 확인, 스토어 업로드·심사 제출은 도구가 자동 수행하지 않습니다. 이 단계들은 생성된 체크리스트에 따라 진행합니다. 배포 도구 자체의 회귀 검사는 `npm run test:release`로 독립 실행합니다.
 
 ### Whale 기록 분리
+
+2026-10-01 사용자 결정으로 Whale 배포 준비도 중단했습니다. 다음 명령·경로는 재현을 위한 기존 도구의 설명으로 보존하며, 재개 요청 전에는 새 Whale 후보를 준비하지 않습니다.
 
 위 기본 명령과 Chrome 경로는 그대로 유지합니다. `prepare`·`verify`에만 마지막 인자로 `--browser whale`을 붙이면 Whale을 선택하며, 생략하거나 `--browser chrome`을 지정하면 Chrome입니다. Edge는 아래 별도 경로를 사용합니다. Firefox는 이 배포 도구의 대상이 아닙니다. `version`은 모든 브라우저에 공통인 패키지 버전을 변경하며 `--browser`를 받지 않습니다.
 

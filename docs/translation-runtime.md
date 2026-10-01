@@ -14,6 +14,8 @@
 
 ### Whale 호환성 경계
 
+2026-10-01 사용자 결정으로 Whale 개발·추가 검증을 중단했다. 아래는 보존하는 구현 경계이며 지원 완료 선언이 아니다. 확인한 환경의 본문 자동 번역 실패와 중단 시점의 증거는 [웨일 검증 기록](whale-validation-2026-10-01.md)을 따른다.
+
 Desktop Whale MV3 빌드도 현재 `ChromeTranslationProvider`와 공통 WebExtension 설정·application·renderer를 재사용한다. 브라우저 이름이나 Chromium 버전으로 엔진 지원을 결정하지 않고 **provider가 실행되는 전역의 `globalThis.Translator`**와 영어→한국어 가용성을 확인한다. 페이지 main world에서 API가 보였다는 사실만으로 확장 콘텐츠 스크립트의 API 사용 가능성을 증명할 수 없다.
 
 `availability()`는 `available`·`readily`를 준비 완료로, `downloadable`·`after-download`·`downloading`을 준비 필요로 다룬다. API 부재, `unavailable`·`no` 또는 조회 예외는 미지원으로 처리한다. `prepare()`는 사용자 활성화를 유지하기 위해 가용성 조회를 먼저 기다리지 않고 `create()`를 호출하므로 준비 실패와 설정 저장 성공은 여전히 별개다.

@@ -1,0 +1,474 @@
+{
+  "schema": 1,
+  "date": "2026-10-01",
+  "timezone": "Asia/Seoul",
+  "sourceHead": "f1488c900fdfcf70578d2306a88df7a5ec099a31",
+  "scope": "Browser public Translator API diagnosis; no product build or regression rerun",
+  "os": {
+    "product": "Windows 11 Pro",
+    "release": "25H2",
+    "build": "26200.9457",
+    "architecture": "x64"
+  },
+  "whaleChromiumVersionFromEarlierCDP": "150.0.7871.230",
+  "method": {
+    "probe": "Task-owned visible local page / static MAIN and ISOLATED diagnostic content scripts; raw public Translator API, no product provider normalization",
+    "pairs": [
+      "en-ko",
+      "ko-en",
+      "en-fr"
+    ],
+    "negativeControls": [
+      "en-en",
+      "en-zz"
+    ],
+    "timeoutMs": 6000,
+    "create": "Only en-ko and en-fr when availability returned unavailable, without activation; destroy on unexpected success",
+    "actualTranslationAttempted": false,
+    "modelDownloadRequested": false,
+    "logCollection": "Passive CDP Log.enable and Runtime.enable on exact owned target; no arbitrary evaluation or input",
+    "policyRead": {
+      "locations": [
+        "HKCU\\SOFTWARE\\Policies\\Naver\\Whale",
+        "HKLM\\SOFTWARE\\Policies\\Naver\\Whale"
+      ],
+      "value": "TranslatorAPIAllowed",
+      "result": "No named value found; other paths/effective browser policy not audited"
+    }
+  },
+  "runs": [
+    {
+      "id": "whale-local",
+      "browser": "Whale",
+      "version": "4.39.410.14",
+      "freshProfile": true,
+      "productExtensionLoaded": false,
+      "diagnosticExtensionLoaded": true,
+      "observations": [
+        {
+          "context": "isolated",
+          "kind": "environment",
+          "secure": true,
+          "origin": "http://127.0.0.1:<ephemeral-port>",
+          "language": "ko-KR",
+          "languages": [
+            "ko-KR",
+            "ko",
+            "en-US",
+            "en"
+          ],
+          "visibility": "visible",
+          "userActivation": false,
+          "policyKnown": true,
+          "policyAllows": true
+        },
+        {
+          "context": "isolated",
+          "kind": "apis",
+          "Translator": "function",
+          "LanguageDetector": "function",
+          "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Whale/4.39.410.14 Safari/537.36"
+        },
+        {
+          "context": "isolated",
+          "kind": "availability",
+          "pair": "en-ko",
+          "availability": "unavailable"
+        },
+        {
+          "context": "isolated",
+          "kind": "create-without-activation",
+          "pair": "en-ko",
+          "error": {
+            "name": "NotSupportedError",
+            "message": "Unable to create translator for the given source and target language."
+          }
+        },
+        {
+          "context": "isolated",
+          "kind": "availability",
+          "pair": "ko-en",
+          "availability": "unavailable"
+        },
+        {
+          "context": "isolated",
+          "kind": "availability",
+          "pair": "en-fr",
+          "availability": "unavailable"
+        },
+        {
+          "context": "isolated",
+          "kind": "create-without-activation",
+          "pair": "en-fr",
+          "error": {
+            "name": "NotSupportedError",
+            "message": "Unable to create translator for the given source and target language."
+          }
+        },
+        {
+          "context": "isolated",
+          "kind": "availability",
+          "pair": "en-en",
+          "availability": "unavailable"
+        },
+        {
+          "context": "isolated",
+          "kind": "availability",
+          "pair": "en-zz",
+          "availability": "unavailable"
+        },
+        {
+          "context": "isolated",
+          "kind": "done"
+        },
+        {
+          "context": "page-main",
+          "kind": "environment",
+          "secure": true,
+          "origin": "http://127.0.0.1:<ephemeral-port>",
+          "language": "ko-KR",
+          "languages": [
+            "ko-KR",
+            "ko",
+            "en-US",
+            "en"
+          ],
+          "visibility": "visible",
+          "userActivation": false,
+          "policyKnown": true,
+          "policyAllows": true
+        },
+        {
+          "context": "page-main",
+          "kind": "apis",
+          "Translator": "function",
+          "LanguageDetector": "function",
+          "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Whale/4.39.410.14 Safari/537.36"
+        },
+        {
+          "context": "page-main",
+          "kind": "availability",
+          "pair": "en-ko",
+          "availability": "unavailable"
+        },
+        {
+          "context": "page-main",
+          "kind": "create-without-activation",
+          "pair": "en-ko",
+          "error": {
+            "name": "NotSupportedError",
+            "message": "Unable to create translator for the given source and target language."
+          }
+        },
+        {
+          "context": "page-main",
+          "kind": "availability",
+          "pair": "ko-en",
+          "availability": "unavailable"
+        },
+        {
+          "context": "page-main",
+          "kind": "availability",
+          "pair": "en-fr",
+          "availability": "unavailable"
+        },
+        {
+          "context": "page-main",
+          "kind": "create-without-activation",
+          "pair": "en-fr",
+          "error": {
+            "name": "NotSupportedError",
+            "message": "Unable to create translator for the given source and target language."
+          }
+        },
+        {
+          "context": "page-main",
+          "kind": "availability",
+          "pair": "en-en",
+          "availability": "unavailable"
+        },
+        {
+          "context": "page-main",
+          "kind": "availability",
+          "pair": "en-zz",
+          "availability": "unavailable"
+        },
+        {
+          "context": "page-main",
+          "kind": "done"
+        }
+      ],
+      "browserWarnings": [
+        "The on-device translation is not available.",
+        "The translation service crashed.",
+        "The requested language options are not supported.",
+        "The language pair is unsupported."
+      ],
+      "rawCaptureSha256": {
+        "dom": "68998ab37605ec35524f41cc58de674c16e2e1e78e3184d41a47ce1e7204dcbd",
+        "log": "4e62024dfbb49c93fbb90e88774919b2eed28440ba5bd8ec5743936a66c2d1a4"
+      }
+    },
+    {
+      "id": "whale-mp",
+      "browser": "Whale",
+      "version": "4.39.410.14",
+      "freshProfile": true,
+      "productExtensionLoaded": false,
+      "diagnosticExtensionLoaded": true,
+      "observations": [
+        {
+          "context": "extension-main",
+          "kind": "environment",
+          "secure": true,
+          "origin": "https://www.mountainproject.com",
+          "language": "ko-KR",
+          "languages": [
+            "ko-KR",
+            "ko",
+            "en-US",
+            "en"
+          ],
+          "visibility": "visible",
+          "userActivation": false,
+          "policyKnown": true,
+          "policyAllows": true
+        },
+        {
+          "context": "extension-main",
+          "kind": "apis",
+          "Translator": "function",
+          "LanguageDetector": "function",
+          "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Whale/4.39.410.14 Safari/537.36"
+        },
+        {
+          "context": "extension-main",
+          "kind": "availability",
+          "pair": "en-ko",
+          "availability": "unavailable"
+        },
+        {
+          "context": "extension-main",
+          "kind": "create-without-activation",
+          "pair": "en-ko",
+          "error": {
+            "name": "NotSupportedError",
+            "message": "Unable to create translator for the given source and target language."
+          }
+        },
+        {
+          "context": "extension-main",
+          "kind": "availability",
+          "pair": "ko-en",
+          "availability": "unavailable"
+        },
+        {
+          "context": "extension-main",
+          "kind": "availability",
+          "pair": "en-fr",
+          "availability": "unavailable"
+        },
+        {
+          "context": "extension-main",
+          "kind": "create-without-activation",
+          "pair": "en-fr",
+          "error": {
+            "name": "NotSupportedError",
+            "message": "Unable to create translator for the given source and target language."
+          }
+        },
+        {
+          "context": "extension-main",
+          "kind": "availability",
+          "pair": "en-en",
+          "availability": "unavailable"
+        },
+        {
+          "context": "extension-main",
+          "kind": "availability",
+          "pair": "en-zz",
+          "availability": "unavailable"
+        },
+        {
+          "context": "extension-main",
+          "kind": "done"
+        },
+        {
+          "context": "isolated",
+          "kind": "environment",
+          "secure": true,
+          "origin": "https://www.mountainproject.com",
+          "language": "ko-KR",
+          "languages": [
+            "ko-KR",
+            "ko",
+            "en-US",
+            "en"
+          ],
+          "visibility": "visible",
+          "userActivation": false,
+          "policyKnown": true,
+          "policyAllows": true
+        },
+        {
+          "context": "isolated",
+          "kind": "apis",
+          "Translator": "function",
+          "LanguageDetector": "function",
+          "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Whale/4.39.410.14 Safari/537.36"
+        },
+        {
+          "context": "isolated",
+          "kind": "availability",
+          "pair": "en-ko",
+          "availability": "unavailable"
+        },
+        {
+          "context": "isolated",
+          "kind": "create-without-activation",
+          "pair": "en-ko",
+          "error": {
+            "name": "NotSupportedError",
+            "message": "Unable to create translator for the given source and target language."
+          }
+        },
+        {
+          "context": "isolated",
+          "kind": "availability",
+          "pair": "ko-en",
+          "availability": "unavailable"
+        },
+        {
+          "context": "isolated",
+          "kind": "availability",
+          "pair": "en-fr",
+          "availability": "unavailable"
+        },
+        {
+          "context": "isolated",
+          "kind": "create-without-activation",
+          "pair": "en-fr",
+          "error": {
+            "name": "NotSupportedError",
+            "message": "Unable to create translator for the given source and target language."
+          }
+        },
+        {
+          "context": "isolated",
+          "kind": "availability",
+          "pair": "en-en",
+          "availability": "unavailable"
+        },
+        {
+          "context": "isolated",
+          "kind": "availability",
+          "pair": "en-zz",
+          "availability": "unavailable"
+        },
+        {
+          "context": "isolated",
+          "kind": "done"
+        }
+      ],
+      "browserWarnings": [
+        "The on-device translation is not available.",
+        "The translation service crashed.",
+        "The requested language options are not supported.",
+        "The language pair is unsupported."
+      ],
+      "rawCaptureSha256": {
+        "dom": "468f192500722e51085f156c19deef84476dbe99ff85a85d8fc09e28b4214652",
+        "log": "5f04ba10f47546320f5e6321293cd61271f554ad175446a5fc9e23ad9bf894b8"
+      }
+    },
+    {
+      "id": "chrome-local",
+      "browser": "Chrome",
+      "version": "154.0.8037.59",
+      "freshProfile": true,
+      "productExtensionLoaded": false,
+      "diagnosticExtensionLoaded": false,
+      "observations": [
+        {
+          "context": "page-main",
+          "kind": "environment",
+          "secure": true,
+          "origin": "http://127.0.0.1:<ephemeral-port>",
+          "language": "ko-KR",
+          "languages": [
+            "ko-KR",
+            "ko",
+            "en-US",
+            "en"
+          ],
+          "visibility": "visible",
+          "userActivation": false,
+          "policyKnown": true,
+          "policyAllows": true
+        },
+        {
+          "context": "page-main",
+          "kind": "apis",
+          "Translator": "function",
+          "LanguageDetector": "function",
+          "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+        },
+        {
+          "context": "page-main",
+          "kind": "availability",
+          "pair": "en-ko",
+          "availability": "downloadable"
+        },
+        {
+          "context": "page-main",
+          "kind": "availability",
+          "pair": "ko-en",
+          "availability": "downloadable"
+        },
+        {
+          "context": "page-main",
+          "kind": "availability",
+          "pair": "en-fr",
+          "availability": "downloadable"
+        },
+        {
+          "context": "page-main",
+          "kind": "availability",
+          "pair": "en-en",
+          "availability": "unavailable"
+        },
+        {
+          "context": "page-main",
+          "kind": "availability",
+          "pair": "en-zz",
+          "availability": "unavailable"
+        },
+        {
+          "context": "page-main",
+          "kind": "done"
+        }
+      ],
+      "browserWarnings": [
+        "The requested language options are not supported."
+      ],
+      "rawCaptureSha256": {
+        "dom": "71fe29175118edabe3e06fee62745c6ce2f391c415e94459e9b50ff47b32ed28",
+        "log": "e4c09e7ced2ee836ce8028ec0b8c60959e03bbbab273d0be2e68ac21f25dc0fe"
+      }
+    }
+  ],
+  "limitations": [
+    "Chrome 154 vs Whale Chromium 150: same PC comparison, not matched engine versions.",
+    "Local Whale fixture had a contextLabel redeclaration in extra extension MAIN script; page MAIN and ISOLATED completed. Corrected IIFE fixture on Mountain Project completed in both extension MAIN and ISOLATED.",
+    "Mountain Project emitted an unrelated vendor-script ready property error, omitted from retained API evidence; local reproduction did not depend on site code.",
+    "No native Papago UI, authenticated contribution form, actual language pack installation, successful translation, or service process crash dump was verified.",
+    "Service crashed warning is a failure category that can include a lost service callback, not proof of an OS process crash."
+  ],
+  "conclusion": "Current Whale public Translator path fails independently of MPKE implementation in page MAIN and extension ISOLATED; failure narrows to browser internal translation service category. Exact vendor backend cause and working remedy are not established.",
+  "sources": [
+    "https://github.com/chromium/chromium/blob/150.0.7871.230/third_party/blink/renderer/modules/ai/on_device_translation/create_translator_client.cc#L222",
+    "https://github.com/chromium/chromium/blob/150.0.7871.230/components/on_device_translation/service_controller.cc#L278",
+    "https://github.com/chromium/chromium/blob/150.0.7871.230/components/on_device_translation/service_controller.cc#L327",
+    "https://github.com/chromium/chromium/blob/150.0.7871.230/third_party/blink/renderer/modules/ai/availability.cc#L71"
+  ]
+}

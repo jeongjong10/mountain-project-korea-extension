@@ -18,7 +18,7 @@ Mountain Project를 한국어로 읽고 더 편리하게 탐색하도록 돕는 
 - 상태 확인일: 2026년 9월 30일 — 게시자 승인 확인 및 공개 스토어 페이지 확인
 - [출시 현황과 다음 단계](docs/release-status.md) · [버전 변경 내역](CHANGELOG.md)
 
-Desktop Whale용 별도 MV3 빌드·ZIP은 **미출시 호환성 프로토타입**입니다. Chrome 공개본과 본문 번역의 동등 지원을 보장하지 않으며 웨일 스토어에는 제출하지 않았습니다. [웨일 설치와 제한 사항](docs/whale-installation.md)을 확인하세요.
+Desktop Whale 개발은 **2026-10-01 사용자 결정으로 현재 검증 수준에서 중단**했습니다. 확인한 환경에서 본문 자동 번역을 제공하지 못해 정식 지원·스토어 배포를 진행하지 않습니다. 기존 MV3 프로토타입과 [검증 기록](docs/whale-validation-2026-10-01.md)은 보존하며, 재개는 별도 사용자 결정이 필요합니다.
 
 Desktop Edge용 `build:edge`·`zip:edge`도 **미출시 개발 빌드**로 제공합니다. 설치 방법과 실제 번역 검증 범위는 [Edge 설치 안내](docs/edge-installation.md) 및 [검증 기록](docs/edge-validation-2026-10-01.md)을 확인하세요. Edge Add-ons에는 제출하지 않았습니다.
 
@@ -70,7 +70,7 @@ npm run build
 ## 지원 범위와 참고 사항
 
 - 첫 출시는 데스크톱 Chrome을 대상으로 합니다. Firefox와 모바일·Safari 등 다른 환경의 지원은 개발·검증 단계이며 Chrome과 동일한 기능을 보장하지 않습니다.
-- Desktop Whale은 공통 코드를 재사용하는 툴바 확장 프로토타입입니다. Chromium 기반이거나 Papago를 제공한다는 이유만으로 본문 번역 API를 지원하는 것은 아닙니다. 설치·빌드·번역 엔진 확인 범위는 [웨일 검증 기록](docs/whale-validation-2026-10-01.md)을 따릅니다.
+- Desktop Whale은 개발 중단된 미출시 프로토타입입니다. 고정 제목·메뉴의 한국어 표시와 일부 탐색 기능을 확인했지만 본문 자동 번역은 제공하지 못했습니다. [중단 결정과 검증 기록](docs/whale-validation-2026-10-01.md)을 보존합니다.
 - 페이지 구조에 따라 기능 적용 범위가 달라집니다. Mountain Project의 모든 페이지와 모든 변형 화면을 지원하는 것은 아닙니다.
 - 기계 번역에는 오류가 있을 수 있습니다. 접근·하강·장비 등 등반 판단에 필요한 정보는 원문과 함께 확인하세요.
 - 기여 화면의 고정 안내와 UI를 한국어로 표시하며, 사용자가 작성하는 입력값과 제출 데이터는 보존합니다.
@@ -102,7 +102,7 @@ npm run build
 WXT, TypeScript, Vitest, happy-dom을 사용합니다. 설치·실행 명령, 구조, 페이지별 지원 범위와 검증 방법은 별도 문서에서 관리합니다.
 
 - [개발 및 유지보수 안내](docs/development.md)
-- [웨일 프로토타입 설치 안내](docs/whale-installation.md)
+- [웨일 프로토타입 보존 문서 — 개발 중단](docs/whale-installation.md)
 - [Edge 개발 빌드 설치 안내](docs/edge-installation.md)
 - [Edge Add-ons 제출 준비 안내](docs/edge-addons-submission.ko.md)
 - [문서 목록](docs/README.md)
