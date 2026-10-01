@@ -18,6 +18,10 @@
 
 ## Edge 문서 대조 — 2026-10-01
 
+현재 제출 후보는 사용자 요청에 따른 `0.1.1`이다. 공통 package.json·lockfile과 Edge 설치·제출 안내를 맞췄다. 개인정보 방침의 Edge 기본 OFF 설명은 특정 후보 번호에 종속되지 않게 정리한다. 사용자는 개발자 등록 후 Edge 워크스페이스 진입을 확인했으며, 업로드·심사 제출·공개 여부는 별도 확인한다.
+
+### 이전 0.1.0 후보의 기록
+
 `3b830b5`의 Whale 변경을 보존하면서 Edge 빌드·ZIP·배포 기록과 설치 안내를 추가했다. `src/`와 권한·의존성·버전은 그대로이며, Edge용 provider 복제는 하지 않는다. `build:edge`, `zip:edge`, `prepare --browser edge`, `verify <버전> --browser edge`를 구현·문서에서 동일하게 사용한다. 배포 기록은 `.output/releases/edge/<버전>/`로 구분한다.
 
 [Edge 설치 안내](edge-installation.md)와 [검증 기록](edge-validation-2026-10-01.md)을 로컬 기준으로 삼고, Notion의 [Edge 작업 카드](https://www.notion.so/3ec58ad3a0b28165af9fe6c25b3f0778), 02 플랫폼 경계, 04 설치·명령, 05 검증 증거, 06 결정 기록에 해당 변경만 반영한다. 사용자 확인과 소유 임시 프로필의 직접 관측이 다른 경우 어느 한쪽을 없애지 않는다. ZIP 생성·사용자 확인·Notion 기록을 Git 커밋·푸시나 스토어 출시로 표시하지 않는다.

@@ -2,9 +2,9 @@
 
 제품 버전별 주요 변경과 배포 상태를 기록합니다. 최신 심사·게시 상태는 [출시 현황](docs/release-status.md)을 참고하세요.
 
-## 다음 버전 — 구현됨·미출시
+## 0.1.1 — Edge 제출 후보·미출시
 
-현재 소스의 후속 변경이며 패키지 버전은 아직 `0.1.0`입니다. 버전 변경이나 스토어 제출·공개를 완료한 기록이 아닙니다.
+2026-10-01 사용자 요청으로 공통 패키지·lockfile 버전을 `0.1.1`로 올리고 Edge 제출 후보를 다시 준비합니다. 아래 기능은 기존 후속 소스에 구현된 내용이며, 이번 버전 지정으로 제품 기능·권한·의존성을 추가 변경하지 않습니다. Edge 스토어 심사 제출·공개는 아직 확인되지 않았습니다.
 
 - `enabled` 키가 없으면 OFF로 시작하고 상단 스위치 강조·주변 암전으로 활성화를 안내합니다. 기존 ON/OFF 저장값은 유지하며, 이전 설치도 키가 없으면 같은 안내를 적용합니다.
 - 메인·본문 번역 지원 페이지의 상단 ON 입력에서 설정 저장 전에 Chrome 번역 준비를 시작합니다. 메인은 준비만 수행하며 본문 번역 컨트롤러를 시작하지 않습니다. 대기 상태의 별도 `번역 준비 시작` 버튼을 숨기고 본문 페이지의 일반 클릭·키 입력으로 자동 재시도합니다.
@@ -13,7 +13,7 @@
 - `release version / prepare / verify` 배포 도구를 추가했습니다. 버전 갱신, 자동 검증·ZIP 기록 생성과 제출 파일 확인을 지원하며 Git 푸시·스토어 업로드는 별도입니다.
 - Desktop Whale용 `build:whale`·`zip:whale`를 추가했습니다. 공통 runtime과 UI를 사용하는 MV3 툴바 확장이며 별도 사이드바 제품이나 외부 번역 서비스는 도입하지 않습니다. 본문 번역 동등성이 확보된 출시판이 아닌 호환성 프로토타입입니다.
 - Chrome·Whale 패키지 검사를 공통화하고 `release prepare / verify`에 `--browser whale` 선택을 추가했습니다. 신규 배포 기록은 브라우저·소스·ZIP·검사 결과를 구분하는 schema 2를 사용하며, 기존 Chrome 경로와 schema 1 기록의 검증 호환성을 유지합니다.
-- Desktop Edge용 `build:edge`·`zip:edge`와 `release prepare / verify --browser edge`를 추가했습니다. Edge ZIP·배포 기록·체크리스트를 Chrome·Whale과 구분하며 기존 provider와 공통 소스를 재사용합니다. 사용자 확인·직접 관측·미검증 항목은 [Edge 검증 기록](docs/edge-validation-2026-10-01.md)에 구분합니다. 버전 인상이나 Edge Add-ons 제출은 하지 않았습니다.
+- Desktop Edge용 `build:edge`·`zip:edge`와 `release prepare / verify --browser edge`를 추가했습니다. Edge ZIP·배포 기록·체크리스트를 Chrome·Whale과 구분하며 기존 provider와 공통 소스를 재사용합니다. 사용자 확인·직접 관측·미검증 항목은 [Edge 검증 기록](docs/edge-validation-2026-10-01.md)에 구분합니다. Edge Add-ons 제출용 버전은 `0.1.1`로 지정했으며 심사 제출은 아직 확인되지 않았습니다.
 
 Whale 관련 빌드·패키지·실브라우저 결과와 한계는 [단일 검증 기록](docs/whale-validation-2026-10-01.md)에서 관리합니다. 아래 수치는 웨일 변경 전의 공통 소스 검증 이력입니다.
 
@@ -21,7 +21,7 @@ Whale 관련 빌드·패키지·실브라우저 결과와 한계는 [단일 검�
 
 ## 0.1.0 — 첫 공개 버전
 
-Edge 최초 제출 후보(2026-10-01): 같은 패키지 버전 `0.1.0`으로 별도 Edge ZIP을 준비합니다. 위 후속 소스의 최초 OFF·활성화 안내·번역 준비를 포함하며, 아래 Chrome 공개판과 소스 시점이 다릅니다. [Edge 제출 키트](docs/edge-addons-submission.ko.md)를 추가하고 개인정보 방침에 Edge의 기기 내 번역·모델 다운로드와 기본 설정을 명시했습니다. Edge 심사 제출·승인 기록은 아닙니다.
+Edge 초기 후보 이력(2026-10-01, 후속 `0.1.1`로 대체): 같은 패키지 버전 `0.1.0`으로 별도 Edge ZIP을 준비합니다. 위 후속 소스의 최초 OFF·활성화 안내·번역 준비를 포함하며, 아래 Chrome 공개판과 소스 시점이 다릅니다. [Edge 제출 키트](docs/edge-addons-submission.ko.md)를 추가하고 개인정보 방침에 Edge의 기기 내 번역·모델 다운로드와 기본 설정을 명시했습니다. Edge 심사 제출·승인 기록은 아닙니다.
 
 2026-09-30: 게시자가 심사 승인을 확인했으며, 공개 스토어에서 제품명·버전 0.1.0·설치 버튼을 확인했습니다. [Chrome 웹 스토어에서 설치](https://chromewebstore.google.com/detail/mountain-project-korea-%EB%B9%84%EA%B3%B5/ijgghnbmgbapfckfnkcapbkbbobjochh).
 

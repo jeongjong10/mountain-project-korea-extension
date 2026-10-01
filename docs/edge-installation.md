@@ -31,13 +31,13 @@ npm run build:edge
 npm run zip:edge
 ```
 
-타입 검사 → Edge MV3 빌드 → manifest·권한·참조 파일·출력 번들 smoke → 실제 ZIP 검사를 수행합니다. 현재 출력은 `.output/mountain-project-korea-extension-0.1.0-edge.zip`입니다. ZIP을 별도 폴더에 풀어 로드하면 해당 패키지를 직접 검사할 수 있습니다.
+타입 검사 → Edge MV3 빌드 → manifest·권한·참조 파일·출력 번들 smoke → 실제 ZIP 검사를 수행합니다. 현재 출력은 `.output/mountain-project-korea-extension-0.1.1-edge.zip`입니다. ZIP을 별도 폴더에 풀어 로드하면 해당 패키지를 직접 검사할 수 있습니다.
 
-깨끗한 커밋으로 별도 배포 준비 기록을 만들 때 다음 명령을 사용합니다. 첫 Edge 제출 후보는 `0.1.0`으로 준비하며 Chrome 공개판과 배포 채널을 구분합니다.
+깨끗한 커밋으로 별도 배포 준비 기록을 만들 때 다음 명령을 사용합니다. 첫 Edge 제출 후보는 사용자 요청에 따라 `0.1.1`로 준비하며 Chrome 공개판과 배포 채널을 구분합니다.
 
 ```bash
 npm run release -- prepare --browser edge
-npm run release -- verify 0.1.0 --browser edge
+npm run release -- verify 0.1.1 --browser edge
 ```
 
 `prepare`는 공통 전체 배포 검사 후 **`zip:edge`**를 선택하고 `.output/releases/edge/<버전>/`에 ZIP·schema 2 `release.json`·Edge 체크리스트를 생성합니다. 기록에는 `browser: "edge"`, Git 커밋·버전·해시·통과한 명령이 들어가며 Chrome 스토어 ID는 포함하지 않습니다. Chrome·Whale 기록을 Edge 기록으로 재사용할 수 없습니다. 같은 버전 기록은 덮어쓰지 않습니다.
