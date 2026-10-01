@@ -6,7 +6,7 @@ const same = (actual, expected) => Array.isArray(actual)
   && JSON.stringify([...actual].sort()) === JSON.stringify([...expected].sort());
 
 export function packageBrowser(browser = 'chrome') {
-  if (!['chrome', 'whale'].includes(browser)) throw Error(`Unsupported package browser: ${browser}`);
+  if (!['chrome', 'whale', 'edge'].includes(browser)) throw Error(`Unsupported package browser: ${browser}`);
   return browser;
 }
 

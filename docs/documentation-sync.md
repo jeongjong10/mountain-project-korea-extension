@@ -16,6 +16,14 @@
 | 변경 이유·동기화 규칙 | `CHANGELOG.md`, 이 문서 | [06. 결정 기록·문서 관리](https://www.notion.so/3e958ad3a0b2817d946ed2c5ea8d5fb1) |
 | 웨일 호환성·설치·검증 | `scripts/extension-package.mjs`, `scripts/release.mjs`, `docs/whale-installation.md`, `docs/whale-validation-2026-10-01.md` | 02 웨일 설계, 03 WH-01~06, 04 구현 순서, 05 검증 계획, 06 D-13 및 기존 W1~W4 작업 카드 |
 
+## Edge 문서 대조 — 2026-10-01
+
+`3b830b5`의 Whale 변경을 보존하면서 Edge 빌드·ZIP·배포 기록과 설치 안내를 추가했다. `src/`와 권한·의존성·버전은 그대로이며, Edge용 provider 복제는 하지 않는다. `build:edge`, `zip:edge`, `prepare --browser edge`, `verify <버전> --browser edge`를 구현·문서에서 동일하게 사용한다. 배포 기록은 `.output/releases/edge/<버전>/`로 구분한다.
+
+[Edge 설치 안내](edge-installation.md)와 [검증 기록](edge-validation-2026-10-01.md)을 로컬 기준으로 삼고, Notion의 [Edge 작업 카드](https://www.notion.so/3ec58ad3a0b28165af9fe6c25b3f0778), 02 플랫폼 경계, 04 설치·명령, 05 검증 증거, 06 결정 기록에 해당 변경만 반영한다. 사용자 확인과 소유 임시 프로필의 직접 관측이 다른 경우 어느 한쪽을 없애지 않는다. ZIP 생성·사용자 확인·Notion 기록을 Git 커밋·푸시나 스토어 출시로 표시하지 않는다.
+
+후속 요청으로 [Edge 제출 키트](edge-addons-submission.ko.md)를 추가했다. 첫 Edge 후보는 `0.1.0`이며, 계정 등록·최종 후보의 수동 확인·심사 제출은 별도 단계다. 개인정보 방침의 Markdown·HTML에 Edge와 최초 OFF 동작을 반영하고 기존 공개 URL에 Sites 버전 4를 게시했다(사이트 소스 `e626a58117baa59334451472e80a9aa4fff340c5`, 게시 상태 `succeeded`, 공개 범위 유지). 확장 소스의 배포 검사 결과는 `.output/releases/edge/0.1.0/release.json`으로 고정한다.
+
 ## 웨일 문서 대조
 
 `b54b66b` 이후의 Whale 후속 변경은 아래 공통 소스 동기화 이력과 구분한다. 로컬 안내는 실제 `package.json`·패키지 검사·배포 도구의 계약을 대조하여 `build:whale`, `zip:whale`, `prepare --browser whale`, `verify <버전> --browser whale`와 브라우저별 기록 경로를 반영한다. 기존 Chrome 명령·출력 경로와 schema 1 기록 검증은 유지한다.

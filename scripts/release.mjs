@@ -88,7 +88,7 @@ function npmRun(cwd, args) {
   execFileSync(process.execPath, [process.env.npm_execpath, ...args], { cwd, stdio: 'inherit' });
 }
 function releaseDirectory(cwd, version, browser) {
-  // Keep the existing Chrome path; Whale cannot reuse its receipts or artifacts.
+  // Keep the existing Chrome path; other browsers have isolated receipts/artifacts.
   return browser === 'chrome'
     ? join(cwd, '.output', 'releases', version)
     : join(cwd, '.output', 'releases', browser, version);
@@ -97,7 +97,7 @@ function validationCommands(browser) {
   return [
     ['ci'], ['run', 'typecheck'], ['run', 'typecheck:test'], ['run', 'test:release'],
     ['exec', '--', 'vitest', 'run', '--maxWorkers=4'],
-    ['run', browser === 'chrome' ? 'zip' : 'zip:whale'],
+    ['run', { chrome: 'zip', whale: 'zip:whale', edge: 'zip:edge' }[browser]],
   ];
 }
 function passedChecks(browser) {
@@ -121,10 +121,13 @@ export function prepare(cwd, run = args => npmRun(cwd, args), browser = 'chrome'
   mkdirSync(dest, { recursive: true });
   writeFileSync(join(dest, zipName), bytes);
   save(join(dest, 'release.json'), { schema: 2, browser, version: pkg.version, commit, zip: zipName, sha256: hash(bytes), createdAt: new Date().toISOString(), ...(browser === 'chrome' ? { storeId: STORE_ID } : {}), status: 'prepared', checks: passedChecks(browser), ...checked });
-  const manualSteps = browser === 'chrome'
-    ? `- [ ] 기존 스토어 항목 ${STORE_ID}에 ${zipName} 업로드\n- [ ] 심사 제출 및 승인 후 자동 게시 설정 확인\n- [ ] 승인·공개 버전 확인 후 로컬·Notion 출시 상태 갱신`
-    : '- [ ] 실제 Whale 버전·설치·온보딩·Translator 지원 상태 확인\n- [ ] Papago OFF 기준 동작과 ON 중복 번역·DOM 충돌을 별도로 확인\n- [ ] Translator 미지원 시 본문 번역 동등성 미확보 및 호환성 프로토타입으로 기록\n- [ ] 설치 안내와 실검증 결과 기록 (Whale 스토어 공개는 이번 준비 범위에 포함하지 않음)';
-  writeFileSync(join(dest, 'CHECKLIST.md'), `# ${browser} ${pkg.version} 배포\n\n준비 완료는 실브라우저 검증·스토어 제출·승인이 아닙니다.\n\n- [ ] 이 ZIP을 ${browser === 'chrome' ? 'Chrome' : 'Whale'}에 설치해 번역·원문·재번역·ON/OFF·지도·통계와 변경 기능 확인\n- [ ] README·변경 내역·Notion·권한·개인정보·스토어 설명 대조\n- [ ] npm run release -- verify ${pkg.version}${browser === 'chrome' ? '' : ' --browser whale'}\n- [ ] 소스 커밋 ${commit}의 GitHub 반영 확인\n${manualSteps}\n\nZIP SHA-256: ${hash(bytes)}\n`);
+  const manualSteps = {
+    chrome: `- [ ] 기존 스토어 항목 ${STORE_ID}에 ${zipName} 업로드\n- [ ] 심사 제출 및 승인 후 자동 게시 설정 확인\n- [ ] 승인·공개 버전 확인 후 로컬·Notion 출시 상태 갱신`,
+    whale: '- [ ] 실제 Whale 버전·설치·온보딩·Translator 지원 상태 확인\n- [ ] Papago OFF 기준 동작과 ON 중복 번역·DOM 충돌을 별도로 확인\n- [ ] Translator 미지원 시 본문 번역 동등성 미확보 및 호환성 프로토타입으로 기록\n- [ ] 설치 안내와 실검증 결과 기록 (Whale 스토어 공개는 이번 준비 범위에 포함하지 않음)',
+    edge: '- [ ] 실제 Microsoft Edge 버전·설치·최초 OFF 안내와 기존 ON/OFF 보존 확인\n- [ ] content script의 Translator 모델 준비·다운로드와 실제 영어→한국어 번역 확인\n- [ ] API 미지원·준비 실패 시 원문 보존과 안내 확인\n- [ ] 설치 안내와 실검증·미검증 결과 기록 (Edge Add-ons 제출·공개는 이번 준비 범위에 포함하지 않음)',
+  }[browser];
+  const browserLabel = { chrome: 'Chrome', whale: 'Whale', edge: 'Microsoft Edge' }[browser];
+  writeFileSync(join(dest, 'CHECKLIST.md'), `# ${browser} ${pkg.version} 배포\n\n준비 완료는 실브라우저 검증·스토어 제출·승인이 아닙니다.\n\n- [ ] 이 ZIP을 ${browserLabel}에 설치해 번역·원문·재번역·ON/OFF·지도·통계와 변경 기능 확인\n- [ ] README·변경 내역·Notion·권한·개인정보·스토어 설명 대조\n- [ ] npm run release -- verify ${pkg.version}${browser === 'chrome' ? '' : ` --browser ${browser}`}\n- [ ] 소스 커밋 ${commit}의 GitHub 반영 확인\n${manualSteps}\n\nZIP SHA-256: ${hash(bytes)}\n`);
   return dest;
 }
 export function verify(cwd, version, browser = 'chrome') {
@@ -150,7 +153,7 @@ export function releaseArguments(args) {
   const flag = values.indexOf('--browser');
   let browser = 'chrome';
   if (flag !== -1) {
-    if (flag !== values.length - 2 || !values[flag + 1]) throw Error('--browser 뒤에 chrome 또는 whale을 지정하세요.');
+    if (flag !== values.length - 2 || !values[flag + 1]) throw Error('--browser 뒤에 chrome, whale 또는 edge를 지정하세요.');
     browser = packageBrowser(values[flag + 1]);
     values.splice(flag, 2);
   }
@@ -158,7 +161,7 @@ export function releaseArguments(args) {
   if (extra.length || !['help', 'version', 'prepare', 'verify'].includes(command)
     || (['help', 'prepare'].includes(command) ? value !== undefined : !value)
     || (flag !== -1 && !['prepare', 'verify'].includes(command))) {
-    throw Error('사용법: version <버전> | prepare [--browser chrome|whale] | verify <버전> [--browser chrome|whale]');
+    throw Error('사용법: version <버전> | prepare [--browser chrome|whale|edge] | verify <버전> [--browser chrome|whale|edge]');
   }
   return { command, value, browser };
 }
@@ -168,6 +171,6 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     if (command === 'version' && value) { bump(root, value); console.log('버전 갱신 완료. 변경 내역·문서를 정리하고 커밋한 뒤 prepare를 실행하세요.'); }
     else if (command === 'prepare') console.log('준비 완료:', prepare(root, undefined, browser));
     else if (command === 'verify') console.log('업로드 파일 확인 완료:', verify(root, value, browser));
-    else console.log('npm run release -- version 0.1.1\nnpm run release -- prepare [--browser chrome|whale]\nnpm run release -- verify 0.1.1 [--browser chrome|whale]\n스토어 업로드·Git 커밋·Notion 수정은 자동 수행하지 않습니다.');
+    else console.log('npm run release -- version 0.1.1\nnpm run release -- prepare [--browser chrome|whale|edge]\nnpm run release -- verify 0.1.1 [--browser chrome|whale|edge]\n스토어 업로드·Git 커밋·Notion 수정은 자동 수행하지 않습니다.');
   } catch (error) { console.error('배포 중단:', error.message); process.exitCode = 1; }
 }

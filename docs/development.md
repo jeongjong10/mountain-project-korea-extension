@@ -78,6 +78,7 @@ Area 지도와 Route 설명·위치·보호장비 섹션 UI는 전역으로 적�
 | 브라우저 | 현재 범위 |
 | --- | --- |
 | Chrome | 주 개발 대상. MV3 빌드와 내장 번역 API 연동 코드가 있습니다. 실제 본문 번역은 API 제공 여부와 언어팩 상태에 따라 달라집니다. |
+| Desktop Edge | 공통 소스·기능 감지 provider를 재사용하는 미출시 MV3 개발 빌드입니다. 빌드·ZIP·배포 기록을 별도 관리합니다. [설치 안내](edge-installation.md) · [실제 확인 범위](edge-validation-2026-10-01.md) |
 | Desktop Whale | 별도 MV3 툴바 빌드·ZIP을 제공하는 미출시 호환성 프로토타입입니다. 공통 코드를 재사용하며, 본문 번역은 실행 환경의 `Translator` API와 영어→한국어 가용성에 달려 있습니다. Chromium·Papago 지원만으로 번역 동등성을 가정하지 않습니다. [설치 안내](whale-installation.md) · [검증 범위](whale-validation-2026-10-01.md) |
 | Firefox Desktop | MV2 빌드와 공통 WebExtension 설정을 제공합니다. 전용 본문 번역 엔진은 아직 구현되지 않았으며, 고정 UI와 탐색 기능은 별도 실사용 검증이 필요합니다. |
 | Firefox Android | 장기 정식 Android 지원 경로입니다. `gecko_android` 매니페스트 설정은 포함되어 있지만 모바일 실기기 검증은 완료되지 않았습니다. |
@@ -111,6 +112,10 @@ npm run build
 
 `npm run build:whale`로 `.output/whale-mv3`를 생성하고, 별도 개발 프로필의 `whale://extensions`에서 개발자 모드를 켜 해당 폴더를 로드합니다. Chrome 빌드 폴더와 혼용하지 않습니다. 업데이트·최초 OFF·번역 미지원 안내 및 Papago와의 구분은 [웨일 설치 안내](whale-installation.md)를 따릅니다. 사용자 일반 프로필의 설정이나 번역 플래그는 자동으로 변경하지 않습니다.
 
+### Edge에 개발 빌드 설치
+
+Edge는 `npm run build:edge`로 `.output/edge-mv3`를 생성하고 개발용 프로필의 `edge://extensions`에서 로드합니다. 최초 OFF·업데이트 때 설정 보존·모델 준비와 확인 절차는 [Edge 설치 안내](edge-installation.md)를 따릅니다.
+
 ### Firefox에 임시 설치
 
 ```bash
@@ -133,13 +138,17 @@ Firefox의 `about:debugging#/runtime/this-firefox`에서 **임시 부가 기능 
 | `npm run build` | 타입 검사 → Chrome 빌드 → 완성된 content script 실행 검사 |
 | `npm run build:firefox` | 타입 검사 → Firefox 빌드 → 완성된 content script 실행 검사 |
 | `npm run build:whale` | 타입 검사 → Whale MV3 빌드 → 패키지 manifest·로컬 참조 검사 → content script 실행 검사 |
+| `npm run build:edge` | 타입 검사 → Edge MV3 빌드 → 패키지 manifest·로컬 참조 검사 → content script 실행 검사 |
 | `npm run zip` | 타입 검사 → Chrome MV3 빌드 → 패키지·content script 검사 → ZIP 생성·실제 ZIP 검사 |
 | `npm run zip:whale` | 타입 검사 → Whale MV3 빌드 → 패키지·content script 검사 → ZIP 생성·실제 ZIP 검사 |
+| `npm run zip:edge` | 타입 검사 → Edge MV3 빌드 → 패키지·content script 검사 → ZIP 생성·실제 ZIP 검사 |
 | `npx wxt zip -b firefox` | Firefox 배포용 ZIP 생성 |
 | `npm run test:release` | 배포 도구·공통 패키지 검사의 Node 테스트 실행. `npm test`·`npm run check`에는 포함되지 않음 |
 | `npm run release -- version <버전>` / `prepare` / `verify <버전>` | 공통 버전 갱신 / Chrome 검증·ZIP 기록 생성 / Chrome ZIP 재확인 |
 | `npm run release -- prepare --browser whale` | 깨끗한 커밋을 검증하고 Whale ZIP·별도 배포 기록 생성 |
 | `npm run release -- verify <버전> --browser whale` | 준비한 Whale 기록과 현재 소스·버전·ZIP 재확인. 재빌드하지 않음 |
+| `npm run release -- prepare --browser edge` | 깨끗한 커밋 검증 후 `zip:edge`와 별도 Edge 배포 기록·체크리스트 생성 |
+| `npm run release -- verify <버전> --browser edge` | 준비한 Edge 기록과 현재 소스·버전·ZIP 재확인. 재빌드하지 않음 |
 
 현재 `npm test` 스크립트는 `TMPDIR=/tmp` 문법을 사용하므로 WSL 또는 POSIX 셸에서 실행하세요. Windows PowerShell에서는 `npx vitest run`으로 테스트를 직접 실행할 수 있습니다. 테스트 소스는 제품 코드와 분리된 최상위 `test/`에 있으며, `src/` 구조를 따라 application·localization·site contract·UI 경계를 검증합니다.
 
@@ -199,7 +208,7 @@ Git 커밋·push, Notion 수정, 실제 Chrome 확인, 스토어 업로드·심�
 
 ### Whale 기록 분리
 
-위 기본 명령과 Chrome 경로는 그대로 유지합니다. `prepare`·`verify`에만 마지막 인자로 `--browser whale`을 붙이면 Whale을 선택하며, 생략하거나 `--browser chrome`을 지정하면 Chrome입니다. Firefox는 이 배포 도구의 대상이 아닙니다. `version`은 두 브라우저에 공통인 패키지 버전을 변경하며 `--browser`를 받지 않습니다.
+위 기본 명령과 Chrome 경로는 그대로 유지합니다. `prepare`·`verify`에만 마지막 인자로 `--browser whale`을 붙이면 Whale을 선택하며, 생략하거나 `--browser chrome`을 지정하면 Chrome입니다. Edge는 아래 별도 경로를 사용합니다. Firefox는 이 배포 도구의 대상이 아닙니다. `version`은 모든 브라우저에 공통인 패키지 버전을 변경하며 `--browser`를 받지 않습니다.
 
 | 산출물 | Chrome | Whale |
 | --- | --- | --- |
@@ -210,6 +219,12 @@ Git 커밋·push, Notion 수정, 실제 Chrome 확인, 스토어 업로드·심�
 Whale의 `prepare`는 같은 깨끗한 커밋·버전 일치·CHANGELOG 조건에서 의존성 설치, 타입 검사, 배포·패키지 검사 테스트, 전체 Vitest와 `zip:whale`를 실행합니다. `verify <버전> --browser whale`은 브라우저·ZIP 이름·기록된 검사 목록·현재 소스·해시를 대조합니다. Chrome 스토어 ID가 들어간 Whale 기록은 거부합니다. 수동 체크리스트 완료 여부나 실제 Whale의 번역 지원은 자동 판정하지 않습니다.
 
 이번 호환성 프로토타입은 버전을 올리거나 웨일 스토어에 제출하지 않습니다. 개발 설치는 `build:whale`, 일반 패키지 확인은 `zip:whale`만으로 가능하며 두 명령은 `release.json`을 만들지 않습니다. `prepare`는 커밋이 정리된 별도 배포 준비 단계입니다. 실제 실행 결과·브라우저 상태는 [웨일 검증 기록](whale-validation-2026-10-01.md)으로 관리하고 Chrome 출시 증거로 대체하지 않습니다.
+
+### Edge 기록 분리
+
+`--browser edge`는 `zip:edge`를 선택합니다. 개발 출력은 `.output/edge-mv3`, 일반 ZIP은 `.output/mountain-project-korea-extension-<버전>-edge.zip`, 배포 기록은 `.output/releases/edge/<버전>/`입니다. schema 2 기록과 Edge 체크리스트를 만들며 Chrome 스토어 ID를 넣지 않습니다. Chrome·Whale의 명령·출력·기록은 유지합니다. 다른 브라우저 이름·ZIP·검사 명령이 들어간 기록은 거부합니다.
+
+`prepare`의 전체 배포 검사와 `verify`의 대조 기준은 공통 절차를 따릅니다. 일반 `build:edge`·`zip:edge`는 배포 기록이나 스토어 제출을 만들지 않습니다. [Edge 설치 안내](edge-installation.md)와 [검증 기록](edge-validation-2026-10-01.md)에서 실제 확인·사용자 확인·미검증을 구분합니다.
 
 ## 권한 및 데이터 처리
 
@@ -282,7 +297,7 @@ wxt.config.ts       # 매니페스트와 브라우저별 WXT 빌드 설정
 
 | 실행 환경 | 제공할 adapter / composition root |
 | --- | --- |
-| Chrome / Whale / Firefox | 현재 WXT `entrypoints/content.ts`가 WebExtension 저장소, Chrome Translator provider와 내비게이션 shell을 주입하고, invalidation을 runtime.destroy에 연결합니다. Whale도 공통 코드를 사용하며 전용 소스를 복제하지 않습니다. Translator API 미지원 브라우저에서는 provider가 unavailable을 반환하므로 고정 UI만 번역됩니다. |
+| Chrome / Edge / Whale / Firefox | 현재 WXT `entrypoints/content.ts`가 WebExtension 저장소, Chrome Translator provider와 내비게이션 shell을 주입하고, invalidation을 runtime.destroy에 연결합니다. Edge·Whale도 공통 코드를 사용하며 전용 소스를 복제하지 않습니다. Translator API 미지원 브라우저에서는 provider가 unavailable을 반환하므로 고정 UI만 번역됩니다. |
 | Safari Web Extension | Safari 확장의 content root에서 공통 application/runtime을 생성하고 WebExtension 저장소 호환성을 확인합니다. 사용 가능한 번역 provider 또는 unavailable provider를 주입하고 확장 종료를 destroy에 연결합니다. 전용 빌드·실기기 검증은 아직 필요합니다. |
 | Android Firefox | 같은 WXT root와 WebExtension 저장소를 재사용하고 번역 provider를 기능 감지해 선택합니다. 모바일 DOM·iframe 동작과 확장 종료를 실기기에서 검증해야 합니다. |
 | WebView | 문서별 주입 root에서 호스트 저장소/변경 알림을 SettingsRepository로, 번역 bridge를 TranslationProvider로 구현합니다. 문서 교체 전 destroy하고 새 문서에서 새 runtime을 생성합니다. |

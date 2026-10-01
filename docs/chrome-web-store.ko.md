@@ -145,6 +145,8 @@ Limited Use 확인란에 대응하는 현재 구현의 약속:
 
 ## 8. 현재 게시 자료
 
+2026-10-01 갱신: 공통 개인정보 방침에 Edge의 기기 내 번역·모델 다운로드와 Edge 최초 제출 후보의 기본 OFF를 반영하고 같은 공개 URL에 게시했습니다. Chrome 최초 공개 `0.1.0`의 기본 ON과 구분하며, Chrome 스토어 패키지·설명 자체를 변경한 것은 아닙니다. Edge 필드별 문안은 [별도 제출 키트](edge-addons-submission.ko.md)를 사용합니다.
+
 개인정보처리방침은 [공개 주소](https://mountain-project-korea-privacy.jeongjongyeol.chatgpt.site/)에서 제공하며 저장소의 `privacy-site/index.html`에 원본을 보관합니다. 현재 GitHub Pages는 사용하지 않습니다. 후속 버전 제출 시 공개 방침, 이 문안과 실제 데이터 흐름을 함께 대조합니다.
 
 첫 배포 버전의 심사·게시 상태는 [출시 현황](release-status.md), 검증한 소스·ZIP 정보는 [출시 검증 기록](release-source-audit-2026-09-29.md)을 따릅니다. 과거 호스팅 시도와 시안별 작업 이력은 로컬 자료로 보존합니다.

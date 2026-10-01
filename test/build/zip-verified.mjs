@@ -7,7 +7,7 @@ import { inspectZip } from '../../scripts/release.mjs';
 
 const args = process.argv.slice(2);
 if (args.length && (args.length !== 2 || args[0] !== '--browser')) {
-  throw Error('Usage: zip-verified.mjs [--browser chrome|whale]');
+  throw Error('Usage: zip-verified.mjs [--browser chrome|whale|edge]');
 }
 const browser = packageBrowser(args[1]);
 const { name, version } = JSON.parse(readFileSync(new URL('../../package.json', import.meta.url), 'utf8'));

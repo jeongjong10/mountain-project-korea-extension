@@ -13,12 +13,15 @@
 - `release version / prepare / verify` 배포 도구를 추가했습니다. 버전 갱신, 자동 검증·ZIP 기록 생성과 제출 파일 확인을 지원하며 Git 푸시·스토어 업로드는 별도입니다.
 - Desktop Whale용 `build:whale`·`zip:whale`를 추가했습니다. 공통 runtime과 UI를 사용하는 MV3 툴바 확장이며 별도 사이드바 제품이나 외부 번역 서비스는 도입하지 않습니다. 본문 번역 동등성이 확보된 출시판이 아닌 호환성 프로토타입입니다.
 - Chrome·Whale 패키지 검사를 공통화하고 `release prepare / verify`에 `--browser whale` 선택을 추가했습니다. 신규 배포 기록은 브라우저·소스·ZIP·검사 결과를 구분하는 schema 2를 사용하며, 기존 Chrome 경로와 schema 1 기록의 검증 호환성을 유지합니다.
+- Desktop Edge용 `build:edge`·`zip:edge`와 `release prepare / verify --browser edge`를 추가했습니다. Edge ZIP·배포 기록·체크리스트를 Chrome·Whale과 구분하며 기존 provider와 공통 소스를 재사용합니다. 사용자 확인·직접 관측·미검증 항목은 [Edge 검증 기록](docs/edge-validation-2026-10-01.md)에 구분합니다. 버전 인상이나 Edge Add-ons 제출은 하지 않았습니다.
 
 Whale 관련 빌드·패키지·실브라우저 결과와 한계는 [단일 검증 기록](docs/whale-validation-2026-10-01.md)에서 관리합니다. 아래 수치는 웨일 변경 전의 공통 소스 검증 이력입니다.
 
 검증: 2026-10-01 전체 664개 중 661개 통과 후 실패한 비동기 검사 3개 파일을 순차 재실행해 38/38 통과했습니다. 소스·테스트 타입 검사, Chrome 빌드·번들 smoke와 배포 도구 6/6 통과를 확인했습니다. 세부 조건은 [검증 기록](docs/documentation-sync.md)을 따릅니다. 최신 온보딩의 실제 Chrome 표시·언어팩 다운로드 완료는 아직 검증 증거가 없습니다.
 
 ## 0.1.0 — 첫 공개 버전
+
+Edge 최초 제출 후보(2026-10-01): 같은 패키지 버전 `0.1.0`으로 별도 Edge ZIP을 준비합니다. 위 후속 소스의 최초 OFF·활성화 안내·번역 준비를 포함하며, 아래 Chrome 공개판과 소스 시점이 다릅니다. [Edge 제출 키트](docs/edge-addons-submission.ko.md)를 추가하고 개인정보 방침에 Edge의 기기 내 번역·모델 다운로드와 기본 설정을 명시했습니다. Edge 심사 제출·승인 기록은 아닙니다.
 
 2026-09-30: 게시자가 심사 승인을 확인했으며, 공개 스토어에서 제품명·버전 0.1.0·설치 버튼을 확인했습니다. [Chrome 웹 스토어에서 설치](https://chromewebstore.google.com/detail/mountain-project-korea-%EB%B9%84%EA%B3%B5/ijgghnbmgbapfckfnkcapbkbbobjochh).
 

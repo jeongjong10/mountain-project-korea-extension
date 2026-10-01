@@ -20,6 +20,8 @@ Mountain Project를 한국어로 읽고 더 편리하게 탐색하도록 돕는 
 
 Desktop Whale용 별도 MV3 빌드·ZIP은 **미출시 호환성 프로토타입**입니다. Chrome 공개본과 본문 번역의 동등 지원을 보장하지 않으며 웨일 스토어에는 제출하지 않았습니다. [웨일 설치와 제한 사항](docs/whale-installation.md)을 확인하세요.
 
+Desktop Edge용 `build:edge`·`zip:edge`도 **미출시 개발 빌드**로 제공합니다. 설치 방법과 실제 번역 검증 범위는 [Edge 설치 안내](docs/edge-installation.md) 및 [검증 기록](docs/edge-validation-2026-10-01.md)을 확인하세요. Edge Add-ons에는 제출하지 않았습니다.
+
 Mountain Project 또는 onX의 공식 제품이 아니며, 공식 제휴나 승인을 의미하지 않습니다.
 
 ## 주요 기능
@@ -101,6 +103,8 @@ WXT, TypeScript, Vitest, happy-dom을 사용합니다. 설치·실행 명령, �
 
 - [개발 및 유지보수 안내](docs/development.md)
 - [웨일 프로토타입 설치 안내](docs/whale-installation.md)
+- [Edge 개발 빌드 설치 안내](docs/edge-installation.md)
+- [Edge Add-ons 제출 준비 안내](docs/edge-addons-submission.ko.md)
 - [문서 목록](docs/README.md)
 - [첫 배포 버전 소스·패키지 검증 기록](docs/release-source-audit-2026-09-29.md)
 

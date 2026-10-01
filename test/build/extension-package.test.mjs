@@ -23,9 +23,10 @@ const references = new Map([
 ]);
 const inspect = (value, files = references, browser = 'whale') => inspectManifest(value, '0.1.0', p => files.get(p), browser);
 
-test('the shared validator accepts only the Chrome and Whale MV3 toolbar packages', () => {
+test('the shared validator accepts Chrome, Whale and Edge MV3 toolbar packages', () => {
   assert.equal(inspect(manifest()).manifest_version, 3);
   assert.equal(inspect(manifest(), references, 'chrome').manifest_version, 3);
+  assert.equal(inspect(manifest(), references, 'edge').manifest_version, 3);
   assert.throws(() => inspect(manifest(), references, 'firefox'), /browser/);
   for (const patch of [
     { manifest_version: 2 }, { version: '0.1.1' }, { name: 'Different product' },
@@ -86,4 +87,21 @@ test('build inspection rejects the wrong browser directory, missing files and es
   writeFileSync(join(root, 'outside.html'), '<html></html>');
   symlinkSync(join(root, 'outside.html'), join(directory, 'popup.html'));
   assert.throws(() => inspectBuildDirectory(directory, '0.1.0', 'whale'), /not a local file/);
+});
+
+test('Edge build inspection rejects a Chrome or Whale output directory', t => {
+  const root = mkdtempSync(join(tmpdir(), 'mpkr-edge-package-'));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  for (const browser of ['chrome', 'whale', 'edge']) {
+    const directory = join(root, `${browser}-mv3`);
+    mkdirSync(join(directory, 'icon'), { recursive: true });
+    mkdirSync(join(directory, 'content-scripts'));
+    for (const [name, data] of references) writeFileSync(join(directory, name), data);
+    writeFileSync(join(directory, 'manifest.json'), JSON.stringify(manifest()));
+    if (browser === 'edge') {
+      assert.equal(inspectBuildDirectory(directory, '0.1.0', 'edge').version, '0.1.0');
+    } else {
+      assert.throws(() => inspectBuildDirectory(directory, '0.1.0', 'edge'), /Wrong build target/);
+    }
+  }
 });

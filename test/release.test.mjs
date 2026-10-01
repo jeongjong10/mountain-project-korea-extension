@@ -43,7 +43,7 @@ function repo(t) {
 function build(dir, calls, browser = 'chrome') {
   return args => {
     calls.push(args.join(' '));
-    if (args.join(' ') === (browser === 'chrome' ? 'run zip' : 'run zip:whale')) {
+    if (args.join(' ') === ({ chrome: 'run zip', whale: 'run zip:whale', edge: 'run zip:edge' }[browser])) {
       mkdirSync(join(dir, '.output'), { recursive: true });
       writeFileSync(join(dir, `.output/example-0.1.1-${browser}.zip`), archive());
     }
@@ -177,6 +177,8 @@ test('CLI retains Chrome defaults and parses only supported browser selectors', 
   assert.deepEqual(releaseArguments(['prepare']), { command: 'prepare', value: undefined, browser: 'chrome' });
   assert.deepEqual(releaseArguments(['verify', '0.1.1', '--browser', 'whale']), { command: 'verify', value: '0.1.1', browser: 'whale' });
   assert.equal(releaseArguments(['prepare', '--browser', 'whale']).browser, 'whale');
+  assert.equal(releaseArguments(['prepare', '--browser', 'edge']).browser, 'edge');
+  assert.deepEqual(releaseArguments(['verify', '0.1.1', '--browser', 'edge']), { command: 'verify', value: '0.1.1', browser: 'edge' });
   assert.equal(releaseArguments(['verify', '0.1.1', '--browser', 'chrome']).browser, 'chrome');
   assert.equal(releaseArguments(['version', '0.1.2']).command, 'version');
   for (const args of [
@@ -184,4 +186,56 @@ test('CLI retains Chrome defaults and parses only supported browser selectors', 
     ['prepare', 'whale'], ['verify', '--browser', 'whale'], ['version', '0.1.2', '--browser', 'whale'],
     ['prepare', '--browser', 'whale', '--browser', 'chrome'], ['prepare', '--other', 'whale'],
   ]) assert.throws(() => releaseArguments(args));
+});
+
+test('Edge preparation selects zip:edge and isolates its receipt and checklist from Chrome and Whale', t => {
+  const { dir } = repo(t), calls = [];
+  prepare(dir, build(dir, []));
+  prepare(dir, build(dir, [], 'whale'), 'whale');
+  const dest = prepare(dir, build(dir, calls, 'edge'), 'edge');
+  assert.equal(dest, join(dir, '.output/releases/edge/0.1.1'));
+  assert.equal(calls.at(-1), 'run zip:edge');
+  assert.equal(calls.includes('run zip:whale'), false);
+  const receiptText = readFileSync(join(dest, 'release.json'), 'utf8');
+  const receipt = JSON.parse(receiptText);
+  assert.equal(receipt.browser, 'edge');
+  assert.equal(receipt.schema, 2);
+  assert.equal('storeId' in receipt, false);
+  assert.equal(receiptText.includes(STORE_ID), false);
+  assert.deepEqual(receipt.checks.at(-2), { command: ['run', 'zip:edge'], status: 'passed' });
+  assert.deepEqual(receipt.checks.at(-1), { command: ['inspect-zip', 'edge'], status: 'passed' });
+  const checklist = readFileSync(join(dest, 'CHECKLIST.md'), 'utf8');
+  assert.match(checklist, /Microsoft Edge/);
+  assert.match(checklist, /verify 0\.1\.1 --browser edge/);
+  assert.match(checklist, /다운로드와 실제 영어→한국어 번역/);
+  assert.match(checklist, /Edge Add-ons 제출·공개는 이번 준비 범위에 포함하지 않음/);
+  assert.equal(/Whale|Papago|--browser whale/.test(checklist), false);
+  assert.equal(checklist.includes(STORE_ID), false);
+  for (const browser of ['chrome', 'whale', 'edge']) {
+    assert.ok(verify(dir, '0.1.1', browser).endsWith(`-${browser}.zip`));
+  }
+});
+
+test('Edge verify rejects cross-browser receipts, checks, filenames and the Chrome store ID', t => {
+  const { dir } = repo(t), dest = prepare(dir, build(dir, [], 'edge'), 'edge');
+  const file = join(dest, 'release.json'), original = JSON.parse(readFileSync(file));
+  for (const patch of [
+    { browser: 'whale' }, { browser: 'chrome' }, { zip: 'example-0.1.1-whale.zip' },
+    { storeId: STORE_ID }, { schema: 1, browser: undefined },
+    { checks: original.checks.map(check => check.command[1] === 'zip:edge'
+      ? { ...check, command: ['run', 'zip:whale'] } : check) },
+  ]) {
+    writeFileSync(file, JSON.stringify({ ...original, ...patch }));
+    assert.throws(() => verify(dir, '0.1.1', 'edge'), /브라우저/);
+  }
+});
+
+test('Edge prepare refuses a Whale output and failed gates leave no Edge receipt', t => {
+  const { dir } = repo(t);
+  assert.throws(() => prepare(dir, args => {
+    if (args.join(' ') === 'run zip:edge') build(dir, [], 'whale')(['run', 'zip:whale']);
+  }, 'edge'), /ENOENT/);
+  assert.equal(existsSync(join(dir, '.output/releases/edge/0.1.1/release.json')), false);
+  assert.throws(() => prepare(dir, () => { throw Error('edge gate failure'); }, 'edge'), /edge gate/);
+  assert.equal(existsSync(join(dir, '.output/releases/edge/0.1.1/release.json')), false);
 });
