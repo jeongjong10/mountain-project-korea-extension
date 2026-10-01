@@ -54,6 +54,21 @@ Edge에서 설치·갱신할 폴더와 ZIP을 명확히 제공하고, 브라우�
 
 후속 사용자 요청에 따라 Edge Add-ons 제출 준비로 범위를 확장했다. 개발자 등록은 아직 하지 않았다는 사용자 답변을 받았다. [제출 키트](edge-addons-submission.ko.md)에 계정 등록·필드별 문안·권한과 데이터 설명·심사자 안내를 정리했다. 제출 전 최종 패키지 결과는 위 배포 receipt와 함께 확인한다.
 
+## 최종 제출 후보 준비 — 후속 실행
+
+소스 [f1488c9](https://github.com/jeongjong10/mountain-project-korea-extension/commit/f1488c900fdfcf70578d2306a88df7a5ec099a31)를 고정한 clean clone에서 실제 `release prepare --browser edge`와 `release verify 0.1.0 --browser edge`를 통과했다. [배포 기록 원본 사본](evidence/edge-release-0.1.0-2026-10-01.json)에 커밋·검사 명령·manifest·파일 해시를 보존한다. 이후 결과 문서 커밋은 패키지 입력 커밋과 구분한다.
+
+- `npm ci`, 소스·테스트 타입 검사, 배포 도구 21/21, 전체 Vitest 64파일·678/678(`--maxWorkers=4`), Edge MV3·content script smoke·실제 ZIP 검사 통과. 전체 회귀는 단일 실행에서 모두 통과했다.
+- 첫 clean clone 시도는 테스트 출력용 `.tmp`가 없어 레이아웃 suite 준비 단계에서 실패했다(676개 통과, 2개 미실행). `test/ui/navigation-controls.layout.test.ts`가 디렉터리를 직접 생성하도록 고친 뒤 전체 prepare를 다시 통과했다. 실패한 실행에 receipt를 발급하지 않았다.
+- 최종 ZIP은 `.output/releases/edge/0.1.0/mountain-project-korea-extension-0.1.0-edge.zip`, 139,673 bytes다. SHA-256은 앞선 개발 ZIP과 같은 `1a8502089802fb16a10dd416dfed61e1d406de458100c1ecff035556cc1bf68f`다. 압축 CRC 및 복사 후 10개 파일의 해시를 재확인했다.
+- 같은 폴더의 `unpacked/`는 이 ZIP을 그대로 푼 확인용 사본이고 `submission/`에는 복사용 문안 8개, 안내 1개, 아이콘 1개, 기존 공통 UI 이미지 2개가 있다. `prepare.log`, 첫 실패 로그와 `npm-audit.json`은 개발 검증 기록이며 스토어에 업로드할 파일이 아니다.
+- `b599db0`(Edge 패키징·제출 문안·개인정보 반영)과 `f1488c9`(clean checkout 테스트 준비 수정)를 GitHub main에 푸시했다. 진행 중인 다른 브라우저 변경은 이 커밋들에 포함하지 않았다.
+- 공개 개인정보처리방침은 같은 URL의 Sites 버전 4로 갱신됐다. Edge의 기기 내 번역·브라우저 모델 다운로드와 Chrome 최초 공개판/Edge 후보의 ON·OFF 차이를 명시했다. 사이트 소스 `e626a58117baa59334451472e80a9aa4fff340c5`, 게시 상태 `succeeded`를 확인했다.
+
+개발 의존성 점검: `npm audit`은 테스트 전용 `happy-dom` critical 1개와 `vitest`·`@vitest/mocker` moderate 2개 패키지를 보고했다. 이들 도구는 제품 `src/`에서 사용하지 않고 배포 ZIP에 포함하지 않는다. 테스트 의존성의 메이저 업데이트는 후속 유지보수로 남기며 보안 경고 0이라고 기록하지 않는다. Happy DOM은 신뢰하지 않는 스크립트 실행에서 VM 이탈 위험이 있으며, 번들 smoke는 외부 JS·CSS·iframe 로드를 끄고 fetch를 차단한다. [Happy DOM 권고](https://github.com/capricorn86/happy-dom/security/advisories/GHSA-37j7-fg3j-429f), [Vitest 권고](https://github.com/vitest-dev/vitest/security/advisories/GHSA-82fw-gwwq-j7x9).
+
+현재 상태는 **제출 파일 준비 완료, Edge Add-ons 미제출·미공개**다. 개발자 등록·최종 ZIP의 사용자 확인·Partner Center 입력과 Publish·심사 결과 확인은 남아 있다. 앞선 수동 확인 결과는 유지하며 새 자동 클릭 성공이나 최종 ZIP의 사용자 설치 완료로 바꾸지 않는다.
+
 ## 자원 정리
 
 소유 wrapper 세션 `52898`을 종료해 `cleanup: removed`를 확인했다. 소유 Edge 프로세스·탭·CDP endpoint와 임시 프로필 `codex-live-browser-jdbD8Y`가 정리됐다. 서버·하위 에이전트는 만들지 않았다. 사용자의 기존 브라우저·프로필은 연결하거나 닫지 않았고 기존 Chrome 출력은 읽기 전용으로 사용했다.

@@ -24,6 +24,8 @@
 
 후속 요청으로 [Edge 제출 키트](edge-addons-submission.ko.md)를 추가했다. 첫 Edge 후보는 `0.1.0`이며, 계정 등록·최종 후보의 수동 확인·심사 제출은 별도 단계다. 개인정보 방침의 Markdown·HTML에 Edge와 최초 OFF 동작을 반영하고 기존 공개 URL에 Sites 버전 4를 게시했다(사이트 소스 `e626a58117baa59334451472e80a9aa4fff340c5`, 게시 상태 `succeeded`, 공개 범위 유지). 확장 소스의 배포 검사 결과는 `.output/releases/edge/0.1.0/release.json`으로 고정한다.
 
+실제 후보 입력은 GitHub에 반영한 `f1488c9`다. clean checkout의 테스트 출력 디렉터리 생성 누락을 수정한 뒤 전체 678개·배포 도구 21개·타입·Edge ZIP·release verify를 통과했다. [receipt 사본](evidence/edge-release-0.1.0-2026-10-01.json), [결과와 한계](edge-validation-2026-10-01.md), [출시 현황](release-status.md)을 함께 유지한다. 이후 결과 문서 커밋을 패키지 입력 커밋으로 바꾸지 않는다.
+
 ## 웨일 문서 대조
 
 `b54b66b` 이후의 Whale 후속 변경은 아래 공통 소스 동기화 이력과 구분한다. 로컬 안내는 실제 `package.json`·패키지 검사·배포 도구의 계약을 대조하여 `build:whale`, `zip:whale`, `prepare --browser whale`, `verify <버전> --browser whale`와 브라우저별 기록 경로를 반영한다. 기존 Chrome 명령·출력 경로와 schema 1 기록 검증은 유지한다.

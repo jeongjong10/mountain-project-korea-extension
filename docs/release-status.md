@@ -28,6 +28,15 @@
 
 빌드 성공이나 `prepared` 기록만으로 실제 Whale의 본문 번역 동등 지원·스토어 제출 준비 완료를 의미하지 않습니다. 설치 방법과 API 제한은 [웨일 설치 안내](whale-installation.md), 실행 환경·검사 결과·남은 검증은 [웨일 검증 기록](whale-validation-2026-10-01.md)에서 관리합니다. 앞 절의 Chrome·Firefox 검사 수치는 웨일 변경 전의 이력입니다.
 
+## Desktop Edge 첫 제출 후보 0.1.0
+
+2026-10-01: **제출 파일 준비 완료, Edge Add-ons 미제출·미공개**. 사용자는 개발자 등록 전이다. [입력 순서와 제출 문안](edge-addons-submission.ko.md)을 준비했으며, 공개 개인정보 방침도 Edge를 포함해 갱신했다.
+
+- 패키지 입력 소스: [f1488c9](https://github.com/jeongjong10/mountain-project-korea-extension/commit/f1488c900fdfcf70578d2306a88df7a5ec099a31), GitHub 반영 확인. 패키지 버전은 `0.1.0`이며 Chrome 최초 공개판과 소스 시점·배포 채널이 다르다.
+- 소스·테스트 타입 검사, 단일 전체 실행 64파일·678개 테스트, 배포 도구 21개, Edge 빌드·번들 smoke·ZIP 검사 및 `release verify` 통과.
+- 최종 ZIP: `.output/releases/edge/0.1.0/mountain-project-korea-extension-0.1.0-edge.zip`, SHA-256 `1a8502089802fb16a10dd416dfed61e1d406de458100c1ecff035556cc1bf68f`. [배포 기록](evidence/edge-release-0.1.0-2026-10-01.json).
+- 사용자 Edge 본문 번역·원문·재번역·설정·지도·통계 정상 확인은 받았다. 최종 제출 폴더의 설치 확인, 개발자 등록과 심사 제출은 남아 있다. 자동 검사와 실브라우저 증거, 개발 의존성 보안 경고는 [검증 기록](edge-validation-2026-10-01.md)에서 구분한다.
+
 ## 앞으로의 진행
 
 - 사용자의 오류 제보와 스토어 피드백을 확인하여 후속 개선에 반영합니다.
