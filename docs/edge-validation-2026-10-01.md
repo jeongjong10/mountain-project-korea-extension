@@ -4,6 +4,16 @@
 
 현재 제출 버전은 사용자 요청에 따른 **0.1.1**이다. 아래 0.1.0 해시·소스·검사는 이전 후보의 이력으로 보존하며, 0.1.1에는 별도의 release receipt와 ZIP을 사용한다.
 
+## 현재 제출 후보 0.1.1
+
+- 입력 소스: [eea71d9](https://github.com/jeongjong10/mountain-project-korea-extension/commit/eea71d92d860048ba905b6efe93f8b656b049e33), GitHub main 반영 확인. 공통 package.json·lockfile 버전을 0.1.1로 맞추고 clean clone에서 실제 prepare·verify를 수행했다.
+- 소스·테스트 타입, 전체 64파일·678/678, 배포 도구 21/21, Edge MV3·번들 smoke·실제 ZIP 검사와 `release verify 0.1.1 --browser edge` 통과. [0.1.1 receipt 사본](evidence/edge-release-0.1.1-2026-10-01.json).
+- ZIP: `.output/releases/edge/0.1.1/mountain-project-korea-extension-0.1.1-edge.zip`, 139,672 bytes, SHA-256 `fc124e2ea3df4e2689c29861f3896ea8164d55af4960df63c9c196d1d4e2007e`.
+- manifest SHA-256: `5615937fe7cd3e334472fcbfd64866beafb7638ccb75a26a1668d0a46e4948b9`. 이전 0.1.0 후보와 비교해 manifest의 version만 변경됐고 나머지 9개 파일은 동일하다. 본문 content script 해시는 `ed4cc58c64818c79c757943faed69a70d88ecebb2f04c39de6a55e2939c94477`로 유지된다.
+- 최종 폴더에 ZIP·receipt·검사 로그·체크리스트·unpacked·제출 자료 12개를 모았다. 개발용 `.output/edge-mv3`도 이 0.1.1 내용으로 맞췄다. 이전 0.1.0 release 디렉터리와 증거는 보존한다.
+- 공개 개인정보 페이지는 Sites 버전 5 게시 succeeded. Edge 기본 OFF 설명의 특정 후보 번호를 제거했고 데이터 처리 내용은 동일하다. 사이트 소스 `d16c775eb186cae56570a25278e2426fa3ccd056`.
+- 사용자는 개발자 등록 후 Edge 워크스페이스 진입을 확인했다. 0.1.1 실제 업로드·최종 수동 확인·심사 제출·승인·공개는 아직 확인되지 않았다. 이전 사용자 정상 확인과 새 버전의 자동 검사 결과를 구분한다. npm ci의 기존 테스트 도구 보안 경고는 아래 기록과 같으며 후속 유지보수 항목이다.
+
 ## 구현과 산출물
 
 - 시작 HEAD: `3b830b560d792add7779e7631349d0d6fc613c9b`, 시작 작업 트리는 깨끗했다. Whale의 선행 변경을 보존했다.
