@@ -78,6 +78,7 @@ Area 지도와 Route 설명·위치·보호장비 섹션 UI는 전역으로 적�
 | 브라우저 | 현재 범위 |
 | --- | --- |
 | Chrome | 주 개발 대상. MV3 빌드와 내장 번역 API 연동 코드가 있습니다. 실제 본문 번역은 API 제공 여부와 언어팩 상태에 따라 달라집니다. |
+| Desktop Whale | 별도 MV3 툴바 빌드·ZIP을 제공하는 미출시 호환성 프로토타입입니다. 공통 코드를 재사용하며, 본문 번역은 실행 환경의 `Translator` API와 영어→한국어 가용성에 달려 있습니다. Chromium·Papago 지원만으로 번역 동등성을 가정하지 않습니다. [설치 안내](whale-installation.md) · [검증 범위](whale-validation-2026-10-01.md) |
 | Firefox Desktop | MV2 빌드와 공통 WebExtension 설정을 제공합니다. 전용 본문 번역 엔진은 아직 구현되지 않았으며, 고정 UI와 탐색 기능은 별도 실사용 검증이 필요합니다. |
 | Firefox Android | 장기 정식 Android 지원 경로입니다. `gecko_android` 매니페스트 설정은 포함되어 있지만 모바일 실기기 검증은 완료되지 않았습니다. |
 | Android Yandex | Chrome 계열 빌드의 빠른 모바일 호환성 실험용이며 정식 지원 플랫폼이 아닙니다. |
@@ -106,6 +107,10 @@ npm run build
 
 이미 열려 있던 페이지는 새로고침하세요. 코드를 변경하고 다시 빌드한 경우 확장 관리 화면에서 확장을 새로고침한 뒤 해당 페이지도 새로고침합니다.
 
+### Whale에 개발 빌드 설치
+
+`npm run build:whale`로 `.output/whale-mv3`를 생성하고, 별도 개발 프로필의 `whale://extensions`에서 개발자 모드를 켜 해당 폴더를 로드합니다. Chrome 빌드 폴더와 혼용하지 않습니다. 업데이트·최초 OFF·번역 미지원 안내 및 Papago와의 구분은 [웨일 설치 안내](whale-installation.md)를 따릅니다. 사용자 일반 프로필의 설정이나 번역 플래그는 자동으로 변경하지 않습니다.
+
 ### Firefox에 임시 설치
 
 ```bash
@@ -127,14 +132,20 @@ Firefox의 `about:debugging#/runtime/this-firefox`에서 **임시 부가 기능 
 | `npm test` | Vitest 테스트 실행 |
 | `npm run build` | 타입 검사 → Chrome 빌드 → 완성된 content script 실행 검사 |
 | `npm run build:firefox` | 타입 검사 → Firefox 빌드 → 완성된 content script 실행 검사 |
-| `npm run zip` | 타입 검사·빌드·content script 실행 검사를 통과한 뒤 Chrome ZIP 생성 |
+| `npm run build:whale` | 타입 검사 → Whale MV3 빌드 → 패키지 manifest·로컬 참조 검사 → content script 실행 검사 |
+| `npm run zip` | 타입 검사 → Chrome MV3 빌드 → 패키지·content script 검사 → ZIP 생성·실제 ZIP 검사 |
+| `npm run zip:whale` | 타입 검사 → Whale MV3 빌드 → 패키지·content script 검사 → ZIP 생성·실제 ZIP 검사 |
 | `npx wxt zip -b firefox` | Firefox 배포용 ZIP 생성 |
-| `npm run test:release` | 배포 도구의 Node 테스트 실행. `npm test`·`npm run check`에는 포함되지 않음 |
-| `npm run release -- version <버전>` / `prepare` / `verify <버전>` | 버전 갱신 / 깨끗한 커밋의 검증·ZIP 기록 생성 / 제출할 ZIP 재확인 |
+| `npm run test:release` | 배포 도구·공통 패키지 검사의 Node 테스트 실행. `npm test`·`npm run check`에는 포함되지 않음 |
+| `npm run release -- version <버전>` / `prepare` / `verify <버전>` | 공통 버전 갱신 / Chrome 검증·ZIP 기록 생성 / Chrome ZIP 재확인 |
+| `npm run release -- prepare --browser whale` | 깨끗한 커밋을 검증하고 Whale ZIP·별도 배포 기록 생성 |
+| `npm run release -- verify <버전> --browser whale` | 준비한 Whale 기록과 현재 소스·버전·ZIP 재확인. 재빌드하지 않음 |
 
 현재 `npm test` 스크립트는 `TMPDIR=/tmp` 문법을 사용하므로 WSL 또는 POSIX 셸에서 실행하세요. Windows PowerShell에서는 `npx vitest run`으로 테스트를 직접 실행할 수 있습니다. 테스트 소스는 제품 코드와 분리된 최상위 `test/`에 있으며, `src/` 구조를 따라 application·localization·site contract·UI 경계를 검증합니다.
 
 빌드 후 `test/build/content-script-smoke.mjs`는 실제 manifest가 가리키는 번들을 Happy DOM에서 실행하여 Area·Route 사이드바 초기화, 열기·닫기, OFF/ON, 재주입을 확인합니다. 네트워크·번역 API·사용자 프로필은 사용하지 않으며 실제 브라우저 검증을 대체하지 않습니다. `npx wxt build`나 `npx wxt zip` 직접 실행은 이 필수 검사를 우회하므로 검증된 배포 명령으로 취급하지 않습니다. 사이드바 오류 조사 기록 (로컬 참고: `docs/sidebar-runtime-error-2026-09-28.md`)
+
+Chrome·Whale의 `zip` 명령은 `scripts/extension-package.mjs`의 공통 검사를 사용합니다. 제품명·패키지 버전·MV3, 툴바 `action`, sidebar·legacy action 부재, `storage`와 Mountain Project 두 HTTPS 호스트만 사용하는 권한·content script 범위를 확인합니다. manifest가 참조하는 팝업·아이콘·스크립트·CSS와 제3자 고지 파일은 비어 있지 않은 로컬 파일이어야 합니다. 경로 이탈·원격 참조·빌드 디렉터리 밖 symlink를 거부하고, 생성된 ZIP도 허용된 파일 구성과 실제 참조 내용을 다시 검사합니다. 검사 결과는 실제 번역·로그인·사이트 동작이나 스토어 승인을 보장하지 않습니다.
 
 테스트는 페이지 판별, 번역 규칙, DOM 변경과 원복, 동적 콘텐츠, 지도·통계·목록 UI 등을 다룹니다. 번역 품질 corpus는 문맥별 용어, 다의어 충돌, 고유명사·등급 보존, 토큰 무결성 실패, 캐시 격리, 섹션 재번역과 장문 댓글의 원자적 표시를 검증합니다. Mountain Project 계약 테스트는 현재 구조뿐 아니라 Bootstrap 클래스 변경, 중간 wrapper 추가, 필수 landmark 누락과 fallback도 검증합니다. 상단 컨트롤은 운영 헤더의 gutter·로고·탭·사용자 버튼·햄버거 spacing을 재현한 렌더 fixture에서 computed style을 추가로 검증합니다. 자동 테스트와 빌드 성공만으로 실제 사이트의 로그인·기여·지도·번역 엔진 동작까지 검증되는 것은 아닙니다.
 
@@ -153,7 +164,7 @@ git diff --check
 
 2026-09-29 출시 준비 점검에서는 타입 검사, 전체 61개 파일·634개 테스트(`--maxWorkers=4`), Chrome ZIP 생성과 패키지 검사를 통과했습니다. 기본 동시 실행에서 발생한 시간 초과와 재검증 조건은 [소스 점검 기록](release-source-audit-2026-09-29.md)에 남겨 두었습니다.
 
-2026-10-01 소스·테스트 타입 검사, Chrome 빌드·번들 smoke와 배포 도구 6/6 검사를 통과했습니다. 전체 회귀는 664개 중 661개 통과, 실패한 비동기 검사 3개 파일의 순차 재실행은 38/38 통과했습니다. 단일 전체 실행의 전수 통과로 표시하지 않습니다. 상세 조건은 [검증 기록](documentation-sync.md)을 따릅니다. 최신 첫 실행 온보딩의 실제 Chrome 표시와 언어팩 다운로드 완료는 아직 검증 증거가 없습니다.
+웨일 변경 전 2026-10-01 검증에서는 소스·테스트 타입 검사, Chrome 빌드·번들 smoke와 배포 도구 6/6 검사를 통과했습니다. 전체 회귀는 664개 중 661개 통과, 실패한 비동기 검사 3개 파일의 순차 재실행은 38/38 통과했습니다. 단일 전체 실행의 전수 통과로 표시하지 않습니다. 상세 조건은 [검증 기록](documentation-sync.md)을 따릅니다. 최신 첫 실행 온보딩의 실제 Chrome 표시와 언어팩 다운로드 완료는 아직 검증 증거가 없습니다. Whale 후속 검증은 [별도 기록](whale-validation-2026-10-01.md)으로 구분합니다.
 
 변경 후에는 실제 브라우저에서 다음 항목도 확인합니다.
 
@@ -178,13 +189,27 @@ git diff --check
 5. 업로드 직전에 `npm run release -- verify 0.1.1`을 실행합니다. 준비 당시 Git 커밋·현재 작업트리·ZIP 해시·manifest·파일별 해시를 다시 확인합니다. 이 명령은 테스트·빌드를 재실행하거나 수동 체크리스트 완료를 판정하지 않습니다. 소스 커밋이 GitHub에도 반영되었는지는 별도로 확인합니다.
 6. 기존 Chrome 웹 스토어 항목 `ijgghnbmgbapfckfnkcapbkbbobjochh`에 확인된 ZIP을 업로드하고 심사 제출·게시 설정을 확인합니다. 승인 후 공개된 버전을 확인하고 `docs/release-status.md`와 Notion의 출시 상태를 함께 갱신합니다.
 
-산출물은 ZIP, `release.json`(버전·Git 커밋·시간·SHA-256·manifest·파일별 해시), `CHECKLIST.md` 세 개입니다. `.output/`는 Git에서 제외되므로 보관할 배포 증거는 별도로 백업합니다. 기록의 `prepared`는 로컬 준비 상태이며 심사 제출·승인을 뜻하지 않습니다.
+산출물은 ZIP, `release.json`, `CHECKLIST.md` 세 개입니다. 신규 `release.json`은 schema 2이며 `browser`, 버전·Git 커밋·시간·ZIP SHA-256·manifest·파일별 해시와 통과한 명령 목록 `checks`를 기록합니다. Chrome 기록만 기존 스토어 ID를 포함합니다. 이전 schema 1 Chrome 기록도 기존 검증 조건을 만족하면 계속 확인할 수 있지만 Whale 기록으로 재사용할 수는 없습니다. `.output/`는 Git에서 제외되므로 보관할 배포 증거는 별도로 백업합니다. 기록의 `prepared`는 로컬 준비 상태이며 실브라우저 통과·심사 제출·승인을 뜻하지 않습니다.
 
-도구는 현재 제품명·MV3·storage·Mountain Project 두 호스트 권한과 패키지 파일 구성을 검사합니다. 의도적으로 권한이나 패키지 구조를 바꾸면 `scripts/release.mjs`의 기준, 테스트, 관련 문서를 함께 검토합니다. 원격 코드·개인정보 준수 전체를 자동 판정하는 검사는 아닙니다.
+도구는 위 공통 패키지 검사와 실제 ZIP 검사를 사용합니다. 의도적으로 권한이나 패키지 구조를 바꾸면 `scripts/extension-package.mjs`, `scripts/release.mjs`의 기준, 테스트, 관련 문서를 함께 검토합니다. 원격 코드·개인정보 준수 전체를 자동 판정하는 검사는 아닙니다.
 
 같은 버전의 출력 폴더는 덮어쓰지 않습니다. 준비 이후 문서만 커밋해도 `verify`는 거부합니다. 미제출 후보를 다시 준비해야 한다면 기존 증거를 다른 위치에 보관해 해당 버전 출력 폴더를 비운 뒤 재검증합니다. 이미 스토어에 업로드한 버전은 새 버전 번호로 진행합니다. 실패한 실행에서 남은 일반 `.output/` ZIP을 대신 업로드하지 않습니다.
 
 Git 커밋·push, Notion 수정, 실제 Chrome 확인, 스토어 업로드·심사 제출은 도구가 자동 수행하지 않습니다. 이 단계들은 생성된 체크리스트에 따라 진행합니다. 배포 도구 자체의 회귀 검사는 `npm run test:release`로 독립 실행합니다.
+
+### Whale 기록 분리
+
+위 기본 명령과 Chrome 경로는 그대로 유지합니다. `prepare`·`verify`에만 마지막 인자로 `--browser whale`을 붙이면 Whale을 선택하며, 생략하거나 `--browser chrome`을 지정하면 Chrome입니다. Firefox는 이 배포 도구의 대상이 아닙니다. `version`은 두 브라우저에 공통인 패키지 버전을 변경하며 `--browser`를 받지 않습니다.
+
+| 산출물 | Chrome | Whale |
+| --- | --- | --- |
+| 개발 빌드 폴더 | `.output/chrome-mv3` | `.output/whale-mv3` |
+| 일반 ZIP | `.output/mountain-project-korea-extension-<버전>-chrome.zip` | `.output/mountain-project-korea-extension-<버전>-whale.zip` |
+| `prepare` 기록 폴더 | `.output/releases/<버전>/` | `.output/releases/whale/<버전>/` |
+
+Whale의 `prepare`는 같은 깨끗한 커밋·버전 일치·CHANGELOG 조건에서 의존성 설치, 타입 검사, 배포·패키지 검사 테스트, 전체 Vitest와 `zip:whale`를 실행합니다. `verify <버전> --browser whale`은 브라우저·ZIP 이름·기록된 검사 목록·현재 소스·해시를 대조합니다. Chrome 스토어 ID가 들어간 Whale 기록은 거부합니다. 수동 체크리스트 완료 여부나 실제 Whale의 번역 지원은 자동 판정하지 않습니다.
+
+이번 호환성 프로토타입은 버전을 올리거나 웨일 스토어에 제출하지 않습니다. 개발 설치는 `build:whale`, 일반 패키지 확인은 `zip:whale`만으로 가능하며 두 명령은 `release.json`을 만들지 않습니다. `prepare`는 커밋이 정리된 별도 배포 준비 단계입니다. 실제 실행 결과·브라우저 상태는 [웨일 검증 기록](whale-validation-2026-10-01.md)으로 관리하고 Chrome 출시 증거로 대체하지 않습니다.
 
 ## 권한 및 데이터 처리
 
@@ -257,7 +282,7 @@ wxt.config.ts       # 매니페스트와 브라우저별 WXT 빌드 설정
 
 | 실행 환경 | 제공할 adapter / composition root |
 | --- | --- |
-| Chrome / Firefox | 현재 WXT `entrypoints/content.ts`가 WebExtension 저장소, Chrome Translator provider와 내비게이션 shell을 주입하고, invalidation을 runtime.destroy에 연결합니다. Translator API 미지원 브라우저에서는 provider가 unavailable을 반환하므로 고정 UI만 번역됩니다. |
+| Chrome / Whale / Firefox | 현재 WXT `entrypoints/content.ts`가 WebExtension 저장소, Chrome Translator provider와 내비게이션 shell을 주입하고, invalidation을 runtime.destroy에 연결합니다. Whale도 공통 코드를 사용하며 전용 소스를 복제하지 않습니다. Translator API 미지원 브라우저에서는 provider가 unavailable을 반환하므로 고정 UI만 번역됩니다. |
 | Safari Web Extension | Safari 확장의 content root에서 공통 application/runtime을 생성하고 WebExtension 저장소 호환성을 확인합니다. 사용 가능한 번역 provider 또는 unavailable provider를 주입하고 확장 종료를 destroy에 연결합니다. 전용 빌드·실기기 검증은 아직 필요합니다. |
 | Android Firefox | 같은 WXT root와 WebExtension 저장소를 재사용하고 번역 provider를 기능 감지해 선택합니다. 모바일 DOM·iframe 동작과 확장 종료를 실기기에서 검증해야 합니다. |
 | WebView | 문서별 주입 root에서 호스트 저장소/변경 알림을 SettingsRepository로, 번역 bridge를 TranslationProvider로 구현합니다. 문서 교체 전 destroy하고 새 문서에서 새 runtime을 생성합니다. |

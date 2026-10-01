@@ -18,6 +18,8 @@ Mountain Project를 한국어로 읽고 더 편리하게 탐색하도록 돕는 
 - 상태 확인일: 2026년 9월 30일 — 게시자 승인 확인 및 공개 스토어 페이지 확인
 - [출시 현황과 다음 단계](docs/release-status.md) · [버전 변경 내역](CHANGELOG.md)
 
+Desktop Whale용 별도 MV3 빌드·ZIP은 **미출시 호환성 프로토타입**입니다. Chrome 공개본과 본문 번역의 동등 지원을 보장하지 않으며 웨일 스토어에는 제출하지 않았습니다. [웨일 설치와 제한 사항](docs/whale-installation.md)을 확인하세요.
+
 Mountain Project 또는 onX의 공식 제품이 아니며, 공식 제휴나 승인을 의미하지 않습니다.
 
 ## 주요 기능
@@ -66,6 +68,7 @@ npm run build
 ## 지원 범위와 참고 사항
 
 - 첫 출시는 데스크톱 Chrome을 대상으로 합니다. Firefox와 모바일·Safari 등 다른 환경의 지원은 개발·검증 단계이며 Chrome과 동일한 기능을 보장하지 않습니다.
+- Desktop Whale은 공통 코드를 재사용하는 툴바 확장 프로토타입입니다. Chromium 기반이거나 Papago를 제공한다는 이유만으로 본문 번역 API를 지원하는 것은 아닙니다. 설치·빌드·번역 엔진 확인 범위는 [웨일 검증 기록](docs/whale-validation-2026-10-01.md)을 따릅니다.
 - 페이지 구조에 따라 기능 적용 범위가 달라집니다. Mountain Project의 모든 페이지와 모든 변형 화면을 지원하는 것은 아닙니다.
 - 기계 번역에는 오류가 있을 수 있습니다. 접근·하강·장비 등 등반 판단에 필요한 정보는 원문과 함께 확인하세요.
 - 기여 화면의 고정 안내와 UI를 한국어로 표시하며, 사용자가 작성하는 입력값과 제출 데이터는 보존합니다.
@@ -97,6 +100,7 @@ npm run build
 WXT, TypeScript, Vitest, happy-dom을 사용합니다. 설치·실행 명령, 구조, 페이지별 지원 범위와 검증 방법은 별도 문서에서 관리합니다.
 
 - [개발 및 유지보수 안내](docs/development.md)
+- [웨일 프로토타입 설치 안내](docs/whale-installation.md)
 - [문서 목록](docs/README.md)
 - [첫 배포 버전 소스·패키지 검증 기록](docs/release-source-audit-2026-09-29.md)
 

@@ -14,8 +14,15 @@
 | 설치·빌드·검증 명령 | `package.json`, `test/build/`, `docs/development.md` | [04. 개발·유지보수 기준서](https://www.notion.so/3e958ad3a0b28137a781eee539811779) |
 | 검증·개인정보·게시 상태 | `docs/release-source-audit-2026-09-29.md`, `docs/evidence/`, `docs/privacy-policy.ko.md`, `docs/chrome-web-store.ko.md` | [05. 검증·개인정보·공개 배포 기준](https://www.notion.so/3e958ad3a0b281f98407f652a951ef1b) |
 | 변경 이유·동기화 규칙 | `CHANGELOG.md`, 이 문서 | [06. 결정 기록·문서 관리](https://www.notion.so/3e958ad3a0b2817d946ed2c5ea8d5fb1) |
+| 웨일 호환성·설치·검증 | `scripts/extension-package.mjs`, `scripts/release.mjs`, `docs/whale-installation.md`, `docs/whale-validation-2026-10-01.md` | 02 웨일 설계, 03 WH-01~06, 04 구현 순서, 05 검증 계획, 06 D-13 및 기존 W1~W4 작업 카드 |
 
-## 현재 로컬 소스 대조 — 2026-10-01
+## 웨일 문서 대조
+
+`b54b66b` 이후의 Whale 후속 변경은 아래 공통 소스 동기화 이력과 구분한다. 로컬 안내는 실제 `package.json`·패키지 검사·배포 도구의 계약을 대조하여 `build:whale`, `zip:whale`, `prepare --browser whale`, `verify <버전> --browser whale`와 브라우저별 기록 경로를 반영한다. 기존 Chrome 명령·출력 경로와 schema 1 기록 검증은 유지한다.
+
+Whale은 미출시 호환성 프로토타입으로 기록하며, 버전 변경·스토어 제출·본문 번역 동등 지원을 주장하지 않는다. 설치 안내는 [별도 문서](whale-installation.md), 최신 빌드·ZIP·브라우저 실행 증거와 미검증 범위는 [단일 검증 기록](whale-validation-2026-10-01.md)으로 모은다. 아래 날짜별 테스트 수치는 그 당시 소스에 한정하며 Whale 검증에 재사용하지 않는다. 로컬 문서 편집만으로 Notion W1~W4나 Git 반영을 완료로 바꾸지 않는다.
+
+## 웨일 변경 전 공통 소스 대조 — 2026-10-01
 
 - 공개된 `0.1.0`과 미출시 개발 소스를 구분했다. 현재 패키지 버전은 여전히 `0.1.0`이며 이 동기화에서 버전 변경·스토어 제출을 수행하지 않는다.
 - `enabled` 키 부재를 기본 OFF·첫 실행 기준으로 기록했다. 저장된 boolean 설정은 유지하지만 이전 설치도 키가 없으면 첫 실행이다. 스위치 강조 해제는 설정 저장 반영에 따르며 Chrome 번역 준비 성공과 구분한다.

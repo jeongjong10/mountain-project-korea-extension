@@ -8,6 +8,7 @@
 - [출시 현황](release-status.md): 심사·게시 및 GitHub 반영 상태
 - [버전 변경 내역](../CHANGELOG.md)
 - [개발 및 유지보수](development.md): 지원 범위, 명령, 구조와 검증 방법
+- [웨일 설치 안내](whale-installation.md): 미출시 Desktop Whale MV3 호환성 프로토타입과 번역 제한
 - [소스·로컬 문서·Notion 동기화](documentation-sync.md): 문서 대응표와 갱신 절차
 - [스토어 제출 문안](chrome-web-store.ko.md)
 - [개인정보처리방침 원본](privacy-policy.ko.md) · [공개 방침](https://mountain-project-korea-privacy.jeongjongyeol.chatgpt.site/)
@@ -22,6 +23,7 @@
 
 ## 출시 검증과 자료 보관
 
+- [2026-10-01 웨일 호환성 검증](whale-validation-2026-10-01.md): 빌드·ZIP·실브라우저 증거와 미검증 범위. 공개 출시 기록이 아님
 - [2026-09-29 소스·패키지 점검](release-source-audit-2026-09-29.md)
 - [검증 기준 소스 해시](evidence/release-source-baseline-2026-09-29.json)
 - [패키지 검사 결과](evidence/release-package-inspection-2026-09-29.json)

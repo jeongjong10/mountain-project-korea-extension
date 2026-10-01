@@ -14,6 +14,48 @@ describe('ChromeTranslationProvider', () => {
   it('reports unsupported browsers without throwing', async () => {
     const provider = new ChromeTranslationProvider();
     await expect(provider.availability()).resolves.toBe('unavailable');
+    await expect(provider.prepare()).rejects.toThrow('Translator API is unavailable');
+    await expect(provider.translate({
+      sourceLanguage: 'en', targetLanguage: 'ko', text: 'original', context,
+    })).rejects.toThrow('Translator API is unavailable');
+    expect(() => provider.destroy()).not.toThrow();
+  });
+
+  it.each([
+    ['available', 'available'],
+    ['readily', 'available'],
+    ['downloadable', 'downloadable'],
+    ['after-download', 'downloadable'],
+    ['downloading', 'downloadable'],
+    ['unavailable', 'unavailable'],
+    ['no', 'unavailable'],
+    ['unexpected-status', 'unavailable'],
+  ])('maps language-pair status %s to %s without preparing a session', async (status, expected) => {
+    const availability = vi.fn(async () => status);
+    const create = vi.fn();
+    Object.defineProperty(globalThis, 'Translator', {
+      configurable: true,
+      value: { availability, create },
+    });
+
+    await expect(new ChromeTranslationProvider().availability()).resolves.toBe(expected);
+
+    expect(availability).toHaveBeenCalledExactlyOnceWith({ sourceLanguage: 'en', targetLanguage: 'ko' });
+    expect(create).not.toHaveBeenCalled();
+  });
+
+  it('fails closed when the availability query rejects', async () => {
+    const availability = vi.fn().mockRejectedValue(new Error('Availability query failed'));
+    const create = vi.fn();
+    Object.defineProperty(globalThis, 'Translator', {
+      configurable: true,
+      value: { availability, create },
+    });
+
+    await expect(new ChromeTranslationProvider().availability()).resolves.toBe('unavailable');
+
+    expect(availability).toHaveBeenCalledOnce();
+    expect(create).not.toHaveBeenCalled();
   });
 
   it('maps model availability and reuses one on-device session', async () => {
@@ -89,5 +131,35 @@ describe('ChromeTranslationProvider', () => {
       sourceLanguage: 'en', targetLanguage: 'ko', text: 'retry', context,
     })).resolves.toBe('KO:retry');
     expect(create).toHaveBeenCalledTimes(2);
+  });
+
+  it('does not let a disposed preparation rejection clear a newer active session', async () => {
+    let rejectOld!: (reason: Error) => void;
+    const translate = vi.fn(async (text: string) => `KO:${text}`);
+    const destroy = vi.fn();
+    const create = vi.fn()
+      .mockImplementationOnce(() => new Promise((_, reject) => { rejectOld = reject; }))
+      .mockResolvedValueOnce({ translate, destroy });
+    Object.defineProperty(globalThis, 'Translator', {
+      configurable: true,
+      value: { availability: vi.fn(async () => 'available'), create },
+    });
+    const provider = new ChromeTranslationProvider();
+    const oldPreparation = provider.prepare();
+    const oldFailure = expect(oldPreparation).rejects.toThrow('Old preparation failed');
+    provider.destroy();
+    await expect(provider.prepare()).resolves.toBeUndefined();
+
+    rejectOld(new Error('Old preparation failed'));
+    await oldFailure;
+
+    await expect(provider.translate({
+      sourceLanguage: 'en', targetLanguage: 'ko', text: 'new session', context,
+    })).resolves.toBe('KO:new session');
+    expect(create).toHaveBeenCalledTimes(2);
+    expect(destroy).not.toHaveBeenCalled();
+    provider.destroy();
+    await Promise.resolve();
+    expect(destroy).toHaveBeenCalledOnce();
   });
 });

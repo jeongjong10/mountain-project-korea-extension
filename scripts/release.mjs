@@ -4,10 +4,10 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync, rmSync } from 'node
 import { dirname, resolve, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { inflateRawSync } from 'node:zlib';
+import { inspectManifest, packageBrowser } from './extension-package.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export const STORE_ID = 'ijgghnbmgbapfckfnkcapbkbbobjochh';
-const hosts = ['https://mountainproject.com/*', 'https://www.mountainproject.com/*'];
 const hash = (data) => createHash('sha256').update(data).digest('hex');
 const json = (path) => JSON.parse(readFileSync(path, 'utf8'));
 const save = (path, data) => writeFileSync(path, JSON.stringify(data, null, 2) + '\n');
@@ -69,15 +69,11 @@ export function zipEntries(bytes) {
   if (at !== stop) throw Error('ZIP 디렉터리 길이가 일치하지 않습니다.');
   return result;
 }
-export function inspectZip(bytes, version) {
+export function inspectZip(bytes, version, browser = 'chrome') {
+  packageBrowser(browser);
   const files = zipEntries(bytes);
   const manifest = JSON.parse(files.get('manifest.json')?.toString() ?? '{}');
-  const same = (a, b) => JSON.stringify([...(a ?? [])].sort()) === JSON.stringify([...b].sort());
-  if (manifest.version !== version || manifest.manifest_version !== 3 || manifest.name !== 'Mountain Project Korea (비공식)') throw Error('ZIP 제품명·버전·MV3가 일치하지 않습니다.');
-  if (!same(manifest.permissions, ['storage']) || !same(manifest.host_permissions, hosts) || (manifest.optional_permissions?.length || manifest.optional_host_permissions?.length)) throw Error('권한이 출시 기준과 다릅니다. 개인정보·스토어 문안과 함께 검토하세요.');
-  if (manifest.content_scripts?.length !== 1 || !same(manifest.content_scripts[0].matches, hosts)) throw Error('콘텐츠 스크립트 호스트가 다릅니다.');
-  const required = ['THIRD_PARTY_NOTICES.txt', manifest.action?.default_popup, ...Object.values(manifest.icons ?? {}), ...manifest.content_scripts.flatMap(s => s.js ?? [])];
-  if (required.some(p => !p || !files.has(p))) throw Error('패키지 참조 파일 또는 고지가 없습니다.');
+  inspectManifest(manifest, version, reference => files.get(reference), browser);
   for (const name of files.keys()) {
     if (!/^(manifest\.json|popup\.html|THIRD_PARTY_NOTICES\.txt|(?:assets|chunks|content-scripts|icon)\/[\w./-]+)$/.test(name) || /\.(map|ts)$/.test(name)) throw Error(`예상 밖의 배포 파일: ${name}`);
   }
@@ -91,50 +87,87 @@ function npmRun(cwd, args) {
   if (!process.env.npm_execpath) throw Error('npm run release -- ... 형식으로 실행하세요.');
   execFileSync(process.execPath, [process.env.npm_execpath, ...args], { cwd, stdio: 'inherit' });
 }
-export function prepare(cwd, run = args => npmRun(cwd, args)) {
+function releaseDirectory(cwd, version, browser) {
+  // Keep the existing Chrome path; Whale cannot reuse its receipts or artifacts.
+  return browser === 'chrome'
+    ? join(cwd, '.output', 'releases', version)
+    : join(cwd, '.output', 'releases', browser, version);
+}
+function validationCommands(browser) {
+  return [
+    ['ci'], ['run', 'typecheck'], ['run', 'typecheck:test'], ['run', 'test:release'],
+    ['exec', '--', 'vitest', 'run', '--maxWorkers=4'],
+    ['run', browser === 'chrome' ? 'zip' : 'zip:whale'],
+  ];
+}
+function passedChecks(browser) {
+  return [...validationCommands(browser), ['inspect-zip', browser]]
+    .map(command => ({ command, status: 'passed' }));
+}
+export function prepare(cwd, run = args => npmRun(cwd, args), browser = 'chrome') {
+  packageBrowser(browser);
   const commit = sourceState(cwd), pkg = json(join(cwd, 'package.json'));
   versionParts(pkg.version);
   const lock = json(join(cwd, 'package-lock.json'));
   if (lock.version !== pkg.version || lock.packages?.['']?.version !== pkg.version) throw Error('버전과 lockfile이 일치하지 않습니다.');
   if (!readFileSync(join(cwd, 'CHANGELOG.md'), 'utf8').includes(`## ${pkg.version} `)) throw Error('CHANGELOG에 해당 버전의 변경 내역을 먼저 작성하세요.');
-  const dest = join(cwd, '.output', 'releases', pkg.version);
+  const dest = releaseDirectory(cwd, pkg.version, browser);
   if (existsSync(dest)) throw Error('같은 버전의 배포 기록이 이미 있습니다. 기존 파일을 덮어쓰지 않습니다.');
-  const zipName = `${pkg.name}-${pkg.version}-chrome.zip`, zipPath = join(cwd, '.output', zipName);
+  const zipName = `${pkg.name}-${pkg.version}-${browser}.zip`, zipPath = join(cwd, '.output', zipName);
   rmSync(zipPath, { force: true });
-  run(['ci']);
-  run(['run', 'typecheck']);
-  run(['run', 'typecheck:test']);
-  run(['run', 'test:release']);
-  run(['exec', '--', 'vitest', 'run', '--maxWorkers=4']);
-  run(['run', 'zip']);
+  for (const command of validationCommands(browser)) run(command);
   if (sourceState(cwd) !== commit) throw Error('검증 중 소스 커밋이 바뀌었습니다. 다시 준비하세요.');
-  const bytes = readFileSync(zipPath), checked = inspectZip(bytes, pkg.version);
+  const bytes = readFileSync(zipPath), checked = inspectZip(bytes, pkg.version, browser);
   mkdirSync(dest, { recursive: true });
   writeFileSync(join(dest, zipName), bytes);
-  save(join(dest, 'release.json'), { schema: 1, version: pkg.version, commit, zip: zipName, sha256: hash(bytes), createdAt: new Date().toISOString(), storeId: STORE_ID, status: 'prepared', ...checked });
-  writeFileSync(join(dest, 'CHECKLIST.md'), `# ${pkg.version} 배포\n\n준비 완료는 스토어 제출·승인이 아닙니다.\n\n- [ ] 이 ZIP을 Chrome에 설치해 번역·원문·재번역·ON/OFF·지도·통계와 변경 기능 확인\n- [ ] README·변경 내역·Notion·권한·개인정보·스토어 설명 대조\n- [ ] npm run release -- verify ${pkg.version}\n- [ ] 소스 커밋 ${commit}의 GitHub 반영 확인\n- [ ] 기존 스토어 항목 ${STORE_ID}에 ${zipName} 업로드\n- [ ] 심사 제출 및 승인 후 자동 게시 설정 확인\n- [ ] 승인·공개 버전 확인 후 로컬·Notion 출시 상태 갱신\n\nZIP SHA-256: ${hash(bytes)}\n`);
+  save(join(dest, 'release.json'), { schema: 2, browser, version: pkg.version, commit, zip: zipName, sha256: hash(bytes), createdAt: new Date().toISOString(), ...(browser === 'chrome' ? { storeId: STORE_ID } : {}), status: 'prepared', checks: passedChecks(browser), ...checked });
+  const manualSteps = browser === 'chrome'
+    ? `- [ ] 기존 스토어 항목 ${STORE_ID}에 ${zipName} 업로드\n- [ ] 심사 제출 및 승인 후 자동 게시 설정 확인\n- [ ] 승인·공개 버전 확인 후 로컬·Notion 출시 상태 갱신`
+    : '- [ ] 실제 Whale 버전·설치·온보딩·Translator 지원 상태 확인\n- [ ] Papago OFF 기준 동작과 ON 중복 번역·DOM 충돌을 별도로 확인\n- [ ] Translator 미지원 시 본문 번역 동등성 미확보 및 호환성 프로토타입으로 기록\n- [ ] 설치 안내와 실검증 결과 기록 (Whale 스토어 공개는 이번 준비 범위에 포함하지 않음)';
+  writeFileSync(join(dest, 'CHECKLIST.md'), `# ${browser} ${pkg.version} 배포\n\n준비 완료는 실브라우저 검증·스토어 제출·승인이 아닙니다.\n\n- [ ] 이 ZIP을 ${browser === 'chrome' ? 'Chrome' : 'Whale'}에 설치해 번역·원문·재번역·ON/OFF·지도·통계와 변경 기능 확인\n- [ ] README·변경 내역·Notion·권한·개인정보·스토어 설명 대조\n- [ ] npm run release -- verify ${pkg.version}${browser === 'chrome' ? '' : ' --browser whale'}\n- [ ] 소스 커밋 ${commit}의 GitHub 반영 확인\n${manualSteps}\n\nZIP SHA-256: ${hash(bytes)}\n`);
   return dest;
 }
-export function verify(cwd, version) {
+export function verify(cwd, version, browser = 'chrome') {
+  packageBrowser(browser);
   versionParts(version);
-  const dest = join(cwd, '.output', 'releases', version), receipt = json(join(dest, 'release.json'));
+  const dest = releaseDirectory(cwd, version, browser), receipt = json(join(dest, 'release.json'));
   const pkg = json(join(cwd, 'package.json'));
-  if (receipt.schema !== 1 || receipt.version !== version || pkg.version !== version || receipt.storeId !== STORE_ID || receipt.zip !== `${pkg.name}-${version}-chrome.zip`) throw Error('배포 기록이 현재 버전과 일치하지 않습니다.');
+  const legacyChrome = receipt.schema === 1 && browser === 'chrome' && receipt.browser === undefined;
+  const current = receipt.schema === 2 && receipt.browser === browser
+    && JSON.stringify(receipt.checks) === JSON.stringify(passedChecks(browser));
+  if ((!legacyChrome && !current) || receipt.version !== version || pkg.version !== version
+    || (browser === 'chrome' ? receipt.storeId !== STORE_ID : 'storeId' in receipt)
+    || receipt.zip !== `${pkg.name}-${version}-${browser}.zip`) throw Error('배포 기록이 현재 브라우저·버전과 일치하지 않습니다.');
   if (sourceState(cwd) !== receipt.commit) throw Error('준비 이후 소스가 바뀌었습니다. 현재 코드를 검증한 ZIP이 아닙니다.');
   const bytes = readFileSync(join(dest, receipt.zip));
   if (hash(bytes) !== receipt.sha256) throw Error('준비 이후 ZIP이 변경되었습니다. 업로드하지 마세요.');
-  const checked = inspectZip(bytes, version);
+  const checked = inspectZip(bytes, version, browser);
   if (JSON.stringify(checked.files) !== JSON.stringify(receipt.files)) throw Error('ZIP 파일 목록이 배포 기록과 다릅니다.');
   return join(dest, receipt.zip);
 }
+export function releaseArguments(args) {
+  const values = [...args];
+  const flag = values.indexOf('--browser');
+  let browser = 'chrome';
+  if (flag !== -1) {
+    if (flag !== values.length - 2 || !values[flag + 1]) throw Error('--browser 뒤에 chrome 또는 whale을 지정하세요.');
+    browser = packageBrowser(values[flag + 1]);
+    values.splice(flag, 2);
+  }
+  const [command = 'help', value, ...extra] = values;
+  if (extra.length || !['help', 'version', 'prepare', 'verify'].includes(command)
+    || (['help', 'prepare'].includes(command) ? value !== undefined : !value)
+    || (flag !== -1 && !['prepare', 'verify'].includes(command))) {
+    throw Error('사용법: version <버전> | prepare [--browser chrome|whale] | verify <버전> [--browser chrome|whale]');
+  }
+  return { command, value, browser };
+}
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   try {
-    const [command, value, ...extra] = process.argv.slice(2);
-    if (extra.length) throw Error('인수가 너무 많습니다.');
+    const { command, value, browser } = releaseArguments(process.argv.slice(2));
     if (command === 'version' && value) { bump(root, value); console.log('버전 갱신 완료. 변경 내역·문서를 정리하고 커밋한 뒤 prepare를 실행하세요.'); }
-    else if (command === 'prepare' && !value) console.log('준비 완료:', prepare(root));
-    else if (command === 'verify' && value) console.log('업로드 파일 확인 완료:', verify(root, value));
-    else if (!command || command === 'help') console.log('npm run release -- version 0.1.1\nnpm run release -- prepare\nnpm run release -- verify 0.1.1\n스토어 업로드·Git 커밋·Notion 수정은 자동 수행하지 않습니다.');
-    else throw Error('사용법: version <버전> | prepare | verify <버전>');
+    else if (command === 'prepare') console.log('준비 완료:', prepare(root, undefined, browser));
+    else if (command === 'verify') console.log('업로드 파일 확인 완료:', verify(root, value, browser));
+    else console.log('npm run release -- version 0.1.1\nnpm run release -- prepare [--browser chrome|whale]\nnpm run release -- verify 0.1.1 [--browser chrome|whale]\n스토어 업로드·Git 커밋·Notion 수정은 자동 수행하지 않습니다.');
   } catch (error) { console.error('배포 중단:', error.message); process.exitCode = 1; }
 }

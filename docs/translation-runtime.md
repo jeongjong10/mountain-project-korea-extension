@@ -12,6 +12,16 @@
 
 공통 application과 core는 WXT 및 브라우저 전역 API를 직접 사용하지 않는다. 브라우저별 provider와 설정 저장소는 `src/platforms/`, WXT 조립은 `src/entrypoints/`에 둔다.
 
+### Whale 호환성 경계
+
+Desktop Whale MV3 빌드도 현재 `ChromeTranslationProvider`와 공통 WebExtension 설정·application·renderer를 재사용한다. 브라우저 이름이나 Chromium 버전으로 엔진 지원을 결정하지 않고 **provider가 실행되는 전역의 `globalThis.Translator`**와 영어→한국어 가용성을 확인한다. 페이지 main world에서 API가 보였다는 사실만으로 확장 콘텐츠 스크립트의 API 사용 가능성을 증명할 수 없다.
+
+`availability()`는 `available`·`readily`를 준비 완료로, `downloadable`·`after-download`·`downloading`을 준비 필요로 다룬다. API 부재, `unavailable`·`no` 또는 조회 예외는 미지원으로 처리한다. `prepare()`는 사용자 활성화를 유지하기 위해 가용성 조회를 먼저 기다리지 않고 `create()`를 호출하므로 준비 실패와 설정 저장 성공은 여전히 별개다.
+
+API를 사용할 수 없어도 고정 UI 현지화·탐색 기능은 독립적으로 동작하며 본문 원문을 유지한다. 본문 대상의 상태 안내는 공통 컨트롤러를 따르고, 준비만 시도하는 메인에는 본문 준비 실패 안내가 없다. 실제 Whale에서의 안내·원문·ON/OFF·팝업 검증 결과는 [웨일 검증 기록](whale-validation-2026-10-01.md)에서 구분한다.
+
+Papago는 이 provider가 사용하는 엔진이나 fallback이 아니다. 비공개 API·외부 번역 서비스는 도입하지 않으며 사용자 브라우저의 번역 설정을 자동 변경하지 않는다. Papago OFF에서 확장 자체의 동작을 확인한 결과와 ON에서 중복 번역·DOM 충돌을 확인한 결과는 별도로 기록한다. Whale 빌드는 본문 번역 동등성이 확보된 출시판이 아닌 호환성 프로토타입이다.
+
 ## 대상 모드
 
 | 모드 | 현재 동작 |
