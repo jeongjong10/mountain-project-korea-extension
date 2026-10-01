@@ -24,7 +24,7 @@
 - 소스·테스트 타입 검사, Chrome MV3·Firefox MV2 빌드와 출력 번들 smoke, 배포 도구 6/6 검사를 통과했다. 두 content script의 SHA-256은 `ed4cc58c64818c79c757943faed69a70d88ecebb2f04c39de6a55e2939c94477`이다. 최신 온보딩의 실제 Chrome 표시·언어팩 다운로드 완료는 아직 검증 증거가 없다.
 - 전체 `npm test -- --maxWorkers=4`는 63개 파일의 664개 중 661개 통과했다. 댓글 가시성 검사는 5초 시간 초과, 동적 본문 갱신과 통계 iframe의 동적 링크 검사는 대기 후 기대값 불일치였다. 실패한 3개 파일만 코드·타임아웃 변경 없이 `--maxWorkers=1`로 순차 재실행해 38/38 통과했다. 병렬 실행의 비동기 검사 불안정성은 남아 있으며, 단일 전체 실행의 전수 통과로 표시하지 않는다.
 - 재검사 명령: `npm test -- test/localization/comment-visibility.test.ts test/localization/page-translation-controller.test.ts test/ui/route-stats-embed/layout.test.ts --maxWorkers=1`. 관련 런타임 2개 파일의 36개 검사도 통과했다.
-- Notion·GitHub 반영 상태는 아래 기록에서 확인한다. 이전 동기화·출시 검증 기록을 현재 소스의 검증 증거로 재사용하지 않는다.
+- Notion 프로젝트 허브, 기준 문서 02~06, 최초 실행 온보딩 작업 카드의 현재 계약·검증·Git 반영 상태를 갱신하고 재조회로 확인했다. 01의 제품 범위와 웨일 후속 계획은 대조 후 유지했다. 웨일 구현·실검증을 완료 처리하지 않았으며 이전 출시 증거를 현재 소스 검증으로 재사용하지 않는다.
 
 ## 출시 시점 대조 기준 — 2026-09-29
 
@@ -43,7 +43,7 @@
 
 ## GitHub 반영 상태
 
-2026-10-01 메인 작업에서 fetch 후 확인한 `main`·`origin/main`은 `997a6fa`다. 최초 OFF·온보딩·자동 준비·배포 도구와 이번 문서 변경은 아직 푸시 확인 전이며, 아래 `92f9040`은 출시 제품 소스 기준이다.
+2026-10-01 최초 OFF·온보딩·자동 준비·배포 도구·검증 결과·문서를 [e51e21e](https://github.com/jeongjong10/mountain-project-korea-extension/commit/e51e21e161171a1e4e403cdfbeb2277fc3482b43)로 `main`에 커밋·푸시했다. WSL Git에는 credential helper가 없어 최초 push가 실패했으며, 기존 Windows Git Credential Manager로 같은 원격에 정상 push했다. 이력 재작성·강제 push는 하지 않았다. Notion에도 이 소스 커밋을 연결했으며 현재 반영 상태 기록은 후속 문서 커밋으로 관리한다. 아래 `92f9040`은 출시 제품 소스 기준이다.
 
 2026-09-29 최신 소스·테스트·문서·스토어 자산을 `main`의 [92f9040](https://github.com/jeongjong10/mountain-project-korea-extension/commit/92f9040)에 커밋하고 GitHub 푸시 성공을 확인했다. 날짜별 원본 브라우저 캡처·임시 프로필은 로컬에 유지한다. 원격 이력을 재작성하거나 스토어에 재제출하지 않았다. 현재 상태를 기록하는 문서 갱신은 후속 커밋으로 반영한다.
 
