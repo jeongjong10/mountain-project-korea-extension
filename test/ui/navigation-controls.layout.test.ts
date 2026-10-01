@@ -1,4 +1,4 @@
-import { readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
 import { NAVIGATION_CONTROL_CSS } from '@/ui/navigation-control-style';
@@ -12,6 +12,7 @@ describe('navigation controls rendered against the Mountain Project header contr
       'utf8',
     );
     fixture = template.replace('__MPKR_NAVIGATION_CONTROL_CSS__', NAVIGATION_CONTROL_CSS);
+    await mkdir(resolve('.tmp'), { recursive: true });
     await writeFile(resolve('.tmp', 'navigation-header-render.html'), fixture);
   });
 
